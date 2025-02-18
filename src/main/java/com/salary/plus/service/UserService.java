@@ -9,6 +9,7 @@ import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.dto.AdminUserDTO;
 import com.salary.plus.service.dto.UserDTO;
+import io.undertow.util.BadRequestException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -288,6 +289,12 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities() {
         return SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneWithAuthoritiesByLogin);
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> getUserAuthorities() throws BadRequestException {
+        final String userEmail = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new BadRequestException("User could not be found"));
+        return userRepository.findAuthoritiesByLogin(userEmail);
     }
 
     /**

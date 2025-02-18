@@ -1,0 +1,58 @@
+.custom-number-input {
+  display: flex;
+  align-items: center;
+  height: 35px;
+}
+
+.custom-number-input button {
+  width: 40px;
+  height: 35px;
+  font-size: 22px;
+  cursor: pointer;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.custom-number-input input {
+  width: 40px;
+  height: 35px;
+  text-align: center;
+  font-size: 16px;
+  margin: 0 5px;
+  border: 1px solid #666;
+  background-color: #222;
+  color: white;
+}
+
+.icon-style {
+  font-size: 20px;
+  padding: 1em 1em 0 0;
+}
+
+.icon-style-bath {
+  font-size: 20px;
+  padding: 1em 22px 0 2px;
+}
+
+.icon-style-wine {
+  font-size: 20px;
+  padding: 1em 26px 0 6px;
+}
+
+/* 기본 스핀 버튼 숨김 */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.custom-date-input input {
+  text-align: center;
+  font-size: 16px;
+  margin: 0 5px;
+  border: 1px solid #222;
+  background-color: #444;
+  color: white;
+}

@@ -24,7 +24,7 @@ export const PrivateRoute = ({ children, hasAnyAuthorities = [], ...rest }: IOwn
   if (!sessionHasBeenFetched) {
     return <div></div>;
   }
-
+  console.error('PrivateRoute', rest);
   if (isAuthenticated) {
     if (isAuthorized) {
       return <ErrorBoundary>{children}</ErrorBoundary>;
@@ -56,6 +56,7 @@ export const hasAnyAuthority = (authorities: string[], hasAnyAuthorities: string
     if (hasAnyAuthorities.length === 0) {
       return true;
     }
+    console.error('hasAnyAuthorities', authorities, hasAnyAuthorities);
     return hasAnyAuthorities.some(auth => authorities.includes(auth));
   }
   return false;

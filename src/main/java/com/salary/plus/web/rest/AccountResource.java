@@ -1,5 +1,6 @@
 package com.salary.plus.web.rest;
 
+import com.salary.plus.domain.Authority;
 import com.salary.plus.domain.User;
 import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.SecurityUtils;
@@ -10,12 +11,14 @@ import com.salary.plus.service.dto.PasswordChangeDTO;
 import com.salary.plus.web.rest.errors.*;
 import com.salary.plus.web.rest.vm.KeyAndPasswordVM;
 import com.salary.plus.web.rest.vm.ManagedUserVM;
+import io.undertow.util.BadRequestException;
 import jakarta.validation.Valid;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -90,6 +93,12 @@ public class AccountResource {
             .getUserWithAuthorities()
             .map(AdminUserDTO::new)
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
+    }
+
+    @GetMapping("/account/roles")
+    public ResponseEntity<List<String>> getRoles() throws BadRequestException {
+        final List<String> list = userService.getUserAuthorities();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     /**
