@@ -11,6 +11,7 @@ import PasswordResetFinish from 'app/modules/account/password-reset/finish/passw
 import Logout from 'app/modules/login/logout';
 import Home from 'app/modules/home/home';
 import Work from 'app/modules/work/work';
+import Order from 'app/modules/order/order';
 import EntitiesRoutes from 'app/entities/routes';
 import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
@@ -38,6 +39,14 @@ const AppRoutes = () => {
           element={
             <PrivateRoute hasAnyAuthorities={[AUTHORITIES.MANAGER]}>
               <Work />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="order"
+          element={
+            <PrivateRoute hasAnyAuthorities={[AUTHORITIES.MANAGER]}>
+              <Order />
             </PrivateRoute>
           }
         />

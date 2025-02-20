@@ -94,36 +94,30 @@ export const Work = () => {
         {products.map((item, idx) => (
           <Col key={idx} xs="auto" className="border text-center p-3">
             {item.name}사용자
-            <p>
-              <div className="custom-number-input">
-                <p className="icon-style">
-                  <FontAwesomeIcon icon={faBed} />
-                </p>
-                <button onClick={() => decreaseLongTime(idx)}>-</button>
-                <input type="number" min="0" max="30" value={item.longTimeValue} />
-                <button onClick={() => increaseLongTime(idx)}>+</button>
-              </div>
-            </p>
-            <p>
-              <div className="custom-number-input">
-                <p className="icon-style-bath">
-                  <FontAwesomeIcon icon={faBath} />
-                </p>
-                <button onClick={() => decreaseShortTime(idx)}>-</button>
-                <input type="number" min="0" max="30" value={item.shortTimeValue} />
-                <button onClick={() => increaseShortTime(idx)}>+</button>
-              </div>
-            </p>
-            <p>
-              <div className="custom-number-input">
-                <p className="icon-style-wine">
-                  <FontAwesomeIcon icon={faWineGlass} />
-                </p>
-                <button onClick={() => decreaseLadyDrink(idx)}>-</button>
-                <input type="number" min="0" max="30" value={item.ladyDrinkValue} />
-                <button onClick={() => increaseLadyDrink(idx)}>+</button>
-              </div>
-            </p>
+            <div className="custom-number-input">
+              <p className="icon-style">
+                <FontAwesomeIcon icon={faBed} />
+              </p>
+              <button onClick={() => decreaseLongTime(idx)}>-</button>
+              <input type="number" min="0" max="30" value={item.longTimeValue} readOnly={true} />
+              <button onClick={() => increaseLongTime(idx)}>+</button>
+            </div>
+            <div className="custom-number-input">
+              <p className="icon-style-bath">
+                <FontAwesomeIcon icon={faBath} />
+              </p>
+              <button onClick={() => decreaseShortTime(idx)}>-</button>
+              <input type="number" min="0" max="30" value={item.shortTimeValue} readOnly={true} />
+              <button onClick={() => increaseShortTime(idx)}>+</button>
+            </div>
+            <div className="custom-number-input">
+              <p className="icon-style-wine">
+                <FontAwesomeIcon icon={faWineGlass} />
+              </p>
+              <button onClick={() => decreaseLadyDrink(idx)}>-</button>
+              <input type="number" min="0" max="30" value={item.ladyDrinkValue} readOnly={true} />
+              <button onClick={() => increaseLadyDrink(idx)}>+</button>
+            </div>
           </Col>
         ))}
       </Row>

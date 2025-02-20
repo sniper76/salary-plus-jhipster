@@ -42,3 +42,14 @@ export const Work = () => (
     </NavLink>
   </NavItem>
 );
+
+export const Order = () => (
+  <NavItem>
+    <NavLink tag={Link} to="/order" className="d-flex align-items-center">
+      <FontAwesomeIcon icon="bell" />
+      <span>
+        <Translate contentKey="global.menu.order">Order</Translate>
+      </span>
+    </NavLink>
+  </NavItem>
+);

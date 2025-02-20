@@ -1,0 +1,142 @@
+.custom-number-input {
+  display: flex;
+  align-items: center;
+  height: 35px;
+}
+
+.custom-number-input button {
+  width: 40px;
+  height: 35px;
+  font-size: 22px;
+  cursor: pointer;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.custom-number-input input {
+  width: 40px;
+  height: 35px;
+  text-align: center;
+  font-size: 16px;
+  margin: 0 5px;
+  border: 1px solid #666;
+  background-color: #222;
+  color: white;
+}
+
+.icon-style {
+  font-size: 20px;
+  padding: 1em 1em 0 0;
+}
+
+.icon-style-bath {
+  font-size: 20px;
+  padding: 1em 22px 0 2px;
+}
+
+.icon-style-wine {
+  font-size: 20px;
+  padding: 1em 26px 0 6px;
+}
+
+/* 기본 스핀 버튼 숨김 */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.custom-date-input input {
+  text-align: center;
+  font-size: 16px;
+  margin: 0 5px;
+  border: 1px solid #222;
+  background-color: #444;
+  color: white;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  width: 450px;
+  margin: 50px auto;
+}
+
+.box {
+  width: 200px;
+  height: 300px;
+  border: 2px solid #444;
+  background-color: #222;
+  color: white;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.item {
+  width: 180px;
+  padding: 10px;
+  margin: 5px;
+  background-color: #555;
+  text-align: center;
+  border-radius: 5px;
+  transition: background 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.item:hover {
+  background-color: #777;
+}
+
+.item:active {
+  cursor: grabbing;
+}
+
+/* 아이템 상단 (이름 & 닫기 버튼) */
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding-bottom: 5px;
+}
+
+.item-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  text-align: left;
+}
+
+.close-btn {
+  background: red;
+  color: white;
+  border: none;
+  padding: 3px 6px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.close-btn:hover {
+  background: darkred;
+}
+
+/* 셀렉트 박스를 하단 중앙 정렬 */
+.select-box {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  //padding: 3px;
+  font-size: 10px;
+  cursor: pointer;
+  width: 80%;
+  text-align: center;
+  //margin-top: 5px;
+}

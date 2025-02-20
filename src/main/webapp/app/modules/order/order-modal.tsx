@@ -1,0 +1,120 @@
+import React, { useEffect, useState } from 'react';
+import { Translate, ValidatedField, translate } from 'react-jhipster';
+import { Alert, Button, Col, Form, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { type FieldError, useForm } from 'react-hook-form';
+import { languages, locales } from 'app/config/translation';
+import './order.scss';
+
+export interface IOrderModalProps {
+  showModal: boolean;
+  orderError: boolean;
+  handleOrder: (username: string, password: string, rememberMe: boolean) => void;
+  handleClose: () => void;
+}
+
+const OrderModal = (props: IOrderModalProps) => {
+  const order = ({ username, password, rememberMe }) => {
+    props.handleOrder(username, password, rememberMe);
+  };
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, touchedFields },
+  } = useForm({ mode: 'onTouched' });
+
+  const { orderError, handleClose } = props;
+
+  const handleOrderSubmit = e => {
+    handleSubmit(order)(e);
+  };
+
+  const [leftItems, setLeftItems] = useState([]); // 왼쪽 div 아이템들
+  const [rightItems] = useState([
+    { type: true, name: 'Long Time' },
+    { type: true, name: 'Short Time' },
+    { type: false, name: 'Lady Drink' },
+    { type: false, name: 'Guest Drink' },
+  ]); // 오른쪽 div 아이템들
+  const [draggedItem, setDraggedItem] = useState(null); // 드래그 중인 아이템
+
+  const handleDragStart = item => {
+    setDraggedItem(item); // 드래그 시작 시 아이템 저장
+  };
+
+  const handleDragOver = e => {
+    e.preventDefault(); // 기본 동작 방지 (drop 이벤트 허용)
+  };
+
+  const handleDrop = () => {
+    if (draggedItem) {
+      setLeftItems(prev => [...prev, draggedItem]); // 왼쪽에 복사 추가
+    }
+  };
+
+  const handleRemove = index => {
+    setLeftItems(prev => prev.filter((_, i) => i !== index)); // 왼쪽에서 삭제
+  };
+
+  return (
+    <Modal isOpen={props.showModal} toggle={handleClose} backdrop="static" id="order-page" autoFocus={false}>
+      <Form onSubmit={handleOrderSubmit}>
+        <ModalHeader id="order-title" data-cy="orderTitle" toggle={handleClose}>
+          <Translate contentKey="login.title">Sign in</Translate>
+        </ModalHeader>
+        <ModalBody>
+          <Row>
+            <Col md="12">
+              <div className="container">
+                {/* 왼쪽 Div (드롭 가능) */}
+                <div id="left" className="box" onDragOver={handleDragOver} onDrop={handleDrop}>
+                  <h3>주문</h3>
+                  {leftItems.map((item, index) => (
+                    <div key={index} className="item">
+                      <div className="item-header">
+                        <span className="item-name">{item.name}</span>
+                        <button className="close-btn" onClick={() => handleRemove(index)}>
+                          ✖
+                        </button>
+                      </div>
+                      {item.type && (
+                        <ValidatedField className="select-box" type="select" id="langKey" name="langKey" data-cy="langKey">
+                          {locales.map(locale => (
+                            <option value={locale} key={locale}>
+                              {languages[locale].name}
+                            </option>
+                          ))}
+                        </ValidatedField>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* 오른쪽 Div (드래그 가능) */}
+                <div id="right" className="box">
+                  <h3>상품</h3>
+                  {rightItems.map((item, index) => (
+                    <div key={index} className="item" draggable onDragStart={() => handleDragStart(item)}>
+                      {item.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={handleClose} tabIndex={1}>
+            <Translate contentKey="entity.action.cancel">Cancel</Translate>
+          </Button>{' '}
+          <Button color="primary" type="submit" data-cy="submit">
+            <Translate contentKey="login.form.button">Sign in</Translate>
+          </Button>
+        </ModalFooter>
+      </Form>
+    </Modal>
+  );
+};
+
+export default OrderModal;
