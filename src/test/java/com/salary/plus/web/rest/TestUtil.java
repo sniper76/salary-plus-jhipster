@@ -1,6 +1,7 @@
 package com.salary.plus.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static shiver.me.timbers.data.random.RandomStrings.someAlphanumericString;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -196,6 +197,14 @@ public final class TestUtil {
             }
         );
         return (T) e.create();
+    }
+
+    public static String someEmail() {
+        return someEmail("test." + someAlphanumericString(10));
+    }
+
+    public static String someEmail(String username) {
+        return username + "@gmail.com";
     }
 
     private TestUtil() {}
