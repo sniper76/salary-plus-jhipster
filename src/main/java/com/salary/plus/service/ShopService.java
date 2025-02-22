@@ -3,10 +3,10 @@ package com.salary.plus.service;
 import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
+import com.salary.plus.enums.ShopType;
 import com.salary.plus.repository.ShopRepository;
 import com.salary.plus.repository.ShopUserMappingRepository;
 import com.salary.plus.service.dto.AdminShopDTO;
-import com.salary.plus.service.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,18 +26,18 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final ShopUserMappingRepository shopUserMappingRepository;
     private final UserService userService;
-    private final UserMapper userMapper;
 
-    public Shop createShop(AdminShopDTO adminShopDTO, String login) {
+    public Shop create(AdminShopDTO adminShopDTO, String login) {
         Shop shop = new Shop();
+        shop.setType(ShopType.fromValue(adminShopDTO.getType()));
         shop.setName(adminShopDTO.getName());
         shop.setCreatedBy(login);
         final Shop savedShop = shopRepository.save(shop);
-        extracted(adminShopDTO, savedShop.getId());
+        createMapping(adminShopDTO, savedShop.getId());
         return savedShop;
     }
 
-    private void extracted(AdminShopDTO adminShopDTO, Long shopId) {
+    private void createMapping(AdminShopDTO adminShopDTO, Long shopId) {
         if (adminShopDTO.getUsers() == null) {
             return;
         }

@@ -17,8 +17,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "jhi_shop_user_mapping")
-public class ShopUserMapping extends AbstractAuditingEntity<Long> implements Serializable {
+@Table(name = "jhi_shop_sales_item")
+public class ShopSalesItem extends AbstractAuditingEntity<Long> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,8 +29,11 @@ public class ShopUserMapping extends AbstractAuditingEntity<Long> implements Ser
     @Column(name = "shop_id", nullable = false)
     private Long shopId;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "price", nullable = false)
+    private Integer price;
 
     @NotNull
     @Column(name = "activated", nullable = false)

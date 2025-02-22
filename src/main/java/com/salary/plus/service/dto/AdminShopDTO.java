@@ -30,5 +30,9 @@ public class AdminShopDTO implements Serializable {
     @Size(min = 1, max = 50)
     private String name;
 
+    @NotBlank
+    @Size(min = 1, max = 50)
+    private String type;
+
     private List<AdminUserDTO> users;
 }

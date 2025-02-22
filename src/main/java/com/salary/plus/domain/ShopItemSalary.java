@@ -1,5 +1,6 @@
 package com.salary.plus.domain;
 
+import com.salary.plus.enums.SalesItemType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,8 +18,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "jhi_shop_user_mapping")
-public class ShopUserMapping extends AbstractAuditingEntity<Long> implements Serializable {
+@Table(name = "jhi_shop_item_salary")
+public class ShopItemSalary extends AbstractAuditingEntity<Long> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,6 +32,15 @@ public class ShopUserMapping extends AbstractAuditingEntity<Long> implements Ser
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
+
+    @Column(name = "sales_item_type", nullable = false)
+    private SalesItemType salesItemType;
+
+    @Column(name = "date", nullable = false)
+    private String date;
+
+    @Column(name = "price", nullable = false)
+    private Integer price;
 
     @NotNull
     @Column(name = "activated", nullable = false)

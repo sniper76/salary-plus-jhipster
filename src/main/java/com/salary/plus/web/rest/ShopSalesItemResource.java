@@ -1,16 +1,24 @@
 package com.salary.plus.web.rest;
 
+import com.salary.plus.config.Constants;
 import com.salary.plus.domain.Shop;
+import com.salary.plus.domain.ShopSalesItem;
+import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
 import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.MailService;
+import com.salary.plus.service.ShopSalesItemService;
 import com.salary.plus.service.ShopService;
+import com.salary.plus.service.ShopUserMappingService;
 import com.salary.plus.service.UserService;
 import com.salary.plus.service.dto.AdminShopDTO;
+import com.salary.plus.service.dto.ShopSalesItemDTO;
+import com.salary.plus.service.dto.UserDTO;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -23,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,31 +64,17 @@ import tech.jhipster.web.util.HeaderUtil;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin")
-public class ShopResource {
+@RequestMapping("/api/shops")
+public class ShopSalesItemResource {
 
-    private static final List<String> ALLOWED_ORDERED_PROPERTIES = Collections.unmodifiableList(
-        Arrays.asList(
-            "id",
-            "login",
-            "firstName",
-            "lastName",
-            "email",
-            "activated",
-            "langKey",
-            "createdBy",
-            "createdDate",
-            "lastModifiedBy",
-            "lastModifiedDate"
-        )
-    );
-
-    private static final Logger LOG = LoggerFactory.getLogger(ShopResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShopSalesItemResource.class);
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final ShopService shopService;
+    private final ShopSalesItemService shopSalesItemService;
+
+    private final ShopUserMappingService shopUserMappingService;
 
     /**
      * {@code POST  /admin/shops}  : Creates a new user.
@@ -88,22 +83,29 @@ public class ShopResource {
      * mail with an activation link.
      * The user needs to be activated on creation.
      *
-     * @param userDTO the user to create.
+     * @param shopSalesItemDTO the user to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new user, or with status {@code 400 (Bad Request)} if the login or email is already in use.
      * @throws URISyntaxException       if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
-    @PostMapping("/shops")
+    @PostMapping("/{shopId}/sales-items")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<Shop> createUser(@Valid @RequestBody AdminShopDTO userDTO) throws URISyntaxException {
-        LOG.debug("REST request to save User : {}", userDTO);
+    public ResponseEntity<UserDTO> createUser(@PathVariable("shopId") Long shopId, @Valid @RequestBody ShopSalesItemDTO shopSalesItemDTO)
+        throws URISyntaxException {
+        LOG.debug("REST request to save User : {}", shopSalesItemDTO);
         final Optional<String> loginUser = SecurityUtils.getCurrentUserLogin();
         if (loginUser.isEmpty()) {
             throw new BadRequestAlertException("Not found user", "userManagement", "idexists");
         }
-        Shop newUser = shopService.create(userDTO, loginUser.get());
-        return ResponseEntity.created(new URI("/api/admin/shops/" + newUser.getId()))
-            .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", newUser.getName()))
-            .body(newUser);
+        final Optional<ShopUserMapping> mappingByLogin = shopUserMappingService.getShopUserMappingByLogin(shopId, loginUser.get());
+        if (mappingByLogin.isEmpty()) {
+            throw new BadRequestAlertException("UnMatch shop and user", "userManagement", "idexists");
+        }
+        List<ShopSalesItem> newUser = shopSalesItemService.create(shopId, shopSalesItemDTO);
+        final UserDTO userDTO = new UserDTO();
+        userDTO.setItems(newUser);
+        return ResponseEntity.created(new URI("/api/shops/" + shopId + "/sales-items"))
+            .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", loginUser.get()))
+            .body(userDTO);
     }
 }

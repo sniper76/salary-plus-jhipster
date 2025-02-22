@@ -14,6 +14,7 @@ import com.salary.plus.service.dto.AdminShopDTO;
 import com.salary.plus.service.dto.AdminUserDTO;
 import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,47 +37,61 @@ class ShopResourceIT {
     @Autowired
     private MockMvc restUserMockMvc;
 
-    @Test
-    @Transactional
-    void createShop() throws Exception {
-        // Create the User
-        AdminShopDTO userDTO = new AdminShopDTO();
-        userDTO.setName("shop1");
+    @Nested
+    class WhenSuccess {
 
-        var returnedUserDTO = om.readValue(
-            restUserMockMvc
-                .perform(post("/api/admin/shops").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userDTO)))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(),
-            AdminShopDTO.class
-        );
+        @Nested
+        class WhenOnlyShop {
 
-        // Validate the returned User
-        assertThat(returnedUserDTO.getName()).isEqualTo(userDTO.getName());
-    }
+            @Test
+            @Transactional
+            void createShop() throws Exception {
+                // Create the User
+                AdminShopDTO userDTO = new AdminShopDTO();
+                userDTO.setType("BAR");
+                userDTO.setName("shop1");
 
-    @Test
-    @Transactional
-    void createShopWithUsers() throws Exception {
-        // Create the User
-        AdminShopDTO userDTO = new AdminShopDTO();
-        userDTO.setName("shop1");
-        userDTO.setUsers(getUsers());
+                var returnedUserDTO = om.readValue(
+                    restUserMockMvc
+                        .perform(post("/api/admin/shops").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userDTO)))
+                        .andExpect(status().isCreated())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString(),
+                    AdminShopDTO.class
+                );
 
-        var returnedUserDTO = om.readValue(
-            restUserMockMvc
-                .perform(post("/api/admin/shops").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userDTO)))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(),
-            AdminShopDTO.class
-        );
+                // Validate the returned User
+                assertThat(returnedUserDTO.getName()).isEqualTo(userDTO.getName());
+            }
+        }
 
-        // Validate the returned User
-        assertThat(returnedUserDTO.getName()).isEqualTo(userDTO.getName());
+        @Nested
+        class WhenShopWithUsers {
+
+            @Test
+            @Transactional
+            void createShopWithUsers() throws Exception {
+                // Create the User
+                AdminShopDTO userDTO = new AdminShopDTO();
+                userDTO.setType("BAR");
+                userDTO.setName("shop1");
+                userDTO.setUsers(getUsers());
+
+                var returnedUserDTO = om.readValue(
+                    restUserMockMvc
+                        .perform(post("/api/admin/shops").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userDTO)))
+                        .andExpect(status().isCreated())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString(),
+                    AdminShopDTO.class
+                );
+
+                // Validate the returned User
+                assertThat(returnedUserDTO.getName()).isEqualTo(userDTO.getName());
+            }
+        }
     }
 
     private List<AdminUserDTO> getUsers() {
