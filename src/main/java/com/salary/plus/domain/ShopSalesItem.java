@@ -29,8 +29,11 @@ public class ShopSalesItem extends AbstractAuditingEntity<Long> implements Seria
     @Column(name = "shop_id", nullable = false)
     private Long shopId;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "name_ko", nullable = false)
+    private String nameKo;
+
+    @Column(name = "name_en", nullable = false)
+    private String nameEn;
 
     @Column(name = "price", nullable = false)
     private Integer price;

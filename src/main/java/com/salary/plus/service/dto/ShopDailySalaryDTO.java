@@ -10,13 +10,13 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class ShopSalesItemDTO implements Serializable {
+public class ShopDailySalaryDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long shopId;
 
-    private List<SalesItem> items;
+    private String date;
 
-    public record SalesItem(String nameKo, String nameEn, Integer price) {}
+    private List<Long> userIds;
 }

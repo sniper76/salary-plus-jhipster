@@ -5,6 +5,8 @@ import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopSalesItem;
 import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
+import com.salary.plus.guard.ShopGuard;
+import com.salary.plus.guard.UseGuards;
 import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
@@ -74,8 +76,6 @@ public class ShopSalesItemResource {
 
     private final ShopSalesItemService shopSalesItemService;
 
-    private final ShopUserMappingService shopUserMappingService;
-
     /**
      * {@code POST  /admin/shops}  : Creates a new user.
      * <p>
@@ -88,24 +88,18 @@ public class ShopSalesItemResource {
      * @throws URISyntaxException       if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
+    @UseGuards({ ShopGuard.class })
     @PostMapping("/{shopId}/sales-items")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<UserDTO> createUser(@PathVariable("shopId") Long shopId, @Valid @RequestBody ShopSalesItemDTO shopSalesItemDTO)
         throws URISyntaxException {
         LOG.debug("REST request to save User : {}", shopSalesItemDTO);
-        final Optional<String> loginUser = SecurityUtils.getCurrentUserLogin();
-        if (loginUser.isEmpty()) {
-            throw new BadRequestAlertException("Not found user", "userManagement", "idexists");
-        }
-        final Optional<ShopUserMapping> mappingByLogin = shopUserMappingService.getShopUserMappingByLogin(shopId, loginUser.get());
-        if (mappingByLogin.isEmpty()) {
-            throw new BadRequestAlertException("UnMatch shop and user", "userManagement", "idexists");
-        }
         List<ShopSalesItem> newUser = shopSalesItemService.create(shopId, shopSalesItemDTO);
         final UserDTO userDTO = new UserDTO();
+        userDTO.setLogin(SecurityUtils.getLoginNoneNull());
         userDTO.setItems(newUser);
         return ResponseEntity.created(new URI("/api/shops/" + shopId + "/sales-items"))
-            .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", loginUser.get()))
+            .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", userDTO.getLogin()))
             .body(userDTO);
     }
 }

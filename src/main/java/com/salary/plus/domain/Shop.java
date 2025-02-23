@@ -46,8 +46,11 @@ public class Shop extends AbstractAuditingEntity<Long> implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "name_ko", nullable = false)
+    private String nameKo;
+
+    @Column(name = "name_en", nullable = false)
+    private String nameEn;
 
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)

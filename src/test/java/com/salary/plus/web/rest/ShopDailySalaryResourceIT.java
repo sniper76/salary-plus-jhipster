@@ -1,11 +1,8 @@
 package com.salary.plus.web.rest;
 
-import static com.salary.plus.web.rest.TestUtil.someEmail;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static shiver.me.timbers.data.random.RandomStrings.someAlphanumericString;
-import static shiver.me.timbers.data.random.RandomThings.someThing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salary.plus.IntegrationTest;
@@ -17,13 +14,10 @@ import com.salary.plus.repository.ShopRepository;
 import com.salary.plus.repository.ShopUserMappingRepository;
 import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.AuthoritiesConstants;
-import com.salary.plus.service.dto.AdminShopDTO;
-import com.salary.plus.service.dto.AdminUserDTO;
+import com.salary.plus.service.dto.ShopDailySalaryDTO;
 import com.salary.plus.service.dto.ShopSalesItemDTO;
 import com.salary.plus.service.dto.UserDTO;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -40,9 +34,9 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 @IntegrationTest
-class ShopSalesItemResourceIT {
+class ShopDailySalaryResourceIT {
 
-    private static final String TARGET_URL = "/api/shops/{shopId}/sales-items";
+    private static final String TARGET_URL = "/api/shops/{shopId}/daily-salaries";
 
     @Autowired
     private ObjectMapper om;
@@ -83,16 +77,16 @@ class ShopSalesItemResourceIT {
         }
 
         @Nested
-        class WhenShopSalesItem {
+        class WhenHasItemsShopDailySalary {
 
             @Test
             @Transactional
-            void createShopSalesItem() throws Exception {
+            void createShopDailySalary() throws Exception {
                 // Create the User
-                ShopSalesItemDTO userDTO = new ShopSalesItemDTO();
-                userDTO.setItems(
-                    List.of(new ShopSalesItemDTO.SalesItem("item1", "item1", 100), new ShopSalesItemDTO.SalesItem("item2", "item2", 200))
-                );
+                ShopDailySalaryDTO userDTO = new ShopDailySalaryDTO();
+                userDTO.setShopId(shopId);
+                userDTO.setDate("2025-02-25");
+                userDTO.setUserIds(List.of(1L, 2L));
 
                 var returnedUserDTO = om.readValue(
                     restUserMockMvc
@@ -105,8 +99,11 @@ class ShopSalesItemResourceIT {
                 );
 
                 // Validate the returned User
-                assertThat(returnedUserDTO.getItems().size()).isEqualTo(userDTO.getItems().size());
+                assertThat(returnedUserDTO.getSalaries().size()).isEqualTo(userDTO.getUserIds().size());
             }
         }
+
+        @Nested
+        class WhenAllShopDailySalary {}
     }
 }

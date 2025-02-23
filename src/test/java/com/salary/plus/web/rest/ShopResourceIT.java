@@ -9,6 +9,7 @@ import static shiver.me.timbers.data.random.RandomThings.someThing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salary.plus.IntegrationTest;
+import com.salary.plus.domain.Shop;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.service.dto.AdminShopDTO;
 import com.salary.plus.service.dto.AdminUserDTO;
@@ -49,7 +50,8 @@ class ShopResourceIT {
                 // Create the User
                 AdminShopDTO userDTO = new AdminShopDTO();
                 userDTO.setType("BAR");
-                userDTO.setName("shop1");
+                userDTO.setNameKo("shop1");
+                userDTO.setNameEn("shop1");
 
                 var returnedUserDTO = om.readValue(
                     restUserMockMvc
@@ -62,7 +64,7 @@ class ShopResourceIT {
                 );
 
                 // Validate the returned User
-                assertThat(returnedUserDTO.getName()).isEqualTo(userDTO.getName());
+                assertThat(returnedUserDTO.getNameKo()).isEqualTo(userDTO.getNameKo());
             }
         }
 
@@ -75,7 +77,8 @@ class ShopResourceIT {
                 // Create the User
                 AdminShopDTO userDTO = new AdminShopDTO();
                 userDTO.setType("BAR");
-                userDTO.setName("shop1");
+                userDTO.setNameKo("shop1");
+                userDTO.setNameEn("shop1");
                 userDTO.setUsers(getUsers());
 
                 var returnedUserDTO = om.readValue(
@@ -85,11 +88,11 @@ class ShopResourceIT {
                         .andReturn()
                         .getResponse()
                         .getContentAsString(),
-                    AdminShopDTO.class
+                    Shop.class
                 );
 
                 // Validate the returned User
-                assertThat(returnedUserDTO.getName()).isEqualTo(userDTO.getName());
+                assertThat(returnedUserDTO.getNameKo()).isEqualTo(userDTO.getNameKo());
             }
         }
     }

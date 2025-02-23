@@ -14,7 +14,10 @@
       <column name="shop_id" type="bigint">
         <constraints nullable="false"/>
       </column>
-      <column name="name" type="varchar(60)">
+      <column name="name_ko" type="varchar(60)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name_en" type="varchar(60)">
         <constraints nullable="false"/>
       </column>
       <column name="price" type="int">
@@ -72,7 +75,7 @@
       <column name="user_id" type="bigint">
         <constraints nullable="false"/>
       </column>
-      <column name="sales_item_type" type="varchar(60)">
+      <column name="shop_sales_item_id" type="bigint">
         <constraints nullable="false"/>
       </column>
       <column name="date" type="varchar(10)">

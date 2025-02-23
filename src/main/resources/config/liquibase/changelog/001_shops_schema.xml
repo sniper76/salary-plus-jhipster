@@ -11,7 +11,10 @@
       <column name="id" type="bigint" autoIncrement="true">
         <constraints primaryKey="true" nullable="false"/>
       </column>
-      <column name="name" type="varchar(60)">
+      <column name="name_ko" type="varchar(60)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name_en" type="varchar(60)">
         <constraints nullable="false"/>
       </column>
       <column name="type" type="varchar(60)">

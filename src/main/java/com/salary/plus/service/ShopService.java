@@ -30,7 +30,8 @@ public class ShopService {
     public Shop create(AdminShopDTO adminShopDTO, String login) {
         Shop shop = new Shop();
         shop.setType(ShopType.fromValue(adminShopDTO.getType()));
-        shop.setName(adminShopDTO.getName());
+        shop.setNameKo(adminShopDTO.getNameKo());
+        shop.setNameEn(adminShopDTO.getNameEn());
         shop.setCreatedBy(login);
         final Shop savedShop = shopRepository.save(shop);
         createMapping(adminShopDTO, savedShop.getId());

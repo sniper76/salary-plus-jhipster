@@ -1,5 +1,6 @@
 package com.salary.plus.service.dto;
 
+import com.salary.plus.domain.ShopDailySalary;
 import com.salary.plus.domain.ShopSalesItem;
 import com.salary.plus.domain.User;
 import java.io.Serializable;
@@ -22,6 +23,8 @@ public class UserDTO implements Serializable {
     private String login;
 
     private List<ShopSalesItem> items;
+
+    private List<ShopDailySalary> salaries;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.

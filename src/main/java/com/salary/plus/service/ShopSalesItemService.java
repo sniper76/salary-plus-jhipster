@@ -33,7 +33,8 @@ public class ShopSalesItemService {
             .map(item -> {
                 ShopSalesItem shopSalesItem = new ShopSalesItem();
                 shopSalesItem.setShopId(shopId);
-                shopSalesItem.setName(item.name());
+                shopSalesItem.setNameKo(item.nameKo());
+                shopSalesItem.setNameEn(item.nameEn());
                 shopSalesItem.setPrice(item.price());
                 return shopSalesItemRepository.save(shopSalesItem);
             })

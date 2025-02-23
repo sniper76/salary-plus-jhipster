@@ -32,6 +32,10 @@ public final class SecurityUtils {
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
     }
 
+    public static String getLoginNoneNull() {
+        return getCurrentUserLogin().orElseThrow(() -> new RuntimeException("회원을 찾을 수 없습니다."));
+    }
+
     private static String extractPrincipal(Authentication authentication) {
         if (authentication == null) {
             return null;

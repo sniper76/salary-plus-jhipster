@@ -33,8 +33,8 @@ public class ShopItemSalary extends AbstractAuditingEntity<Long> implements Seri
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "sales_item_type", nullable = false)
-    private SalesItemType salesItemType;
+    @Column(name = "shop_sales_item_id", nullable = false)
+    private Long salesItemTypeId;
 
     @Column(name = "date", nullable = false)
     private String date;

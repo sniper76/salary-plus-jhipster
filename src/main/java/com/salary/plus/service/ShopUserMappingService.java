@@ -6,7 +6,10 @@ import com.salary.plus.domain.User;
 import com.salary.plus.enums.ShopType;
 import com.salary.plus.repository.ShopRepository;
 import com.salary.plus.repository.ShopUserMappingRepository;
+import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.dto.AdminShopDTO;
+import io.undertow.util.BadRequestException;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -28,5 +31,10 @@ public class ShopUserMappingService {
 
     public Optional<ShopUserMapping> getShopUserMappingByLogin(Long shopId, String login) {
         return shopUserMappingRepository.findByShopIdAndLogin(shopId, login);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getMappingUsers(Long shopId) {
+        return shopUserMappingRepository.findAllUserByShopId(shopId);
     }
 }
