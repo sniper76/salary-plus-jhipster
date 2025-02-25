@@ -3,6 +3,7 @@ import { loadingBarReducer as loadingBar } from 'react-redux-loading-bar';
 
 import administration from 'app/modules/administration/administration.reducer';
 import userManagement from 'app/modules/administration/user-management/user-management.reducer';
+import shopManagement from 'app/modules/administration/shop-management/shop-management.reducer';
 import register from 'app/modules/account/register/register.reducer';
 import activate from 'app/modules/account/activate/activate.reducer';
 import password from 'app/modules/account/password/password.reducer';
@@ -22,6 +23,7 @@ const rootReducer: ReducersMapObject = {
   applicationProfile,
   administration,
   userManagement,
+  shopManagement,
   register,
   activate,
   passwordReset,

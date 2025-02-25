@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Translate } from 'react-jhipster';
-import { Container, Button, Col, Row } from 'reactstrap';
+import { Button, Container } from 'reactstrap';
 import './order.scss';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUserRoles } from 'app/modules/order/order.reducer';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBath, faBathtub, faBed, faTicketSimple, faWineGlass } from '@fortawesome/free-solid-svg-icons';
-import { APP_DATE_FORMAT } from 'app/config/constants';
 import OrderModal from 'app/modules/order/order-modal';
 
 export const Order = () => {

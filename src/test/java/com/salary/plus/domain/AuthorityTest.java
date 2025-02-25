@@ -1,6 +1,7 @@
 package com.salary.plus.domain;
 
-import static com.salary.plus.domain.AuthorityTestSamples.*;
+import static com.salary.plus.domain.AuthorityTestSamples.getAuthoritySample1;
+import static com.salary.plus.domain.AuthorityTestSamples.getAuthoritySample2;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.salary.plus.web.rest.TestUtil;

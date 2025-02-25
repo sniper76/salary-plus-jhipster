@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Col, FormText, Row } from 'reactstrap';
-import { Translate, ValidatedField, ValidatedForm, isEmail, translate } from 'react-jhipster';
+import { isEmail, Translate, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { languages, locales } from 'app/config/translation';

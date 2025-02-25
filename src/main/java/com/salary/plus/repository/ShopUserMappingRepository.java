@@ -35,4 +35,16 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
         """
     )
     List<User> findAllUserByShopId(Long shopId);
+
+    @Query(
+        """
+        select s
+            from Shop s
+            inner join ShopUserMapping sum on s.id = sum.shopId
+            inner join User u on sum.userId = u.id
+            where u.login = :login
+            and u.activated = true
+        """
+    )
+    List<Shop> findAllShopByLogin(String login);
 }

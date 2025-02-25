@@ -15,6 +15,7 @@ export const initialState = {
   loginError: false, // Errors returned from server side
   showModalLogin: false,
   account: {} as any,
+  shops: {} as any,
   errorMessage: null as unknown as string, // Errors returned from server side
   redirectMessage: null as unknown as string,
   sessionHasBeenFetched: false,
@@ -27,8 +28,10 @@ export type AuthenticationState = Readonly<typeof initialState>;
 
 export const getSession = (): AppThunk => async (dispatch, getState) => {
   await dispatch(getAccount());
+  await dispatch(getShops());
 
-  const { account } = getState().authentication;
+  const { account, shops } = getState().authentication;
+  // console.warn('account, shops', account, shops);
   if (account && account.langKey) {
     const langKey = Storage.session.get('locale', account.langKey);
     await dispatch(setLocale(langKey));
@@ -36,6 +39,10 @@ export const getSession = (): AppThunk => async (dispatch, getState) => {
 };
 
 export const getAccount = createAsyncThunk('authentication/get_account', async () => axios.get<any>('api/account'), {
+  serializeError: serializeAxiosError,
+});
+
+export const getShops = createAsyncThunk('authentication/get_shops', async () => axios.get<any>('api/shops'), {
   serializeError: serializeAxiosError,
 });
 
@@ -57,7 +64,6 @@ export const login: (username: string, password: string, rememberMe?: boolean) =
   (username, password, rememberMe = false) =>
   async dispatch => {
     const result = await dispatch(authenticate({ username, password, rememberMe }));
-    console.error('result', result);
     const response = result.payload as AxiosResponse;
     const bearerToken = response?.headers?.authorization;
     if (bearerToken && bearerToken.slice(0, 7) === 'Bearer ') {

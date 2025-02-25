@@ -1,8 +1,12 @@
 package com.salary.plus.security.jwt;
 
-import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.*;
+import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.BEARER;
+import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.createExpiredToken;
+import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.createSignedInvalidJwt;
+import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.createTokenWithDifferentSignature;
+import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.createValidToken;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

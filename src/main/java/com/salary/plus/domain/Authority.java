@@ -1,8 +1,15 @@
 package com.salary.plus.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
 import org.hibernate.annotations.Cache;

@@ -7,9 +7,13 @@ import com.salary.plus.enums.ShopType;
 import com.salary.plus.repository.ShopRepository;
 import com.salary.plus.repository.ShopUserMappingRepository;
 import com.salary.plus.service.dto.AdminShopDTO;
+import java.time.Instant;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,5 +56,26 @@ public class ShopService {
                 userMapping.setShopId(shopId);
                 shopUserMappingRepository.save(userMapping);
             });
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AdminShopDTO> getAllManagedShops(Pageable pageable) {
+        return shopRepository.findAll(pageable).map(AdminShopDTO::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Shop> get(long id) {
+        return shopRepository.findById(id);
+    }
+
+    public Optional<Shop> update(AdminShopDTO userDTO, String login) {
+        final Shop shop = get(userDTO.getId()).orElseThrow();
+        shop.setNameKo(userDTO.getNameKo());
+        shop.setNameEn(userDTO.getNameEn());
+        shop.setType(ShopType.fromValue(userDTO.getType()));
+        shop.setLastModifiedBy(login);
+        shop.setLastModifiedDate(Instant.now());
+
+        return Optional.of(shopRepository.save(shop));
     }
 }

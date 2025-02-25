@@ -1,13 +1,9 @@
 package com.salary.plus.service;
 
 import com.salary.plus.domain.ShopSalesItem;
-import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.repository.ShopSalesItemRepository;
-import com.salary.plus.repository.ShopUserMappingRepository;
 import com.salary.plus.service.dto.ShopSalesItemDTO;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,5 +35,9 @@ public class ShopSalesItemService {
                 return shopSalesItemRepository.save(shopSalesItem);
             })
             .toList();
+    }
+
+    public List<ShopSalesItem> getAllSalesItems(Long shopId) {
+        return shopSalesItemRepository.findAllByShopIdAndActivated(shopId, true);
     }
 }

@@ -23,6 +23,7 @@
       "admin": {
         "main": "Administration",
         "userManagement": "User management",
+        "shopManagement": "Shop management",
         "tracker": "User tracker",
         "metrics": "Metrics",
         "health": "Health",

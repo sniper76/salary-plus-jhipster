@@ -2,7 +2,7 @@ package com.salary.plus.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-import com.salary.plus.security.*;
+import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.web.filter.SpaWebFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

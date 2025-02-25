@@ -1,29 +1,26 @@
 package com.salary.plus.web.rest;
 
-import static com.salary.plus.web.rest.TestUtil.someEmail;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static shiver.me.timbers.data.random.RandomStrings.someAlphanumericString;
-import static shiver.me.timbers.data.random.RandomThings.someThing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salary.plus.IntegrationTest;
 import com.salary.plus.domain.Shop;
+import com.salary.plus.domain.ShopSalesItem;
 import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
 import com.salary.plus.enums.ShopType;
 import com.salary.plus.repository.ShopRepository;
+import com.salary.plus.repository.ShopSalesItemRepository;
 import com.salary.plus.repository.ShopUserMappingRepository;
 import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.AuthoritiesConstants;
-import com.salary.plus.service.dto.AdminShopDTO;
-import com.salary.plus.service.dto.AdminUserDTO;
 import com.salary.plus.service.dto.ShopSalesItemDTO;
 import com.salary.plus.service.dto.UserDTO;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -52,6 +49,9 @@ class ShopSalesItemResourceIT {
 
     @Autowired
     private ShopUserMappingRepository shopUserMappingRepository;
+
+    @Autowired
+    private ShopSalesItemRepository shopSalesItemRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -106,6 +106,44 @@ class ShopSalesItemResourceIT {
 
                 // Validate the returned User
                 assertThat(returnedUserDTO.getItems().size()).isEqualTo(userDTO.getItems().size());
+            }
+        }
+
+        @Nested
+        class WhenAllShopSalesItems {
+
+            @BeforeEach
+            void setUp() {
+                ShopSalesItem shopSalesItem1 = new ShopSalesItem();
+                shopSalesItem1.setShopId(shopId);
+                shopSalesItem1.setNameKo("item1 ko");
+                shopSalesItem1.setNameEn("item1 en");
+                shopSalesItem1.setPrice(100);
+                shopSalesItemRepository.saveAndFlush(shopSalesItem1);
+
+                ShopSalesItem shopSalesItem2 = new ShopSalesItem();
+                shopSalesItem2.setShopId(shopId);
+                shopSalesItem2.setNameKo("item2 ko");
+                shopSalesItem2.setNameEn("item2 en");
+                shopSalesItem2.setPrice(100);
+                shopSalesItemRepository.saveAndFlush(shopSalesItem2);
+            }
+
+            @Test
+            @Transactional
+            void getAllShopSalesItem() throws Exception {
+                var returnedUserDTO = om.readValue(
+                    restUserMockMvc
+                        .perform(get(TARGET_URL, shopId).contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString(),
+                    List.class
+                );
+
+                assertThat(returnedUserDTO.size()).isEqualTo(2);
             }
         }
     }

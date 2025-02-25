@@ -15,7 +15,6 @@ import com.salary.plus.repository.ShopUserMappingRepository;
 import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.service.dto.ShopDailySalaryDTO;
-import com.salary.plus.service.dto.ShopSalesItemDTO;
 import com.salary.plus.service.dto.UserDTO;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

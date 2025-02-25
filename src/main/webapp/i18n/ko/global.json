@@ -30,6 +30,7 @@
         "apidocs": "API",
         "database": "데이터베이스",
         "userManagement": "사용자 관리",
+        "shopManagement": "상점 관리",
         "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
       },
       "language": "언어"

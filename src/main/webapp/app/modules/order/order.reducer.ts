@@ -2,8 +2,6 @@ import axios from 'axios';
 import { createAsyncThunk, createSlice, isPending, isRejected } from '@reduxjs/toolkit';
 
 import { serializeAxiosError } from 'app/shared/reducers/reducer.utils';
-import { AppThunk } from 'app/config/store';
-import { authenticate, getSession } from 'app/shared/reducers/authentication';
 import { IOrder } from 'app/shared/model/order.model';
 
 const initialState = {

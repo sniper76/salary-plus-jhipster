@@ -8,7 +8,7 @@ import LoadingBar from 'react-redux-loading-bar';
 import { useAppDispatch } from 'app/config/store';
 import { setLocale } from 'app/shared/reducers/locale';
 import { AccountMenu, AdminMenu, EntitiesMenu, LocaleMenu } from '../menus';
-import { Brand, Home, Work, Order } from './header-components';
+import { Brand, Home, Order, Work } from './header-components';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -42,7 +42,7 @@ const Header = (props: IHeaderProps) => {
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   /* jhipster-needle-add-element-to-menu - JHipster will add new menu items here */
-  console.error('Header', props);
+  // console.error('Header', props);
   return (
     <div id="app-header">
       {renderDevRibbon()}

@@ -12,13 +12,8 @@ export const Home = () => {
 
   return (
     <Row>
-      <Col md="3" className="pad">
-        <span className="hipster rounded" />
-      </Col>
-      <Col md="9">
-        <h1 className="display-4">
-          <Translate contentKey="home.title">Welcome, Java Hipster!</Translate>
-        </h1>
+      <Col md="12">
+        <h1 className="display-4">Hello, Home!</h1>
         <p className="lead">
           <Translate contentKey="home.subtitle">This is your homepage</Translate>
         </p>

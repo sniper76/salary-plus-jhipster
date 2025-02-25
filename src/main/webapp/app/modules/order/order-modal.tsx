@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Translate, ValidatedField, translate } from 'react-jhipster';
-import { Alert, Button, Col, Form, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import { type FieldError, useForm } from 'react-hook-form';
+import React, { useState } from 'react';
+import { Translate, ValidatedField } from 'react-jhipster';
+import { Button, Col, Form, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
+import { useForm } from 'react-hook-form';
 import { languages, locales } from 'app/config/translation';
 import './order.scss';
 

@@ -2,7 +2,12 @@ package com.salary.plus.web.rest;
 
 import static com.salary.plus.web.rest.TestUtil.someEmail;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static shiver.me.timbers.data.random.RandomStrings.someAlphanumericString;
 import static shiver.me.timbers.data.random.RandomThings.someThing;
@@ -10,11 +15,16 @@ import static shiver.me.timbers.data.random.RandomThings.someThing;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salary.plus.IntegrationTest;
 import com.salary.plus.domain.Shop;
+import com.salary.plus.domain.User;
+import com.salary.plus.enums.ShopType;
+import com.salary.plus.repository.ShopRepository;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.service.dto.AdminShopDTO;
 import com.salary.plus.service.dto.AdminUserDTO;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +48,14 @@ class ShopResourceIT {
     @Autowired
     private MockMvc restUserMockMvc;
 
+    @Autowired
+    private ShopRepository shopRepository;
+
     @Nested
     class WhenSuccess {
 
         @Nested
-        class WhenOnlyShop {
+        class WhenCreateOnlyShop {
 
             @Test
             @Transactional
@@ -69,7 +82,7 @@ class ShopResourceIT {
         }
 
         @Nested
-        class WhenShopWithUsers {
+        class WhenCreateShopWithUsers {
 
             @Test
             @Transactional
@@ -95,6 +108,74 @@ class ShopResourceIT {
                 assertThat(returnedUserDTO.getNameKo()).isEqualTo(userDTO.getNameKo());
             }
         }
+
+        @Nested
+        @Transactional
+        class WhenUpdateOnlyShop {
+
+            private Shop shop;
+
+            @BeforeEach
+            void setUp() {
+                shop = new Shop();
+                shop.setNameKo("shop1Ko");
+                shop.setNameEn("shop1En");
+                shop.setType(ShopType.BAR);
+
+                shopRepository.save(shop);
+            }
+
+            @Test
+            void updateShop() throws Exception {
+                // Create the User
+                AdminShopDTO userDTO = new AdminShopDTO();
+                userDTO.setId(shop.getId());
+                userDTO.setType("BAR");
+                userDTO.setNameKo("shop1");
+                userDTO.setNameEn("shop2");
+
+                int databaseSizeBeforeUpdate = shopRepository.findAll().size();
+
+                restUserMockMvc
+                    .perform(put("/api/admin/shops").contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userDTO)))
+                    .andExpect(status().isOk());
+
+                assertPersistedUsers(shops -> {
+                    assertThat(shops).hasSize(databaseSizeBeforeUpdate);
+                    Shop testShop = shops.stream().filter(s -> s.getId().equals(userDTO.getId())).findFirst().orElseThrow();
+                    assertThat(testShop.getNameKo()).isEqualTo(userDTO.getNameKo());
+                    assertThat(testShop.getNameEn()).isEqualTo(userDTO.getNameEn());
+                    assertThat(testShop.getType().name()).isEqualTo(userDTO.getType());
+                });
+            }
+        }
+
+        @Nested
+        class WhenGetAllShops {
+
+            @BeforeEach
+            void setUp() {
+                Shop shop1 = new Shop();
+                shop1.setNameKo("shop1Ko");
+                shop1.setNameEn("shop1En");
+                shop1.setType(ShopType.BAR);
+
+                shopRepository.save(shop1);
+            }
+
+            @Test
+            @Transactional
+            void getAllShops() throws Exception {
+                // Get all the users
+                restUserMockMvc
+                    .perform(get("/api/admin/shops?sort=id,desc").accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(jsonPath("$.[*].nameKo").value(hasItem("shop1Ko")))
+                    .andExpect(jsonPath("$.[*].nameEn").value(hasItem("shop1En")))
+                    .andExpect(jsonPath("$.[*].type").value(hasItem("BAR")));
+            }
+        }
     }
 
     private List<AdminUserDTO> getUsers() {
@@ -115,5 +196,9 @@ class ShopResourceIT {
         userDTO1.setLangKey(someThing("en", "ko"));
         userDTO1.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
         return userDTO1;
+    }
+
+    private void assertPersistedUsers(Consumer<List<Shop>> shopAssertion) {
+        shopAssertion.accept(shopRepository.findAll());
     }
 }

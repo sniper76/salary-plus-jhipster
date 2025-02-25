@@ -1,7 +1,5 @@
 package com.salary.plus.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.salary.plus.config.Constants;
 import com.salary.plus.enums.ShopType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,26 +8,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * A user.

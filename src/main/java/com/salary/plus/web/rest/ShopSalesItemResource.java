@@ -1,38 +1,25 @@
 package com.salary.plus.web.rest;
 
-import com.salary.plus.config.Constants;
-import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopSalesItem;
-import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
-import com.salary.plus.repository.UserRepository;
-import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
-import com.salary.plus.service.MailService;
 import com.salary.plus.service.ShopSalesItemService;
-import com.salary.plus.service.ShopService;
-import com.salary.plus.service.ShopUserMappingService;
-import com.salary.plus.service.UserService;
-import com.salary.plus.service.dto.AdminShopDTO;
 import com.salary.plus.service.dto.ShopSalesItemDTO;
 import com.salary.plus.service.dto.UserDTO;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Pattern;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,6 +53,7 @@ import tech.jhipster.web.util.HeaderUtil;
  */
 @RestController
 @RequiredArgsConstructor
+@UseGuards({ ShopGuard.class })
 @RequestMapping("/api/shops")
 public class ShopSalesItemResource {
 
@@ -77,7 +65,7 @@ public class ShopSalesItemResource {
     private final ShopSalesItemService shopSalesItemService;
 
     /**
-     * {@code POST  /admin/shops}  : Creates a new user.
+     * {@code POST  /shops/{shopId}/sales-items}  : Creates a new user.
      * <p>
      * Creates a new user if the login and email are not already used, and sends a
      * mail with an activation link.
@@ -88,9 +76,7 @@ public class ShopSalesItemResource {
      * @throws URISyntaxException       if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
-    @UseGuards({ ShopGuard.class })
     @PostMapping("/{shopId}/sales-items")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<UserDTO> createUser(@PathVariable("shopId") Long shopId, @Valid @RequestBody ShopSalesItemDTO shopSalesItemDTO)
         throws URISyntaxException {
         LOG.debug("REST request to save User : {}", shopSalesItemDTO);
@@ -101,5 +87,17 @@ public class ShopSalesItemResource {
         return ResponseEntity.created(new URI("/api/shops/" + shopId + "/sales-items"))
             .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", userDTO.getLogin()))
             .body(userDTO);
+    }
+
+    /**
+     * {@code GET /shops/{shopId}/sales-items} : get all users with all the details - calling this are only allowed for the administrators.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
+     */
+    @GetMapping("/{shopId}/sales-items")
+    public ResponseEntity<List<ShopSalesItem>> getAllSalesItems(@PathVariable("shopId") Long shopId) {
+        LOG.debug("REST request to get all sales item for an admin");
+        final List<ShopSalesItem> items = shopSalesItemService.getAllSalesItems(shopId);
+        return new ResponseEntity<>(items, HttpStatus.OK);
     }
 }

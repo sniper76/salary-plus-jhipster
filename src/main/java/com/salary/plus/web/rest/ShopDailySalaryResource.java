@@ -1,16 +1,12 @@
 package com.salary.plus.web.rest;
 
 import com.salary.plus.domain.ShopDailySalary;
-import com.salary.plus.domain.ShopSalesItem;
 import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
-import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.ShopDailySalaryService;
-import com.salary.plus.service.ShopSalesItemService;
 import com.salary.plus.service.dto.ShopDailySalaryDTO;
-import com.salary.plus.service.dto.ShopSalesItemDTO;
 import com.salary.plus.service.dto.UserDTO;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -22,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,6 +51,7 @@ import tech.jhipster.web.util.HeaderUtil;
  */
 @RestController
 @RequiredArgsConstructor
+@UseGuards({ ShopGuard.class })
 @RequestMapping("/api/shops")
 public class ShopDailySalaryResource {
 
@@ -78,9 +74,7 @@ public class ShopDailySalaryResource {
      * @throws URISyntaxException       if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
-    @UseGuards({ ShopGuard.class })
     @PostMapping("/{shopId}/daily-salaries")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<UserDTO> createUser(@PathVariable("shopId") Long shopId, @Valid @RequestBody ShopDailySalaryDTO shopSalesItemDTO)
         throws URISyntaxException {
         LOG.debug("REST request to save User : {}", shopSalesItemDTO);

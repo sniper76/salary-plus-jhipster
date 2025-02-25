@@ -1,8 +1,11 @@
 package com.salary.plus.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salary.plus.IntegrationTest;
@@ -17,7 +20,10 @@ import com.salary.plus.service.dto.PasswordChangeDTO;
 import com.salary.plus.web.rest.vm.KeyAndPasswordVM;
 import com.salary.plus.web.rest.vm.ManagedUserVM;
 import java.time.Instant;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;

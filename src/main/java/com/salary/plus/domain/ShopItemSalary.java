@@ -1,6 +1,5 @@
 package com.salary.plus.domain;
 
-import com.salary.plus.enums.SalesItemType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

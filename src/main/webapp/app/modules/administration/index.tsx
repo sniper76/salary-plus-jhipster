@@ -3,6 +3,7 @@ import React from 'react';
 import { Route } from 'react-router';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import UserManagement from './user-management';
+import ShopManagement from './shop-management';
 import Logs from './logs/logs';
 import Health from './health/health';
 import Metrics from './metrics/metrics';
@@ -13,6 +14,7 @@ const AdministrationRoutes = () => (
   <div>
     <ErrorBoundaryRoutes>
       <Route path="user-management/*" element={<UserManagement />} />
+      <Route path="shop-management/*" element={<ShopManagement />} />
       <Route path="health" element={<Health />} />
       <Route path="metrics" element={<Metrics />} />
       <Route path="configuration" element={<Configuration />} />

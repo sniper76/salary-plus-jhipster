@@ -1,10 +1,16 @@
 package com.salary.plus.web.rest;
 
-import static com.salary.plus.domain.AuthorityAsserts.*;
+import static com.salary.plus.domain.AuthorityAsserts.assertAuthorityAllPropertiesEquals;
+import static com.salary.plus.domain.AuthorityAsserts.assertAuthorityAllUpdatablePropertiesEquals;
+import static com.salary.plus.domain.AuthorityAsserts.assertAuthorityUpdatableFieldsEquals;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salary.plus.IntegrationTest;

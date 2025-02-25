@@ -1,6 +1,5 @@
 package com.salary.plus.web.rest;
 
-import com.salary.plus.domain.Authority;
 import com.salary.plus.domain.User;
 import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.SecurityUtils;
@@ -8,18 +7,27 @@ import com.salary.plus.service.MailService;
 import com.salary.plus.service.UserService;
 import com.salary.plus.service.dto.AdminUserDTO;
 import com.salary.plus.service.dto.PasswordChangeDTO;
-import com.salary.plus.web.rest.errors.*;
+import com.salary.plus.web.rest.errors.EmailAlreadyUsedException;
+import com.salary.plus.web.rest.errors.InvalidPasswordException;
+import com.salary.plus.web.rest.errors.LoginAlreadyUsedException;
 import com.salary.plus.web.rest.vm.KeyAndPasswordVM;
 import com.salary.plus.web.rest.vm.ManagedUserVM;
 import io.undertow.util.BadRequestException;
 import jakarta.validation.Valid;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST controller for managing the current user's account.

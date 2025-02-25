@@ -3,12 +3,7 @@ package com.salary.plus.service;
 import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
-import com.salary.plus.enums.ShopType;
-import com.salary.plus.repository.ShopRepository;
 import com.salary.plus.repository.ShopUserMappingRepository;
-import com.salary.plus.security.SecurityUtils;
-import com.salary.plus.service.dto.AdminShopDTO;
-import io.undertow.util.BadRequestException;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +31,10 @@ public class ShopUserMappingService {
     @Transactional(readOnly = true)
     public List<User> getMappingUsers(Long shopId) {
         return shopUserMappingRepository.findAllUserByShopId(shopId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Shop> getMappingShops(String username) {
+        return shopUserMappingRepository.findAllShopByLogin(username);
     }
 }

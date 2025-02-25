@@ -1,6 +1,11 @@
 package com.salary.plus.security.jwt;
 
-import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.*;
+import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.BEARER;
+import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.createExpiredToken;
+import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.createInvalidToken;
+import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.createSignedInvalidJwt;
+import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.createTokenWithDifferentSignature;
+import static com.salary.plus.security.jwt.JwtAuthenticationTestUtils.createValidToken;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 

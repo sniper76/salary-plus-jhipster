@@ -2,14 +2,15 @@ package com.salary.plus.web.rest;
 
 import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.User;
-import com.salary.plus.repository.UserRepository;
+import com.salary.plus.guard.UseGuards;
+import com.salary.plus.guard.UserGuard;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
-import com.salary.plus.service.MailService;
 import com.salary.plus.service.ShopService;
-import com.salary.plus.service.UserService;
 import com.salary.plus.service.dto.AdminShopDTO;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
+import com.salary.plus.web.rest.errors.EmailAlreadyUsedException;
+import com.salary.plus.web.rest.errors.LoginAlreadyUsedException;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -21,13 +22,23 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
+import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing users.
@@ -55,23 +66,12 @@ import tech.jhipster.web.util.HeaderUtil;
  */
 @RestController
 @RequiredArgsConstructor
+@UseGuards({ UserGuard.class })
 @RequestMapping("/api/admin")
 public class ShopResource {
 
     private static final List<String> ALLOWED_ORDERED_PROPERTIES = Collections.unmodifiableList(
-        Arrays.asList(
-            "id",
-            "login",
-            "firstName",
-            "lastName",
-            "email",
-            "activated",
-            "langKey",
-            "createdBy",
-            "createdDate",
-            "lastModifiedBy",
-            "lastModifiedDate"
-        )
+        Arrays.asList("id", "nameKo", "nameEn", "type", "activated", "createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate")
     );
 
     private static final Logger LOG = LoggerFactory.getLogger(ShopResource.class);
@@ -97,13 +97,55 @@ public class ShopResource {
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Shop> createUser(@Valid @RequestBody AdminShopDTO userDTO) throws URISyntaxException {
         LOG.debug("REST request to save User : {}", userDTO);
-        final Optional<String> loginUser = SecurityUtils.getCurrentUserLogin();
-        if (loginUser.isEmpty()) {
-            throw new BadRequestAlertException("Not found user", "userManagement", "idexists");
-        }
-        Shop newUser = shopService.create(userDTO, loginUser.get());
+        final String loginUser = SecurityUtils.getLoginNoneNull();
+        Shop newUser = shopService.create(userDTO, loginUser);
         return ResponseEntity.created(new URI("/api/admin/shops/" + newUser.getId()))
-            .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", newUser.getNameKo()))
+            .headers(HeaderUtil.createAlert(applicationName, "shopManagement.created", loginUser))
             .body(newUser);
+    }
+
+    /**
+     * {@code PUT /admin/shops} : Updates an existing User.
+     *
+     * @param userDTO the user to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated user.
+     * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already in use.
+     * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already in use.
+     */
+    @PutMapping({ "/shops" })
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<Shop> updateShop(@Valid @RequestBody AdminShopDTO userDTO) {
+        LOG.debug("REST request to update Shop : {}", userDTO);
+        final String loginUser = SecurityUtils.getLoginNoneNull();
+        Optional<Shop> existingShop = shopService.get(userDTO.getId());
+        if (existingShop.isPresent() && (!existingShop.orElseThrow().getId().equals(userDTO.getId()))) {
+            throw new BadRequestAlertException("Id already exists", "shopManagement", "idexists");
+        }
+        Optional<Shop> updatedUser = shopService.update(userDTO, loginUser);
+
+        return ResponseUtil.wrapOrNotFound(updatedUser, HeaderUtil.createAlert(applicationName, "shopManagement.updated", loginUser));
+    }
+
+    /**
+     * {@code GET /admin/shops} : get all users with all the details - calling this are only allowed for the administrators.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
+     */
+    @GetMapping("/shops")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<List<AdminShopDTO>> getAllShops(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
+        LOG.debug("REST request to get all User for an admin");
+        if (!onlyContainsAllowedProperties(pageable)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        final Page<AdminShopDTO> page = shopService.getAllManagedShops(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    private boolean onlyContainsAllowedProperties(Pageable pageable) {
+        return pageable.getSort().stream().map(Sort.Order::getProperty).allMatch(ALLOWED_ORDERED_PROPERTIES::contains);
     }
 }

@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { TextFormat } from 'react-jhipster';
-import { Container, Button, Col, Row } from 'reactstrap';
+import { Col, Container, Row } from 'reactstrap';
 import './work.scss';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUserRoles } from 'app/modules/work/work.reducer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBath, faBathtub, faBed, faTicketSimple, faWineGlass } from '@fortawesome/free-solid-svg-icons';
-import { APP_DATE_FORMAT } from 'app/config/constants';
+import { faBath, faBed, faWineGlass } from '@fortawesome/free-solid-svg-icons';
 
 export const Work = () => {
   const account = useAppSelector(state => state.authentication.account);
