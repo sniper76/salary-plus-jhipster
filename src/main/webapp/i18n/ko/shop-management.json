@@ -15,6 +15,7 @@
     "detail": {
       "title": "사용자"
     },
+    "id": "ID",
     "nameKo": "한글명",
     "nameEn": "영문명",
     "type": "상점 타입",

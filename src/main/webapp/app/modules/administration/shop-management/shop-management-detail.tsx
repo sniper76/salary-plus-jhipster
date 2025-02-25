@@ -20,18 +20,23 @@ export const ShopManagementDetail = () => {
 
   const shop = useAppSelector(state => state.shopManagement.shop);
 
+  const types: any = [
+    { key: 'BAR', name: '바' },
+    { key: 'RESTAURANT', name: '식당' },
+  ];
+
   return (
     <div>
       <h2>
-        <Translate contentKey="shopManagement.detail.title">User</Translate> [<strong>{shop.login}</strong>]
+        <Translate contentKey="shopManagement.detail.title">Shop</Translate> [<strong>{shop.id}</strong>]
       </h2>
       <Row size="md">
         <dl className="jh-entity-details">
           <dt>
-            <Translate contentKey="shopManagement.login">Login</Translate>
+            <Translate contentKey="shopManagement.id">id</Translate>
           </dt>
           <dd>
-            <span>{shop.login}</span>&nbsp;
+            <span>{shop.id}</span>&nbsp;
             {shop.activated ? (
               <Badge color="success">
                 <Translate contentKey="shopManagement.activated">Activated</Translate>
@@ -43,21 +48,17 @@ export const ShopManagementDetail = () => {
             )}
           </dd>
           <dt>
-            <Translate contentKey="shopManagement.firstName">First Name</Translate>
+            <Translate contentKey="shopManagement.nameKo">Name Ko</Translate>
           </dt>
-          <dd>{shop.firstName}</dd>
+          <dd>{shop.nameKo}</dd>
           <dt>
-            <Translate contentKey="shopManagement.lastName">Last Name</Translate>
+            <Translate contentKey="shopManagement.nameEn">Name En</Translate>
           </dt>
-          <dd>{shop.lastName}</dd>
+          <dd>{shop.nameEn}</dd>
           <dt>
-            <Translate contentKey="shopManagement.email">Email</Translate>
+            <Translate contentKey="shopManagement.type">Type</Translate>
           </dt>
-          <dd>{shop.email}</dd>
-          <dt>
-            <Translate contentKey="shopManagement.langKey">Lang Key</Translate>
-          </dt>
-          <dd>{shop.langKey ? languages[shop.langKey].name : undefined}</dd>
+          <dd>{shop.type ? types.filter((type: any) => type.key === shop.type).map(type => type.name) : undefined}</dd>
           <dt>
             <Translate contentKey="shopManagement.createdBy">Created By</Translate>
           </dt>
@@ -77,20 +78,6 @@ export const ShopManagementDetail = () => {
             {shop.lastModifiedDate ? (
               <TextFormat value={shop.lastModifiedDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid />
             ) : null}
-          </dd>
-          <dt>
-            <Translate contentKey="shopManagement.profiles">Profiles</Translate>
-          </dt>
-          <dd>
-            <ul className="list-unstyled">
-              {shop.authorities
-                ? shop.authorities.map((authority, i) => (
-                    <li key={`shop-auth-${i}`}>
-                      <Badge color="info">{authority}</Badge>
-                    </li>
-                  ))
-                : null}
-            </ul>
           </dd>
         </dl>
       </Row>

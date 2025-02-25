@@ -15,6 +15,7 @@
     "detail": {
       "title": "User"
     },
+    "id": "ID",
     "nameKo": "Korean name",
     "nameEn": "English name",
     "type": "Shop type",

@@ -5,7 +5,7 @@ import { getPaginationState, JhiItemCount, JhiPagination, TextFormat, Translate 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 
-import { APP_DATE_FORMAT } from 'app/config/constants';
+import { APP_DATE_FORMAT, APP_LOCAL_TIMESTAMP_FORMAT } from 'app/config/constants';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
@@ -83,7 +83,6 @@ export const ShopManagement = () => {
 
   const account = useAppSelector(state => state.authentication.account);
   const shops = useAppSelector(state => state.shopManagement.shops);
-  console.warn('shops', shops);
   const totalItems = useAppSelector(state => state.shopManagement.totalItems);
   const loading = useAppSelector(state => state.shopManagement.loading);
   const getSortIconByFieldName = (fieldName: string) => {
@@ -121,10 +120,14 @@ export const ShopManagement = () => {
             <th className="hand" onClick={sort('nameEn')}>
               <Translate contentKey="shopManagement.nameEn">nameEn</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('nameEn')} />
             </th>
-            <th />
             <th className="hand" onClick={sort('type')}>
               <Translate contentKey="shopManagement.type">type</Translate>
               <FontAwesomeIcon icon={getSortIconByFieldName('type')} />
+            </th>
+            <th />
+            <th className="hand" onClick={sort('createdBy')}>
+              <Translate contentKey="shopManagement.createdBy">Created By</Translate>{' '}
+              <FontAwesomeIcon icon={getSortIconByFieldName('createdBy')} />
             </th>
             <th className="hand" onClick={sort('createdDate')}>
               <Translate contentKey="shopManagement.createdDate">Created Date</Translate>{' '}
@@ -145,12 +148,13 @@ export const ShopManagement = () => {
           {shops.map((shop, i) => (
             <tr id={shop.id} key={`shop-${i}`}>
               <td>
-                <Button tag={Link} to={shop.id} color="link" size="sm">
+                <Button tag={Link} to={`${shop.id}`} color="link" size="sm">
                   {shop.id}
                 </Button>
               </td>
               <td>{shop.nameKo}</td>
               <td>{shop.nameEn}</td>
+              <td>{shop.type}</td>
               <td>
                 {shop.activated ? (
                   <Button color="success" onClick={toggleActive(shop)}>
@@ -162,14 +166,16 @@ export const ShopManagement = () => {
                   </Button>
                 )}
               </td>
-              <td>{shop.type}</td>
+              <td>{shop.createdBy}</td>
               <td>
-                {shop.createdDate ? <TextFormat value={shop.createdDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid /> : null}
+                {shop.createdDate ? (
+                  <TextFormat value={shop.createdDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
+                ) : null}
               </td>
               <td>{shop.lastModifiedBy}</td>
               <td>
                 {shop.lastModifiedDate ? (
-                  <TextFormat value={shop.lastModifiedDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid />
+                  <TextFormat value={shop.lastModifiedDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
                 ) : null}
               </td>
               <td className="text-end">
