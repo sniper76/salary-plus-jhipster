@@ -170,7 +170,7 @@ export const UserManagementUpdate = () => {
                   </option>
                 ))}
               </ValidatedField>
-              <ValidatedField type="select" name="shops" multiple label={translate('shopManagement.home.title')}>
+              <ValidatedField type="select" name="shopStrings" multiple label={translate('shopManagement.home.title')}>
                 {selectBoxShops.map(shop => (
                   <option value={shop.id} key={shop.id}>
                     {shop.nameKo}

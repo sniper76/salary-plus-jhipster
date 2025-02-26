@@ -200,13 +200,10 @@ public class UserResource {
     public ResponseEntity<AdminUserDTO> getUser(@PathVariable("login") @Pattern(regexp = Constants.LOGIN_REGEX) String login) {
         LOG.debug("REST request to get User : {}", login);
         final Optional<AdminUserDTO> adminUserDTO = userService.getUserWithAuthoritiesByLogin(login).map(AdminUserDTO::new);
-        final Set<String> shops = shopUserMappingService
-            .getMappingShops(adminUserDTO.get().getLogin())
-            .stream()
-            .map(Shop::getId)
-            .map(String::valueOf)
-            .collect(Collectors.toSet());
-        adminUserDTO.get().setShops(shops);
+        final List<Shop> shops = shopUserMappingService.getMappingShops(adminUserDTO.get().getLogin());
+        final Set<String> shopStrings = shops.stream().map(Shop::getId).map(String::valueOf).collect(Collectors.toSet());
+        adminUserDTO.get().setShopStrings(shopStrings);
+        adminUserDTO.get().setShops(new HashSet<>(shops));
         return ResponseUtil.wrapOrNotFound(adminUserDTO);
     }
 

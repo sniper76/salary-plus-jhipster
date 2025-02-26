@@ -55,7 +55,9 @@ public class AdminUserDTO implements Serializable {
 
     private Set<String> authorities;
 
-    private Set<String> shops;
+    private Set<String> shopStrings; //select box used
+
+    private Set<Shop> shops;
 
     public AdminUserDTO() {
         // Empty constructor needed for Jackson.
@@ -181,11 +183,19 @@ public class AdminUserDTO implements Serializable {
         this.authorities = authorities;
     }
 
-    public Set<String> getShops() {
+    public Set<String> getShopStrings() {
+        return shopStrings;
+    }
+
+    public void setShopStrings(Set<String> shopStrings) {
+        this.shopStrings = shopStrings;
+    }
+
+    public Set<Shop> getShops() {
         return shops;
     }
 
-    public void setShops(Set<String> shops) {
+    public void setShops(Set<Shop> shops) {
         this.shops = shops;
     }
 
@@ -205,6 +215,7 @@ public class AdminUserDTO implements Serializable {
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
+            ", shopStrings=" + shopStrings +
             ", shops=" + shops +
             "}";
     }

@@ -177,14 +177,14 @@ public class UserService {
     }
 
     private void createMapping(AdminUserDTO userDTO, User user) {
-        if (userDTO.getShops() != null) {
+        if (userDTO.getShopStrings() != null) {
             final Set<Long> databaseShopIds = shopUserMappingService
                 .getAllByUserId(user.getId())
                 .stream()
                 .map(ShopUserMapping::getShopId)
                 .collect(Collectors.toSet());
 
-            final Set<Long> requestShopIds = userDTO.getShops().stream().map(Long::parseLong).collect(Collectors.toSet());
+            final Set<Long> requestShopIds = userDTO.getShopStrings().stream().map(Long::parseLong).collect(Collectors.toSet());
 
             Map<String, Set<Long>> result = compareSets(databaseShopIds, requestShopIds);
 

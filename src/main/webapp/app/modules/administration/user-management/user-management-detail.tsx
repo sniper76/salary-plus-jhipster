@@ -92,6 +92,20 @@ export const UserManagementDetail = () => {
                 : null}
             </ul>
           </dd>
+          <dt>
+            <Translate contentKey="shopManagement.home.title">Shops</Translate>
+          </dt>
+          <dd>
+            <ul className="list-unstyled">
+              {user.shopStrings
+                ? user.shops.map((shop, i) => (
+                    <li key={`user-auth-${i}`}>
+                      <Badge>{shop.nameKo}</Badge>
+                    </li>
+                  ))
+                : null}
+            </ul>
+          </dd>
         </dl>
       </Row>
       <Button tag={Link} to="/admin/user-management" replace color="info">
