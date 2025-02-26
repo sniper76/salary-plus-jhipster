@@ -45,8 +45,6 @@ public class AdminShopDTO implements Serializable {
 
     private Instant lastModifiedDate;
 
-    private List<AdminUserDTO> users;
-
     public AdminShopDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -61,5 +59,10 @@ public class AdminShopDTO implements Serializable {
         this.createdDate = shop.getCreatedDate();
         this.lastModifiedBy = shop.getLastModifiedBy();
         this.lastModifiedDate = shop.getLastModifiedDate();
+    }
+
+    @Override
+    public String toString() {
+        return "AdminShopDTO{" + "nameKo='" + nameKo + '\'' + ", nameEn='" + nameEn + '\'' + ", type='" + type + '\'' + "}";
     }
 }

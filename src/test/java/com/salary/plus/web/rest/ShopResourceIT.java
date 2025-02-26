@@ -92,7 +92,6 @@ class ShopResourceIT {
                 userDTO.setType("BAR");
                 userDTO.setNameKo("shop1");
                 userDTO.setNameEn("shop1");
-                userDTO.setUsers(getUsers());
 
                 var returnedUserDTO = om.readValue(
                     restUserMockMvc
@@ -176,26 +175,6 @@ class ShopResourceIT {
                     .andExpect(jsonPath("$.[*].type").value(hasItem("BAR")));
             }
         }
-    }
-
-    private List<AdminUserDTO> getUsers() {
-        // Create the User
-        final AdminUserDTO userDTO1 = getAdminUserDTO();
-        final AdminUserDTO userDTO2 = getAdminUserDTO();
-
-        return List.of(userDTO1, userDTO2);
-    }
-
-    private AdminUserDTO getAdminUserDTO() {
-        AdminUserDTO userDTO1 = new AdminUserDTO();
-        userDTO1.setLogin(someAlphanumericString(10));
-        userDTO1.setFirstName(someAlphanumericString(10));
-        userDTO1.setLastName(someAlphanumericString(10));
-        userDTO1.setEmail(someEmail());
-        userDTO1.setActivated(true);
-        userDTO1.setLangKey(someThing("en", "ko"));
-        userDTO1.setAuthorities(Collections.singleton(AuthoritiesConstants.USER));
-        return userDTO1;
     }
 
     private void assertPersistedUsers(Consumer<List<Shop>> shopAssertion) {

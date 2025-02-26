@@ -42,4 +42,24 @@ public class Shop extends AbstractAuditingEntity<Long> implements Serializable {
     @NotNull
     @Column(name = "activated", nullable = false)
     private boolean activated = true;
+
+    @Override
+    public String toString() {
+        return (
+            "Shop{" +
+            "id=" +
+            id +
+            ", nameKo='" +
+            nameKo +
+            '\'' +
+            ", nameEn='" +
+            nameEn +
+            '\'' +
+            ", type=" +
+            type +
+            ", activated=" +
+            activated +
+            '}'
+        );
+    }
 }

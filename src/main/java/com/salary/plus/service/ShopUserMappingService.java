@@ -29,12 +29,25 @@ public class ShopUserMappingService {
     }
 
     @Transactional(readOnly = true)
-    public List<User> getMappingUsers(Long shopId) {
+    public List<User> getMappingUsersByShopId(Long shopId) {
         return shopUserMappingRepository.findAllUserByShopId(shopId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShopUserMapping> getAllByUserId(Long userId) {
+        return shopUserMappingRepository.findAllByUserId(userId);
     }
 
     @Transactional(readOnly = true)
     public List<Shop> getMappingShops(String username) {
         return shopUserMappingRepository.findAllShopByLogin(username);
+    }
+
+    public ShopUserMapping save(ShopUserMapping userMapping) {
+        return shopUserMappingRepository.save(userMapping);
+    }
+
+    public void deleteByUserIdAndShopId(Long userId, Long shopId) {
+        shopUserMappingRepository.deleteByUserIdAndShopId(userId, shopId);
     }
 }

@@ -2,6 +2,7 @@ package com.salary.plus.service;
 
 import com.salary.plus.config.Constants;
 import com.salary.plus.domain.Authority;
+import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
 import com.salary.plus.repository.AuthorityRepository;
 import com.salary.plus.repository.UserRepository;
@@ -12,12 +13,15 @@ import com.salary.plus.service.dto.UserDTO;
 import io.undertow.util.BadRequestException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -34,29 +38,16 @@ import tech.jhipster.security.RandomUtil;
  */
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserService {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
-
     private final AuthorityRepository authorityRepository;
-
     private final CacheManager cacheManager;
-
-    public UserService(
-        UserRepository userRepository,
-        PasswordEncoder passwordEncoder,
-        AuthorityRepository authorityRepository,
-        CacheManager cacheManager
-    ) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authorityRepository = authorityRepository;
-        this.cacheManager = cacheManager;
-    }
+    private final ShopUserMappingService shopUserMappingService;
 
     public Optional<User> activateRegistration(String key) {
         LOG.debug("Activating user for activation key {}", key);
@@ -179,10 +170,52 @@ public class UserService {
                 .collect(Collectors.toSet());
             user.setAuthorities(authorities);
         }
-        userRepository.save(user);
+        createMapping(userDTO, userRepository.save(user));
         this.clearUserCaches(user);
         LOG.debug("Created Information for User: {}", user);
         return user;
+    }
+
+    private void createMapping(AdminUserDTO userDTO, User user) {
+        if (userDTO.getShops() != null) {
+            final Set<Long> databaseShopIds = shopUserMappingService
+                .getAllByUserId(user.getId())
+                .stream()
+                .map(ShopUserMapping::getShopId)
+                .collect(Collectors.toSet());
+
+            final Set<Long> requestShopIds = userDTO.getShops().stream().map(Long::parseLong).collect(Collectors.toSet());
+
+            Map<String, Set<Long>> result = compareSets(databaseShopIds, requestShopIds);
+
+            result.get("deleteTarget").forEach(shopId -> shopUserMappingService.deleteByUserIdAndShopId(user.getId(), shopId));
+
+            result
+                .get("createTarget")
+                .forEach(shopId -> {
+                    ShopUserMapping userMapping = new ShopUserMapping();
+                    userMapping.setUserId(user.getId());
+                    userMapping.setShopId(shopId);
+                    shopUserMappingService.save(userMapping);
+                });
+        }
+    }
+
+    public Map<String, Set<Long>> compareSets(Set<Long> left, Set<Long> right) {
+        Set<Long> deleteTarget = new HashSet<>(left);
+        Set<Long> noneTarget = new HashSet<>(left);
+        Set<Long> createTarget = new HashSet<>(right);
+
+        deleteTarget.removeAll(right); // 왼쪽에만 있는 값
+        noneTarget.retainAll(right); // 양쪽에 모두 있는 값
+        createTarget.removeAll(left); // 오른쪽에만 있는 값
+
+        Map<String, Set<Long>> result = new HashMap<>();
+        result.put("deleteTarget", deleteTarget);
+        result.put("noneTarget", noneTarget);
+        result.put("createTarget", createTarget);
+
+        return result;
     }
 
     /**
@@ -215,7 +248,8 @@ public class UserService {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .forEach(managedAuthorities::add);
-                userRepository.save(user);
+
+                createMapping(userDTO, userRepository.save(user));
                 this.clearUserCaches(user);
                 LOG.debug("Changed Information for User: {}", user);
                 return user;
@@ -319,6 +353,7 @@ public class UserService {
 
     /**
      * Gets a list of all the authorities.
+     *
      * @return a list of all the authorities.
      */
     @Transactional(readOnly = true)

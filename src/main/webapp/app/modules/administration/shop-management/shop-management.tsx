@@ -29,8 +29,8 @@ export const ShopManagement = () => {
         sort: `${pagination.sort},${pagination.order}`,
       }),
     );
-    console.warn('heeeeere');
     const endURL = `?page=${pagination.activePage}&sort=${pagination.sort},${pagination.order}`;
+    console.warn('pageLocation', pageLocation);
     if (pageLocation.search !== endURL) {
       navigate(`${pageLocation.pathname}${endURL}`);
     }
@@ -81,7 +81,6 @@ export const ShopManagement = () => {
     );
   };
 
-  const account = useAppSelector(state => state.authentication.account);
   const shops = useAppSelector(state => state.shopManagement.shops);
   const totalItems = useAppSelector(state => state.shopManagement.totalItems);
   const loading = useAppSelector(state => state.shopManagement.loading);
@@ -124,7 +123,10 @@ export const ShopManagement = () => {
               <Translate contentKey="shopManagement.type">type</Translate>
               <FontAwesomeIcon icon={getSortIconByFieldName('type')} />
             </th>
-            <th />
+            <th className="hand" onClick={sort('activated')}>
+              <Translate contentKey="shopManagement.activated">Activated</Translate>{' '}
+              <FontAwesomeIcon icon={getSortIconByFieldName('activated')} />
+            </th>
             <th className="hand" onClick={sort('createdBy')}>
               <Translate contentKey="shopManagement.createdBy">Created By</Translate>{' '}
               <FontAwesomeIcon icon={getSortIconByFieldName('createdBy')} />
@@ -180,7 +182,7 @@ export const ShopManagement = () => {
               </td>
               <td className="text-end">
                 <div className="btn-group flex-btn-group-container">
-                  <Button tag={Link} to={shop.id} color="info" size="sm">
+                  <Button tag={Link} to={`${shop.id}`} color="info" size="sm">
                     <FontAwesomeIcon icon="eye" />{' '}
                     <span className="d-none d-md-inline">
                       <Translate contentKey="entity.action.view">View</Translate>
@@ -190,12 +192,6 @@ export const ShopManagement = () => {
                     <FontAwesomeIcon icon="pencil-alt" />{' '}
                     <span className="d-none d-md-inline">
                       <Translate contentKey="entity.action.edit">Edit</Translate>
-                    </span>
-                  </Button>
-                  <Button tag={Link} to={`${shop.id}/delete`} color="danger" size="sm" disabled={account.login === shop.id}>
-                    <FontAwesomeIcon icon="trash" />{' '}
-                    <span className="d-none d-md-inline">
-                      <Translate contentKey="entity.action.delete">Delete</Translate>
                     </span>
                   </Button>
                 </div>

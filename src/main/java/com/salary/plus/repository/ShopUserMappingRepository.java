@@ -36,6 +36,8 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
     )
     List<User> findAllUserByShopId(Long shopId);
 
+    List<ShopUserMapping> findAllByUserId(Long userId);
+
     @Query(
         """
         select s
@@ -47,4 +49,6 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
         """
     )
     List<Shop> findAllShopByLogin(String login);
+
+    void deleteByUserIdAndShopId(Long userId, Long shopId);
 }

@@ -1,13 +1,11 @@
 package com.salary.plus.service;
 
 import com.salary.plus.domain.Shop;
-import com.salary.plus.domain.ShopUserMapping;
-import com.salary.plus.domain.User;
 import com.salary.plus.enums.ShopType;
 import com.salary.plus.repository.ShopRepository;
-import com.salary.plus.repository.ShopUserMappingRepository;
 import com.salary.plus.service.dto.AdminShopDTO;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -28,34 +26,14 @@ public class ShopService {
     private static final Logger LOG = LoggerFactory.getLogger(ShopService.class);
 
     private final ShopRepository shopRepository;
-    private final ShopUserMappingRepository shopUserMappingRepository;
-    private final UserService userService;
 
     public Shop create(AdminShopDTO adminShopDTO, String login) {
         Shop shop = new Shop();
-        shop.setType(ShopType.fromValue(adminShopDTO.getType()));
         shop.setNameKo(adminShopDTO.getNameKo());
         shop.setNameEn(adminShopDTO.getNameEn());
+        shop.setType(ShopType.fromValue(adminShopDTO.getType()));
         shop.setCreatedBy(login);
-        final Shop savedShop = shopRepository.save(shop);
-        createMapping(adminShopDTO, savedShop.getId());
-        return savedShop;
-    }
-
-    private void createMapping(AdminShopDTO adminShopDTO, Long shopId) {
-        if (adminShopDTO.getUsers() == null) {
-            return;
-        }
-        adminShopDTO
-            .getUsers()
-            .stream()
-            .forEach(userDTO -> {
-                final User user = userService.createUser(userDTO);
-                final ShopUserMapping userMapping = new ShopUserMapping();
-                userMapping.setUserId(user.getId());
-                userMapping.setShopId(shopId);
-                shopUserMappingRepository.save(userMapping);
-            });
+        return shopRepository.save(shop);
     }
 
     @Transactional(readOnly = true)
@@ -68,14 +46,22 @@ public class ShopService {
         return shopRepository.findById(id);
     }
 
-    public Optional<Shop> update(AdminShopDTO userDTO, String login) {
-        final Shop shop = get(userDTO.getId()).orElseThrow();
-        shop.setNameKo(userDTO.getNameKo());
-        shop.setNameEn(userDTO.getNameEn());
-        shop.setType(ShopType.fromValue(userDTO.getType()));
+    public Optional<Shop> update(AdminShopDTO adminShopDTO, String login) {
+        final Shop shop = get(adminShopDTO.getId()).orElseThrow();
+        shop.setNameKo(adminShopDTO.getNameKo());
+        shop.setNameEn(adminShopDTO.getNameEn());
+        shop.setType(ShopType.fromValue(adminShopDTO.getType()));
         shop.setLastModifiedBy(login);
         shop.setLastModifiedDate(Instant.now());
 
         return Optional.of(shopRepository.save(shop));
+    }
+
+    public void deleteShop(long id) {
+        get(id).ifPresent(shopRepository::delete);
+    }
+
+    public List<Shop> getAllActivated() {
+        return shopRepository.findAllByActivated(true);
     }
 }

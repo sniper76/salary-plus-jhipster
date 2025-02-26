@@ -45,7 +45,6 @@ export const ShopManagementUpdate = () => {
   console.warn('shop', shop);
   const loading = useAppSelector(state => state.shopManagement.loading);
   const updating = useAppSelector(state => state.shopManagement.updating);
-  const authorities = useAppSelector(state => state.shopManagement.authorities);
 
   const types: any = [
     { key: 'BAR', name: '바' },
@@ -107,14 +106,6 @@ export const ShopManagementUpdate = () => {
                   </option>
                 ))}
               </ValidatedField>
-              <ValidatedField
-                type="checkbox"
-                name="activated"
-                check
-                value={true}
-                disabled={!shop.id}
-                label={translate('shopManagement.activated')}
-              />
               <Button tag={Link} to="/admin/shop-management" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

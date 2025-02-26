@@ -1,6 +1,5 @@
 package com.salary.plus.web.rest;
 
-import com.salary.plus.config.Constants;
 import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.User;
 import com.salary.plus.guard.UseGuards;
@@ -9,12 +8,10 @@ import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.ShopService;
 import com.salary.plus.service.dto.AdminShopDTO;
-import com.salary.plus.service.dto.AdminUserDTO;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import com.salary.plus.web.rest.errors.EmailAlreadyUsedException;
 import com.salary.plus.web.rest.errors.LoginAlreadyUsedException;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Pattern;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -32,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -131,6 +129,19 @@ public class ShopResource {
     }
 
     /**
+     * {@code DELETE /admin/shops/:id} : delete the "id" Shop.
+     *
+     * @param id the is of the shop to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/shops/{id}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<Void> deleteShop(@PathVariable("id") long id) {
+        shopService.deleteShop(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "shopManagement.deleted", "" + id)).build();
+    }
+
+    /**
      * {@code GET /admin/shops} : get all users with all the details - calling this are only allowed for the administrators.
      *
      * @param pageable the pagination information.
@@ -147,6 +158,18 @@ public class ShopResource {
         final Page<AdminShopDTO> page = shopService.getAllManagedShops(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+     * {@code GET  /admin/activated/shops} : get all the shops.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of shops in body.
+     */
+    @GetMapping("/activated/shops")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public List<Shop> getAllActivatedShops() {
+        LOG.debug("REST request to get all Shops");
+        return shopService.getAllActivated();
     }
 
     /**

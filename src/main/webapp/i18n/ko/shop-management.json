@@ -10,7 +10,7 @@
     "updated": "A user is updated with identifier {{ param }}",
     "deleted": "A user is deleted with identifier {{ param }}",
     "delete": {
-      "question": "정말로 {{ login }} 사용자를 삭제하시겠습니까?"
+      "question": "정말로 {{ nameKo }} 상점을 삭제하시겠습니까?"
     },
     "detail": {
       "title": "사용자"

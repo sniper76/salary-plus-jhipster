@@ -35,8 +35,8 @@ export const ShopManagementDeleteDialog = () => {
         <Translate contentKey="entity.delete.title">Confirm delete operation</Translate>
       </ModalHeader>
       <ModalBody>
-        <Translate contentKey="shopManagement.delete.question" interpolate={{ id: shop.id }}>
-          Are you sure you want to delete this User?
+        <Translate contentKey="shopManagement.delete.question" interpolate={{ nameKo: shop.nameKo, nameEn: shop.nameEn }}>
+          Are you sure you want to delete this Shop?
         </Translate>
       </ModalBody>
       <ModalFooter>

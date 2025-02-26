@@ -3,11 +3,13 @@ import { createAsyncThunk, createSlice, isFulfilled, isPending, isRejected } fro
 
 import { defaultValue, IUser } from 'app/shared/model/user.model';
 import { IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
+import { IShop } from 'app/shared/model/shop.model';
 
 const initialState = {
   loading: false,
   errorMessage: null,
   users: [] as ReadonlyArray<IUser>,
+  selectBoxShops: [] as ReadonlyArray<IShop>,
   authorities: [] as any[],
   user: defaultValue,
   updating: false,
@@ -33,6 +35,11 @@ export const getUsersAsAdmin = createAsyncThunk('userManagement/fetch_users_as_a
 export const getRoles = createAsyncThunk('userManagement/fetch_roles', async () => {
   const response = await axios.get<any[]>(`api/authorities`);
   response.data = response?.data?.map(authority => authority.name);
+  return response;
+});
+
+export const getShops = createAsyncThunk('userManagement/fetch_activated_shops', async () => {
+  const response = await axios.get<IShop[]>(`api/admin/activated/shops`);
   return response;
 });
 
@@ -91,6 +98,9 @@ export const UserManagementSlice = createSlice({
       .addCase(getRoles.fulfilled, (state, action) => {
         state.authorities = action.payload.data;
       })
+      .addCase(getShops.fulfilled, (state, action) => {
+        state.selectBoxShops = action.payload.data;
+      })
       .addCase(getUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.data;
@@ -121,12 +131,15 @@ export const UserManagementSlice = createSlice({
         state.updateSuccess = false;
         state.updating = true;
       })
-      .addMatcher(isRejected(getUsers, getUsersAsAdmin, getUser, getRoles, createUser, updateUser, deleteUser), (state, action) => {
-        state.loading = false;
-        state.updating = false;
-        state.updateSuccess = false;
-        state.errorMessage = action.error.message;
-      });
+      .addMatcher(
+        isRejected(getUsers, getUsersAsAdmin, getUser, getRoles, getShops, createUser, updateUser, deleteUser),
+        (state, action) => {
+          state.loading = false;
+          state.updating = false;
+          state.updateSuccess = false;
+          state.errorMessage = action.error.message;
+        },
+      );
   },
 });
 

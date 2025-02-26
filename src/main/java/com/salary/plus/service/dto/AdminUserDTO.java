@@ -2,6 +2,7 @@ package com.salary.plus.service.dto;
 
 import com.salary.plus.config.Constants;
 import com.salary.plus.domain.Authority;
+import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -53,6 +54,8 @@ public class AdminUserDTO implements Serializable {
     private Instant lastModifiedDate;
 
     private Set<String> authorities;
+
+    private Set<String> shops;
 
     public AdminUserDTO() {
         // Empty constructor needed for Jackson.
@@ -178,6 +181,14 @@ public class AdminUserDTO implements Serializable {
         this.authorities = authorities;
     }
 
+    public Set<String> getShops() {
+        return shops;
+    }
+
+    public void setShops(Set<String> shops) {
+        this.shops = shops;
+    }
+
     // prettier-ignore
     @Override
     public String toString() {
@@ -194,6 +205,7 @@ public class AdminUserDTO implements Serializable {
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
+            ", shops=" + shops +
             "}";
     }
 }

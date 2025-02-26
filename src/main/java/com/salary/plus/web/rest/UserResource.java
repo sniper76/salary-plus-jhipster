@@ -1,10 +1,12 @@
 package com.salary.plus.web.rest;
 
 import com.salary.plus.config.Constants;
+import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.User;
 import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.service.MailService;
+import com.salary.plus.service.ShopUserMappingService;
 import com.salary.plus.service.UserService;
 import com.salary.plus.service.dto.AdminUserDTO;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
@@ -16,8 +18,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,6 +72,7 @@ import tech.jhipster.web.util.ResponseUtil;
  * Another option would be to have a specific JPA entity graph to handle this case.
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/admin")
 public class UserResource {
 
@@ -91,16 +98,9 @@ public class UserResource {
     private String applicationName;
 
     private final UserService userService;
-
     private final UserRepository userRepository;
-
     private final MailService mailService;
-
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
-        this.userService = userService;
-        this.userRepository = userRepository;
-        this.mailService = mailService;
-    }
+    private final ShopUserMappingService shopUserMappingService;
 
     /**
      * {@code POST  /admin/users}  : Creates a new user.
@@ -111,7 +111,7 @@ public class UserResource {
      *
      * @param userDTO the user to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new user, or with status {@code 400 (Bad Request)} if the login or email is already in use.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * @throws URISyntaxException       if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
     @PostMapping("/users")
@@ -199,7 +199,15 @@ public class UserResource {
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<AdminUserDTO> getUser(@PathVariable("login") @Pattern(regexp = Constants.LOGIN_REGEX) String login) {
         LOG.debug("REST request to get User : {}", login);
-        return ResponseUtil.wrapOrNotFound(userService.getUserWithAuthoritiesByLogin(login).map(AdminUserDTO::new));
+        final Optional<AdminUserDTO> adminUserDTO = userService.getUserWithAuthoritiesByLogin(login).map(AdminUserDTO::new);
+        final Set<String> shops = shopUserMappingService
+            .getMappingShops(adminUserDTO.get().getLogin())
+            .stream()
+            .map(Shop::getId)
+            .map(String::valueOf)
+            .collect(Collectors.toSet());
+        adminUserDTO.get().setShops(shops);
+        return ResponseUtil.wrapOrNotFound(adminUserDTO);
     }
 
     /**

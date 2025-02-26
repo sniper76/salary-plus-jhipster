@@ -6,7 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { languages, locales } from 'app/config/translation';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { createUser, getRoles, getUser, reset, updateUser } from './user-management.reducer';
+import { createUser, getRoles, getShops, getUser, reset, updateUser } from './user-management.reducer';
+import { IShop } from 'app/shared/model/shop.model';
 
 export const UserManagementUpdate = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +24,7 @@ export const UserManagementUpdate = () => {
       dispatch(getUser(login));
     }
     dispatch(getRoles());
+    dispatch(getShops());
     return () => {
       dispatch(reset());
     };
@@ -32,11 +34,17 @@ export const UserManagementUpdate = () => {
     navigate('/admin/user-management');
   };
 
+  const mapIdList = (idList: ReadonlyArray<any>) => idList.filter((id: any) => id !== '').map((id: any) => id);
+
   const saveUser = values => {
+    const entity = {
+      ...values,
+      shops: mapIdList(values.shops),
+    };
     if (isNew) {
-      dispatch(createUser(values));
+      dispatch(createUser(entity));
     } else {
-      dispatch(updateUser(values));
+      dispatch(updateUser(entity));
     }
     handleClose();
   };
@@ -46,6 +54,7 @@ export const UserManagementUpdate = () => {
   const loading = useAppSelector(state => state.userManagement.loading);
   const updating = useAppSelector(state => state.userManagement.updating);
   const authorities = useAppSelector(state => state.userManagement.authorities);
+  const selectBoxShops = useAppSelector(state => state.userManagement.selectBoxShops);
 
   return (
     <div>
@@ -158,6 +167,13 @@ export const UserManagementUpdate = () => {
                 {authorities.map(role => (
                   <option value={role} key={role}>
                     {role}
+                  </option>
+                ))}
+              </ValidatedField>
+              <ValidatedField type="select" name="shops" multiple label={translate('shopManagement.home.title')}>
+                {selectBoxShops.map(shop => (
+                  <option value={shop.id} key={shop.id}>
+                    {shop.nameKo}
                   </option>
                 ))}
               </ValidatedField>
