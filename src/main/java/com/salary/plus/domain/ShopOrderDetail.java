@@ -17,8 +17,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "jhi_shop_item_salary")
-public class ShopItemSalary extends AbstractAuditingEntity<Long> implements Serializable {
+@Table(name = "jhi_shop_order_detail")
+public class ShopOrderDetail extends AbstractAuditingEntity<Long> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,17 +26,11 @@ public class ShopItemSalary extends AbstractAuditingEntity<Long> implements Seri
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "shop_id", nullable = false)
-    private Long shopId;
-
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+    @Column(name = "shop_order_id", nullable = false)
+    private Long shopOrderId;
 
     @Column(name = "shop_sales_item_id", nullable = false)
-    private Long salesItemTypeId;
-
-    @Column(name = "date", nullable = false)
-    private String date;
+    private Long shopSalesItemId;
 
     @Column(name = "price", nullable = false)
     private Integer price;

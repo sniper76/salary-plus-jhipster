@@ -1,7 +1,10 @@
 package com.salary.plus.domain;
 
+import com.salary.plus.enums.PenaltyType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,8 +20,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "jhi_shop_daily_salary")
-public class ShopDailySalary extends AbstractAuditingEntity<Long> implements Serializable {
+@Table(name = "jhi_shop_table")
+public class ShopTable extends AbstractAuditingEntity<Long> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,19 +29,18 @@ public class ShopDailySalary extends AbstractAuditingEntity<Long> implements Ser
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "shop_id", nullable = false)
+    @Column(name = "shop_Id", nullable = false)
     private Long shopId;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
-
-    @Column(name = "date", nullable = false)
-    private String date;
-
-    @Column(name = "price", nullable = false)
-    private Integer price;
+    @Column(name = "no", nullable = false)
+    private String no;
 
     @NotNull
     @Column(name = "activated", nullable = false)
     private boolean activated = true;
+
+    @Override
+    public String toString() {
+        return ("ShopTable{" + "id=" + id + ", shopId=" + shopId + ", no='" + no + '\'' + ", activated=" + activated + '}');
+    }
 }

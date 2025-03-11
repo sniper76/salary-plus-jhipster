@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="add init jhi_authority" author="sniper">
+    <sql>
+      insert into jhi_authority (name) values ('ROLE_CEO');
+      insert into jhi_authority (name) values ('ROLE_INVESTOR');
+      insert into jhi_authority (name) values ('ROLE_MANAGER');
+      insert into jhi_authority (name) values ('ROLE_DJ');
+      insert into jhi_authority (name) values ('ROLE_MAMA');
+      insert into jhi_authority (name) values ('ROLE_MODEL');
+    </sql>
+  </changeSet>
+
+  <changeSet id="add init jhi_shop" author="sniper">
+    <sql>
+      insert into jhi_shop (name_ko, name_en, type, activated, created_by, created_date) values ('테스트 낮바', 'Test Day shift', 'BAR', true, 'admin', now());
+    </sql>
+  </changeSet>
+
+  <changeSet id="add init jhi_shop_sales_item" author="sniper">
+    <sql>
+      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '롱타임 바파인', 'long time bar fine', 5000, true, true, 'admin', now());
+      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '숏타임 바파인', 'short time bar fine', 4000, true, true, 'admin', now());
+      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '서비스 바파인', 'service bar fine', 3000, true, true, 'admin', now());
+      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '레이디 드링크', 'lady drink', 350, true, true, 'admin', now());
+      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '게스트 드링크', 'guest drink', 150, true, false, 'admin', now());
+      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '안주', 'snack', 0, true, false, 'admin', now());
+    </sql>
+  </changeSet>
+
+  <changeSet id="add init jhi_user_authority" author="sniper">
+    <sql>
+      insert into jhi_user_authority (user_id, authority_name) values ((select id from jhi_user where login = 'admin'), 'ROLE_MANAGER');
+    </sql>
+  </changeSet>
+
+  <changeSet id="add init jhi_shop_user_mapping" author="sniper">
+    <sql>
+      insert into jhi_shop_user_mapping (shop_id, user_id, activated, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), (select id from jhi_user where login = 'admin'), true, 'admin', now());
+      insert into jhi_shop_user_mapping (shop_id, user_id, activated, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), (select id from jhi_user where login = 'user'), true, 'admin', now());
+    </sql>
+  </changeSet>
+</databaseChangeLog>

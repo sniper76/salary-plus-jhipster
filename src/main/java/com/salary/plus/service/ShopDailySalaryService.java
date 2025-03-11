@@ -1,8 +1,8 @@
 package com.salary.plus.service;
 
-import com.salary.plus.domain.ShopDailySalary;
+import com.salary.plus.domain.ShopUserDailySalary;
 import com.salary.plus.domain.User;
-import com.salary.plus.repository.ShopDailySalaryRepository;
+import com.salary.plus.repository.ShopUserDailySalaryRepository;
 import com.salary.plus.service.dto.ShopDailySalaryDTO;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +22,10 @@ public class ShopDailySalaryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ShopDailySalaryService.class);
 
-    private final ShopDailySalaryRepository shopDailySalaryRepository;
+    private final ShopUserDailySalaryRepository shopDailySalaryRepository;
     private final ShopUserMappingService shopUserMappingService;
 
-    public List<ShopDailySalary> create(ShopDailySalaryDTO userDTO) {
+    public List<ShopUserDailySalary> create(ShopDailySalaryDTO userDTO) {
         final Integer salary = 0; //salary 조회
         if (CollectionUtils.isEmpty(userDTO.getUserIds())) {
             userDTO.setUserIds(shopUserMappingService.getMappingUsersByShopId(userDTO.getShopId()).stream().map(User::getId).toList());
@@ -34,7 +34,7 @@ public class ShopDailySalaryService {
             .getUserIds()
             .stream()
             .map(item -> {
-                ShopDailySalary shopSalesItem = new ShopDailySalary();
+                ShopUserDailySalary shopSalesItem = new ShopUserDailySalary();
                 shopSalesItem.setShopId(userDTO.getShopId());
                 shopSalesItem.setDate(userDTO.getDate());
                 shopSalesItem.setUserId(item);

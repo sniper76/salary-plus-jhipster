@@ -4,8 +4,8 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-  <changeSet id="create jhi_shop_sales_item jhi_shop_daily_salary jhi_shop_item_salary" author="jhipster">
-    <createTable tableName="jhi_shop_sales_item">
+  <changeSet id="create jhi_shop_sales_item jhi_shop_daily_salary jhi_shop_item_salary" author="sniper">
+    <createTable tableName="jhi_shop_sales_item" remarks="상점 판매 상품 정보">
       <column name="id" type="bigint" autoIncrement="true">
         <constraints primaryKey="true" nullable="false"/>
       </column>
@@ -21,6 +21,9 @@
       <column name="price" type="int">
         <constraints nullable="false"/>
       </column>
+      <column name="is_commission_target" type="boolean" valueBoolean="false" remarks="커미션 대상 상품 여부">
+        <constraints nullable="false" />
+      </column>
       <column name="activated" type="boolean" valueBoolean="true">
         <constraints nullable="false" />
       </column>
@@ -34,7 +37,7 @@
       <column name="last_modified_date" type="timestamp"/>
     </createTable>
 
-    <createTable tableName="jhi_shop_daily_salary">
+    <createTable tableName="jhi_shop_user_daily_salary" remarks="상점 사용자 일당 정보">
       <column name="id" type="bigint" autoIncrement="true">
         <constraints primaryKey="true" nullable="false"/>
       </column>
@@ -63,46 +66,98 @@
       <column name="last_modified_date" type="timestamp"/>
     </createTable>
 
-    <createTable tableName="jhi_shop_item_salary">
-      <column name="id" type="bigint" autoIncrement="true">
-        <constraints primaryKey="true" nullable="false"/>
-      </column>
-      <column name="shop_id" type="bigint">
-        <constraints nullable="false"/>
-      </column>
-      <column name="user_id" type="bigint">
-        <constraints nullable="false"/>
-      </column>
-      <column name="shop_sales_item_id" type="bigint">
-        <constraints nullable="false"/>
-      </column>
-      <column name="date" type="varchar(10)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="price" type="int">
-        <constraints nullable="false"/>
-      </column>
-      <column name="activated" type="boolean" valueBoolean="true">
-        <constraints nullable="false" />
-      </column>
-      <column name="created_by" type="varchar(50)">
-        <constraints nullable="false"/>
-      </column>
-      <column name="created_date" type="timestamp">
-        <constraints nullable="false"/>
-      </column>
-      <column name="last_modified_by" type="varchar(50)"/>
-      <column name="last_modified_date" type="timestamp"/>
-    </createTable>
-
-    <createIndex unique="true" tableName="jhi_shop_daily_salary" indexName="unique_index_jhi_shop_daily_salary">
+    <createIndex unique="true" tableName="jhi_shop_user_daily_salary" indexName="unique_index_jhi_shop_user_daily_salary">
       <column name="shop_id"/>
       <column name="user_id"/>
       <column name="date"/>
     </createIndex>
 
     <rollback>
-      <dropIndex tableName="jhi_shop_daily_salary" indexName="unique_index_jhi_shop_daily_salary"/>
+      <dropIndex tableName="jhi_shop_user_daily_salary" indexName="unique_index_jhi_shop_user_daily_salary"/>
     </rollback>
+
+    <createTable tableName="jhi_shop_order" remarks="상점 주문 정보">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="shop_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="shop_table_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="date" type="varchar(10)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="total_price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="paid" type="boolean" valueBoolean="false">
+        <constraints nullable="false" />
+      </column>
+      <column name="activated" type="boolean" valueBoolean="true">
+        <constraints nullable="false" />
+      </column>
+      <column name="created_by" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_by" type="varchar(50)"/>
+      <column name="last_modified_date" type="timestamp"/>
+    </createTable>
+
+    <createTable tableName="jhi_shop_order_detail" remarks="상점 주문 상세 정보">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="shop_order_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="shop_sales_item_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="activated" type="boolean" valueBoolean="true">
+        <constraints nullable="false" />
+      </column>
+      <column name="created_by" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_by" type="varchar(50)"/>
+      <column name="last_modified_date" type="timestamp"/>
+    </createTable>
+
+    <createTable tableName="jhi_shop_user_sales_salary" remarks="상점 사용자 매출 정보">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="shop_order_detail_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="user_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="activated" type="boolean" valueBoolean="true">
+        <constraints nullable="false" />
+      </column>
+      <column name="created_by" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_by" type="varchar(50)"/>
+      <column name="last_modified_date" type="timestamp"/>
+    </createTable>
   </changeSet>
 </databaseChangeLog>

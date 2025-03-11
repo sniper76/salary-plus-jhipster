@@ -1,7 +1,11 @@
 package com.salary.plus.domain;
 
+import com.salary.plus.enums.PenaltyType;
+import com.salary.plus.enums.ShopType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,8 +21,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "jhi_shop_sales_item")
-public class ShopSalesItem extends AbstractAuditingEntity<Long> implements Serializable {
+@Table(name = "jhi_shop_penalty")
+public class ShopPenalty extends AbstractAuditingEntity<Long> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,14 +30,15 @@ public class ShopSalesItem extends AbstractAuditingEntity<Long> implements Seria
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "shop_id", nullable = false)
-    private Long shopId;
-
     @Column(name = "name_ko", nullable = false)
     private String nameKo;
 
     @Column(name = "name_en", nullable = false)
     private String nameEn;
+
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PenaltyType type;
 
     @Column(name = "price", nullable = false)
     private Integer price;
@@ -42,6 +47,23 @@ public class ShopSalesItem extends AbstractAuditingEntity<Long> implements Seria
     @Column(name = "activated", nullable = false)
     private boolean activated = true;
 
-    @Column(name = "is_commission_target", nullable = false)
-    private boolean isCommissionTarget = true;
+    @Override
+    public String toString() {
+        return (
+            "Shop{" +
+            "id=" +
+            id +
+            ", nameKo='" +
+            nameKo +
+            '\'' +
+            ", nameEn='" +
+            nameEn +
+            '\'' +
+            ", type=" +
+            type +
+            ", activated=" +
+            activated +
+            '}'
+        );
+    }
 }

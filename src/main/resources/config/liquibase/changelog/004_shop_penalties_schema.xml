@@ -4,10 +4,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-  <changeSet id="create jhi_shop jhi_shop_user_mapping" author="sniper">
-    <createTable tableName="jhi_shop" remarks="상점 정보">
+  <changeSet id="create jhi_shop_penalty jhi_shop_user_penalty_mapping" author="sniper">
+    <createTable tableName="jhi_shop_penalty" remarks="상점 벌금 정보">
       <column name="id" type="bigint" autoIncrement="true">
         <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="shop_id" type="bigint">
+        <constraints nullable="false"/>
       </column>
       <column name="name_ko" type="varchar(60)">
         <constraints nullable="false"/>
@@ -18,6 +21,9 @@
       <column name="type" type="varchar(60)">
         <constraints nullable="false"/>
       </column>
+      <column name="price" type="int">
+        <constraints nullable="false"/>
+      </column>
       <column name="activated" type="boolean" valueBoolean="true">
         <constraints nullable="false" />
       </column>
@@ -31,16 +37,22 @@
       <column name="last_modified_date" type="timestamp"/>
     </createTable>
 
-    <createTable tableName="jhi_shop_user_mapping" remarks="상점 사용자 연결 정보">
+    <createTable tableName="jhi_shop_user_penalty_mapping" remarks="상점 사용자 벌금 정보">
       <column name="id" type="bigint" autoIncrement="true">
         <constraints primaryKey="true" nullable="false"/>
       </column>
-      <column name="shop_id" type="bigint">
+      <column name="shop_penalty_id" type="bigint">
         <constraints nullable="false"/>
       </column>
       <column name="user_id" type="bigint">
         <constraints nullable="false"/>
       </column>
+      <column name="date" type="varchar(10)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="price" type="int">
+        <constraints nullable="false"/>
+      </column>
       <column name="activated" type="boolean" valueBoolean="true">
         <constraints nullable="false" />
       </column>
@@ -53,16 +65,5 @@
       <column name="last_modified_by" type="varchar(50)"/>
       <column name="last_modified_date" type="timestamp"/>
     </createTable>
-  </changeSet>
-
-  <changeSet id="create unique index on jhi_shop_user_mapping table" author="sniper">
-    <createIndex unique="true" tableName="jhi_shop_user_mapping" indexName="unique_index_jhi_shop_user_mapping">
-      <column name="shop_id"/>
-      <column name="user_id"/>
-    </createIndex>
-
-    <rollback>
-      <dropIndex tableName="jhi_shop_user_mapping" indexName="unique_index_jhi_shop_user_mapping"/>
-    </rollback>
   </changeSet>
 </databaseChangeLog>

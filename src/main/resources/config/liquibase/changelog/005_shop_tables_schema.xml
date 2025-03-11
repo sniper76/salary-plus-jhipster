@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="create jhi_shop_table" author="sniper">
+    <createTable tableName="jhi_shop_table" remarks="상점 테이블 정보">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="shop_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="no" type="varchar(60)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="activated" type="boolean" valueBoolean="true">
+        <constraints nullable="false" />
+      </column>
+      <column name="created_by" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_by" type="varchar(50)"/>
+      <column name="last_modified_date" type="timestamp"/>
+    </createTable>
+
+    <createIndex unique="true" tableName="jhi_shop_table" indexName="unique_index_jhi_shop_table">
+      <column name="shop_id"/>
+      <column name="no"/>
+    </createIndex>
+
+    <rollback>
+      <dropIndex tableName="jhi_shop_table" indexName="unique_index_jhi_shop_table"/>
+    </rollback>
+  </changeSet>
+
+  <changeSet id="add init jhi_shop_table" author="sniper">
+    <sql>
+      insert into jhi_shop_table (shop_id, no, activated, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), 'Table1', true, 'admin', now());
+      insert into jhi_shop_table (shop_id, no, activated, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), 'Table2', true, 'admin', now());
+      insert into jhi_shop_table (shop_id, no, activated, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), 'Table3', true, 'admin', now());
+    </sql>
+  </changeSet>
+</databaseChangeLog>

@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { languages, locales } from 'app/config/translation';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { createUser, getRoles, getShops, getUser, reset, updateUser } from './user-management.reducer';
-import { IShop } from 'app/shared/model/shop.model';
 
 export const UserManagementUpdate = () => {
   const dispatch = useAppDispatch();

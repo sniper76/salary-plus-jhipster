@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="add column jhi_user to is_commission_target_user" author="sniper">
+    <addColumn tableName="jhi_user">
+      <column name="is_commission_target_user" type="boolean" valueBoolean="false" remarks="커미션 지급 대상 여부"/>
+      <column name="model_no" type="varchar(60)" remarks="모델 번호"/>
+    </addColumn>
+    <rollback>
+      <dropColumn tableName="jhi_user" columnName="is_commission_target_user"/>
+      <dropColumn tableName="jhi_user" columnName="model_no"/>
+    </rollback>
+  </changeSet>
+
+  <changeSet id="modify init jhi_user" author="sniper">
+    <sql>
+      update jhi_user set model_no = 'TEST01', is_commission_target_user = true where login = 'admin';
+      update jhi_user set model_no = 'TEST02', is_commission_target_user = true where login = 'user';
+    </sql>
+  </changeSet>
+</databaseChangeLog>

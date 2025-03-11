@@ -4,18 +4,25 @@ import { Button, Col, Form, Modal, ModalBody, ModalFooter, ModalHeader, Row } fr
 import { useForm } from 'react-hook-form';
 import { languages, locales } from 'app/config/translation';
 import './order.scss';
+import { IShopSalesItem } from 'app/shared/model/shopSalesItem.model';
 
 export interface IOrderModalProps {
   showModal: boolean;
   orderError: boolean;
   handleOrder: (username: string, password: string, rememberMe: boolean) => void;
   handleClose: () => void;
+  salesItems: ReadonlyArray<IShopSalesItem>;
+  models: [];
+  orderId: number;
 }
 
 const OrderModal = (props: IOrderModalProps) => {
   const order = ({ username, password, rememberMe }) => {
     props.handleOrder(username, password, rememberMe);
   };
+  console.warn('props.salesItems', props.salesItems);
+  console.warn('props.models', props.models);
+  console.warn('props.orderId', props.orderId);
 
   const {
     handleSubmit,
@@ -60,7 +67,7 @@ const OrderModal = (props: IOrderModalProps) => {
     <Modal isOpen={props.showModal} toggle={handleClose} backdrop="static" id="order-page" autoFocus={false}>
       <Form onSubmit={handleOrderSubmit}>
         <ModalHeader id="order-title" data-cy="orderTitle" toggle={handleClose}>
-          <Translate contentKey="login.title">Sign in</Translate>
+          <Translate contentKey="global.menu.order">Order</Translate>
         </ModalHeader>
         <ModalBody>
           <Row>
@@ -68,11 +75,10 @@ const OrderModal = (props: IOrderModalProps) => {
               <div className="container">
                 {/* 왼쪽 Div (드롭 가능) */}
                 <div id="left" className="box" onDragOver={handleDragOver} onDrop={handleDrop}>
-                  <h3>주문</h3>
                   {leftItems.map((item, index) => (
                     <div key={index} className="item">
                       <div className="item-header">
-                        <span className="item-name">{item.name}</span>
+                        <span className="item-name">{item.nameKo}</span>
                         <button className="close-btn" onClick={() => handleRemove(index)}>
                           ✖
                         </button>
@@ -92,10 +98,9 @@ const OrderModal = (props: IOrderModalProps) => {
 
                 {/* 오른쪽 Div (드래그 가능) */}
                 <div id="right" className="box">
-                  <h3>상품</h3>
-                  {rightItems.map((item, index) => (
+                  {props.salesItems.map((item, index) => (
                     <div key={index} className="item" draggable onDragStart={() => handleDragStart(item)}>
-                      {item.name}
+                      {item.nameKo}
                     </div>
                   ))}
                 </div>

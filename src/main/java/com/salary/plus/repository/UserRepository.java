@@ -1,6 +1,7 @@
 package com.salary.plus.repository;
 
 import com.salary.plus.domain.User;
+import com.salary.plus.service.dto.ShopModelResponse;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -45,4 +46,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
         """
     )
     List<String> findAuthoritiesByLogin(String login);
+
+    @Query(
+        """
+            select new com.salary.plus.service.dto.ShopModelResponse(u)
+            from Shop s
+            inner join ShopUserMapping sump on s.id = sump.shopId
+            inner join User u on sump.userId = u.id
+            where s.id = :shopId
+            and u.activated = :activated
+            and u.isCommissionTargetUser = :isCommissionTargetUser
+        """
+    )
+    List<ShopModelResponse> findAllByShopId(Long shopId, boolean activated, boolean isCommissionTargetUser);
 }

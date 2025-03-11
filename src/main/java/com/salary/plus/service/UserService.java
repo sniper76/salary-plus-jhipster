@@ -9,6 +9,7 @@ import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.dto.AdminUserDTO;
+import com.salary.plus.service.dto.ShopModelResponse;
 import com.salary.plus.service.dto.UserDTO;
 import io.undertow.util.BadRequestException;
 import java.time.Instant;
@@ -366,5 +367,10 @@ public class UserService {
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evictIfPresent(user.getEmail());
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShopModelResponse> getAllModels(Long shopId) {
+        return userRepository.findAllByShopId(shopId, true, true);
     }
 }

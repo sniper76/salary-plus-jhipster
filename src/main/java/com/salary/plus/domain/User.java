@@ -70,6 +70,13 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
     @Column(nullable = false)
     private boolean activated = false;
 
+    @Column(name = "is_commission_target_user", nullable = false)
+    private boolean isCommissionTargetUser = false;
+
+    @Size(max = 60)
+    @Column(name = "model_no", length = 60)
+    private String modelNo;
+
     @Size(min = 2, max = 10)
     @Column(name = "lang_key", length = 10)
     private String langKey;
@@ -197,6 +204,22 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
 
     public void setLangKey(String langKey) {
         this.langKey = langKey;
+    }
+
+    public boolean isCommissionTargetUser() {
+        return isCommissionTargetUser;
+    }
+
+    public void setCommissionTargetUser(boolean commissionTargetUser) {
+        isCommissionTargetUser = commissionTargetUser;
+    }
+
+    public String getModelNo() {
+        return modelNo;
+    }
+
+    public void setModelNo(String modelNo) {
+        this.modelNo = modelNo;
     }
 
     public Set<Authority> getAuthorities() {

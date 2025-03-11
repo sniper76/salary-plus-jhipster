@@ -1,29 +1,50 @@
 package com.salary.plus.web.rest;
 
-import com.salary.plus.domain.ShopUserDailySalary;
+import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
+import com.salary.plus.guard.UserGuard;
+import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
-import com.salary.plus.service.ShopDailySalaryService;
-import com.salary.plus.service.dto.ShopDailySalaryDTO;
-import com.salary.plus.service.dto.UserDTO;
+import com.salary.plus.service.ShopOrderService;
+import com.salary.plus.service.ShopService;
+import com.salary.plus.service.dto.AdminShopDTO;
+import com.salary.plus.service.dto.ShopOrderDTO;
+import com.salary.plus.service.dto.ShopOrderResponse;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
+import com.salary.plus.web.rest.errors.EmailAlreadyUsedException;
+import com.salary.plus.web.rest.errors.LoginAlreadyUsedException;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
+import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing users.
@@ -53,37 +74,27 @@ import tech.jhipster.web.util.HeaderUtil;
 @RequiredArgsConstructor
 @UseGuards({ ShopGuard.class })
 @RequestMapping("/api/shops")
-public class ShopDailySalaryResource {
+public class ShopOrderResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ShopDailySalaryResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShopOrderResource.class);
 
-    @Value("${jhipster.clientApp.name}")
-    private String applicationName;
-
-    private final ShopDailySalaryService shopDailySalaryService;
+    private final ShopOrderService shopOrderService;
 
     /**
-     * {@code POST  /api/shops}  : Creates a new user.
+     * {@code POST  /api/shops/shopId/orders/orderId}  : Get a shop orders.
      * <p>
      * Creates a new user if the login and email are not already used, and sends a
      * mail with an activation link.
      * The user needs to be activated on creation.
      *
-     * @param shopSalesItemDTO the user to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new user, or with status {@code 400 (Bad Request)} if the login or email is already in use.
      * @throws URISyntaxException       if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
-    @PostMapping("/{shopId}/daily-salaries")
-    public ResponseEntity<UserDTO> createUser(@PathVariable("shopId") Long shopId, @Valid @RequestBody ShopDailySalaryDTO shopSalesItemDTO)
-        throws URISyntaxException {
-        LOG.debug("REST request to save User : {}", shopSalesItemDTO);
-        List<ShopUserDailySalary> newUser = shopDailySalaryService.create(shopSalesItemDTO);
-        final UserDTO userDTO = new UserDTO();
-        userDTO.setLogin(SecurityUtils.getLoginNoneNull());
-        userDTO.setSalaries(newUser);
-        return ResponseEntity.created(new URI("/api/shops/" + shopId + "/sales-items"))
-            .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", userDTO.getLogin()))
-            .body(userDTO);
+    @GetMapping("/{shopId}/orders/{date}")
+    public ResponseEntity<List<ShopOrderResponse>> getAllOrders(@PathVariable("shopId") Long shopId, @PathVariable("date") String date) {
+        final List<ShopOrderResponse> responses = shopOrderService.getAllOrdersByDate(shopId, date);
+        LOG.debug("REST response : {}", responses);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 }
