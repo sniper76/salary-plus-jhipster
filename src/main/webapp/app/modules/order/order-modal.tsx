@@ -5,20 +5,21 @@ import { useForm } from 'react-hook-form';
 import { languages, locales } from 'app/config/translation';
 import './order.scss';
 import { IShopSalesItem } from 'app/shared/model/shopSalesItem.model';
+import { IModelUser } from 'app/shared/model/modelUser.model';
 
 export interface IOrderModalProps {
   showModal: boolean;
   orderError: boolean;
-  handleOrder: (username: string, password: string, rememberMe: boolean) => void;
+  handleOrder: (obj: any) => void;
   handleClose: () => void;
   salesItems: ReadonlyArray<IShopSalesItem>;
-  models: [];
+  models: ReadonlyArray<IModelUser>;
   orderId: number;
 }
 
 const OrderModal = (props: IOrderModalProps) => {
-  const order = ({ username, password, rememberMe }) => {
-    props.handleOrder(username, password, rememberMe);
+  const order = obj => {
+    props.handleOrder(obj);
   };
   console.warn('props.salesItems', props.salesItems);
   console.warn('props.models', props.models);
@@ -33,6 +34,7 @@ const OrderModal = (props: IOrderModalProps) => {
   const { orderError, handleClose } = props;
 
   const handleOrderSubmit = e => {
+    console.warn('handleOrderSubmit', e);
     handleSubmit(order)(e);
   };
 
@@ -78,19 +80,46 @@ const OrderModal = (props: IOrderModalProps) => {
                   {leftItems.map((item, index) => (
                     <div key={index} className="item">
                       <div className="item-header">
-                        <span className="item-name">{item.nameKo}</span>
+                        <span className="item-name">
+                          {item.nameKo}
+                          <ValidatedField
+                            type="hidden"
+                            register={register}
+                            id={`salesItemId_${index}`}
+                            name={`salesItemId_${index}`}
+                            data-cy="salesItemId"
+                            value={item.id}
+                          />
+                        </span>
                         <button className="close-btn" onClick={() => handleRemove(index)}>
                           ✖
                         </button>
                       </div>
-                      {item.type && (
-                        <ValidatedField className="select-box" type="select" id="langKey" name="langKey" data-cy="langKey">
-                          {locales.map(locale => (
-                            <option value={locale} key={locale}>
-                              {languages[locale].name}
+                      {item.commissionTarget && (
+                        <ValidatedField
+                          className="select-box"
+                          register={register}
+                          type="select"
+                          id={`modelId_${index}`}
+                          name={`modelId_${index}`}
+                          data-cy="modelId"
+                        >
+                          {props.models.map((model, idx) => (
+                            <option value={model.id} key={idx}>
+                              {model.modelNo}
                             </option>
                           ))}
                         </ValidatedField>
+                      )}
+                      {item.snack && (
+                        <ValidatedField
+                          register={register}
+                          type="number"
+                          id={`snackPrice_${index}`}
+                          name={`snackPrice_${index}`}
+                          min="0"
+                          data-cy="snackPrice"
+                        />
                       )}
                     </div>
                   ))}

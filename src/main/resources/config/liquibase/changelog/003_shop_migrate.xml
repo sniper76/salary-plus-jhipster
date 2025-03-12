@@ -23,12 +23,12 @@
 
   <changeSet id="add init jhi_shop_sales_item" author="sniper">
     <sql>
-      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '롱타임 바파인', 'long time bar fine', 5000, true, true, 'admin', now());
-      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '숏타임 바파인', 'short time bar fine', 4000, true, true, 'admin', now());
-      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '서비스 바파인', 'service bar fine', 3000, true, true, 'admin', now());
-      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '레이디 드링크', 'lady drink', 350, true, true, 'admin', now());
-      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '게스트 드링크', 'guest drink', 150, true, false, 'admin', now());
-      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '안주', 'snack', 0, true, false, 'admin', now());
+      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, is_snack, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '롱타임 바파인', 'long time bar fine', 5000, true, true, false, 'admin', now());
+      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, is_snack, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '숏타임 바파인', 'short time bar fine', 4000, true, true, false, 'admin', now());
+      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, is_snack, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '서비스 바파인', 'service bar fine', 3000, true, true, false, 'admin', now());
+      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, is_snack, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '레이디 드링크', 'lady drink', 350, true, true, false, 'admin', now());
+      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, is_snack, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '게스트 드링크', 'guest drink', 150, true, false, false, 'admin', now());
+      insert into jhi_shop_sales_item (shop_id, name_ko, name_en, price, activated, is_commission_target, is_snack, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '안주', 'snack', 0, true, false, true, 'admin', now());
     </sql>
   </changeSet>
 

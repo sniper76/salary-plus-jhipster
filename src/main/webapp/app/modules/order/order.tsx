@@ -19,9 +19,6 @@ export const Order = () => {
   const today = dateNow.toISOString().slice(0, 10);
   const [currentDate, setCurrentDate] = useState(today);
 
-  const btnOnClick = () => {
-    console.error('Orders', orders, account);
-  };
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => {
@@ -32,8 +29,8 @@ export const Order = () => {
     setShowModal(true);
   };
 
-  const handleOrder = () => {
-    console.error('Orders', orders, account);
+  const handleOrder = obj => {
+    console.error('parent Orders', orders, obj);
   };
 
   const [selectedValue, setSelectedValue] = useState(-1);

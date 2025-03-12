@@ -3,6 +3,7 @@ export interface IShopSalesItem {
   nameKo?: string;
   nameEn?: string;
   isCommissionTarget?: boolean;
+  isSnack?: boolean;
   activated?: boolean;
   createdBy?: string;
   createdDate?: Date | null;
@@ -15,6 +16,7 @@ export const defaultValue: Readonly<IShopSalesItem> = {
   nameKo: '',
   nameEn: '',
   isCommissionTarget: false,
+  isSnack: false,
   activated: true,
   createdBy: '',
   createdDate: null,

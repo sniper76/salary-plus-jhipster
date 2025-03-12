@@ -4,13 +4,14 @@ import { createAsyncThunk, createSlice, isPending, isRejected } from '@reduxjs/t
 import { IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
 import { IShop } from 'app/shared/model/shop.model';
 import { IShopSalesItem } from 'app/shared/model/shopSalesItem.model';
+import { IModelUser } from 'app/shared/model/modelUser.model';
 
 const initialState = {
   loading: false,
   errorMessage: null,
   orders: [] as any,
   salesItems: [] as ReadonlyArray<IShopSalesItem>,
-  models: [] as any,
+  models: [] as ReadonlyArray<IModelUser>,
   shops: [] as ReadonlyArray<IShop>,
 };
 

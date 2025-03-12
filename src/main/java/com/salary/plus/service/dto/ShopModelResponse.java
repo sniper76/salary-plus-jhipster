@@ -17,7 +17,7 @@ public class ShopModelResponse implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long userId;
+    private Long id;
     private String login;
     private String firstName;
     private String lastName;
@@ -32,7 +32,7 @@ public class ShopModelResponse implements Serializable {
     }
 
     public ShopModelResponse(User user) {
-        this.userId = user.getId();
+        this.id = user.getId();
         this.login = user.getLogin();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
