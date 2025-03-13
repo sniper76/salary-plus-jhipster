@@ -5,6 +5,8 @@ import { IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.u
 import { IShop } from 'app/shared/model/shop.model';
 import { IShopSalesItem } from 'app/shared/model/shopSalesItem.model';
 import { IModelUser } from 'app/shared/model/modelUser.model';
+import { IShopTable } from 'app/shared/model/shopTable.model';
+import { IOrderCreate } from 'app/shared/model/orderCreate.model';
 
 const initialState = {
   loading: false,
@@ -12,6 +14,7 @@ const initialState = {
   orders: [] as any,
   salesItems: [] as ReadonlyArray<IShopSalesItem>,
   models: [] as ReadonlyArray<IModelUser>,
+  tables: [] as ReadonlyArray<IShopTable>,
   shops: [] as ReadonlyArray<IShop>,
 };
 
@@ -39,6 +42,26 @@ export const getShopModels = createAsyncThunk('order/shop_models', async ({ shop
   return axios.get<any[]>(requestUrl);
 });
 
+export const getShopTables = createAsyncThunk('order/shop_tables', async ({ shopId }: any) => {
+  const requestUrl = `api/shops/${shopId}/tables`;
+  return axios.get<any[]>(requestUrl);
+});
+
+export const createOrder = createAsyncThunk(
+  'order/create_order',
+  async (user: IOrderCreate, thunkAPI) => {
+    console.warn('createOrder', user);
+    console.warn('createOrder', typeof user.shopId);
+    const shopId = user.shopId;
+    const date = user.date;
+    const requestUrl = `api/shops/${shopId}/orders/${date}`;
+    const result = await axios.post<IOrderCreate>(requestUrl, user);
+    thunkAPI.dispatch(getShopOrders({ shopId, date }));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
+
 export const OrderSlice = createSlice({
   name: 'orders',
   initialState: initialState as OrderState,
@@ -57,14 +80,18 @@ export const OrderSlice = createSlice({
         state.loading = false;
         state.models = action.payload.data;
       })
+      .addCase(getShopTables.fulfilled, (state, action) => {
+        state.loading = false;
+        state.tables = action.payload.data;
+      })
       .addCase(getUserShops.fulfilled, (state, action) => {
         state.shops = action.payload.data;
       })
-      .addMatcher(isPending(getShopOrders, getUserShops, getShopSalesItems, getShopModels), state => {
+      .addMatcher(isPending(getShopOrders, getUserShops, getShopSalesItems, getShopModels, getShopTables), state => {
         state.errorMessage = null;
         state.loading = true;
       })
-      .addMatcher(isRejected(getShopOrders, getUserShops, getShopSalesItems, getShopModels), (state, action) => {
+      .addMatcher(isRejected(getShopOrders, getUserShops, getShopSalesItems, getShopModels, getShopTables), (state, action) => {
         state.errorMessage = action.error.message;
         state.loading = false;
       });

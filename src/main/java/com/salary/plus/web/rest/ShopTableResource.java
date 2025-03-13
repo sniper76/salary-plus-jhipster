@@ -1,53 +1,24 @@
 package com.salary.plus.web.rest;
 
-import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
-import com.salary.plus.guard.UserGuard;
-import com.salary.plus.security.AuthoritiesConstants;
-import com.salary.plus.security.SecurityUtils;
-import com.salary.plus.service.ShopOrderService;
-import com.salary.plus.service.ShopService;
-import com.salary.plus.service.dto.AdminShopDTO;
-import com.salary.plus.service.dto.ShopDailySalaryDTO;
-import com.salary.plus.service.dto.ShopOrderCreateDTO;
-import com.salary.plus.service.dto.ShopOrderDTO;
-import com.salary.plus.service.dto.ShopOrderResponse;
+import com.salary.plus.service.ShopTableService;
+import com.salary.plus.service.UserService;
+import com.salary.plus.service.dto.ShopModelResponse;
+import com.salary.plus.service.dto.ShopTableResponse;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
-import com.salary.plus.web.rest.errors.EmailAlreadyUsedException;
-import com.salary.plus.web.rest.errors.LoginAlreadyUsedException;
-import jakarta.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.PaginationUtil;
-import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing users.
@@ -77,11 +48,11 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequiredArgsConstructor
 @UseGuards({ ShopGuard.class })
 @RequestMapping("/api/shops")
-public class ShopOrderResource {
+public class ShopTableResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ShopOrderResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShopTableResource.class);
 
-    private final ShopOrderService shopOrderService;
+    private final ShopTableService shopTableService;
 
     /**
      * {@code POST  /api/shops/shopId/orders/orderId}  : Get a shop orders.
@@ -94,21 +65,10 @@ public class ShopOrderResource {
      * @throws URISyntaxException       if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
-    @GetMapping("/{shopId}/orders/{date}")
-    public ResponseEntity<List<ShopOrderResponse>> getAllOrders(@PathVariable("shopId") Long shopId, @PathVariable("date") String date) {
-        final List<ShopOrderResponse> responses = shopOrderService.getAllOrdersByDate(shopId, date);
+    @GetMapping("/{shopId}/tables")
+    public ResponseEntity<List<ShopTableResponse>> getAllTables(@PathVariable("shopId") Long shopId) {
+        final List<ShopTableResponse> responses = shopTableService.getAllTables(shopId);
         LOG.debug("REST response : {}", responses);
         return new ResponseEntity<>(responses, HttpStatus.OK);
-    }
-
-    @PostMapping("/{shopId}/orders/{date}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createOrder(
-        @PathVariable("shopId") Long shopId,
-        @PathVariable("date") String date,
-        @Valid @RequestBody ShopOrderCreateDTO shopOrderCreateDTO
-    ) {
-        LOG.debug("REST shopId : {}, date : {}, shopOrderCreateDTO : {}", shopId, date, shopOrderCreateDTO);
-        shopOrderService.createOrder(shopOrderCreateDTO);
     }
 }

@@ -1,0 +1,16 @@
+{
+  "order": {
+    "title": "주문",
+    "form": {
+      "button": "주문하기"
+    },
+    "messages": {
+      "error": {
+        "authentication": "<strong>인증 실패!</strong> credential을 확인하고 다시 시도해 주세요."
+      }
+    },
+    "password": {
+      "forgot": "비밀번호를 잊으셨나요?"
+    }
+  }
+}

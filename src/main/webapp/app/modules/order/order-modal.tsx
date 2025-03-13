@@ -6,6 +6,7 @@ import { languages, locales } from 'app/config/translation';
 import './order.scss';
 import { IShopSalesItem } from 'app/shared/model/shopSalesItem.model';
 import { IModelUser } from 'app/shared/model/modelUser.model';
+import { IShopTable } from 'app/shared/model/shopTable.model';
 
 export interface IOrderModalProps {
   showModal: boolean;
@@ -14,6 +15,7 @@ export interface IOrderModalProps {
   handleClose: () => void;
   salesItems: ReadonlyArray<IShopSalesItem>;
   models: ReadonlyArray<IModelUser>;
+  tables: ReadonlyArray<IShopTable>;
   orderId: number;
 }
 
@@ -23,6 +25,7 @@ const OrderModal = (props: IOrderModalProps) => {
   };
   console.warn('props.salesItems', props.salesItems);
   console.warn('props.models', props.models);
+  console.warn('props.tables', props.tables);
   console.warn('props.orderId', props.orderId);
 
   const {
@@ -39,12 +42,6 @@ const OrderModal = (props: IOrderModalProps) => {
   };
 
   const [leftItems, setLeftItems] = useState([]); // 왼쪽 div 아이템들
-  const [rightItems] = useState([
-    { type: true, name: 'Long Time' },
-    { type: true, name: 'Short Time' },
-    { type: false, name: 'Lady Drink' },
-    { type: false, name: 'Guest Drink' },
-  ]); // 오른쪽 div 아이템들
   const [draggedItem, setDraggedItem] = useState(null); // 드래그 중인 아이템
 
   const handleDragStart = item => {
@@ -61,8 +58,9 @@ const OrderModal = (props: IOrderModalProps) => {
     }
   };
 
-  const handleRemove = index => {
+  const handleRemove = (index, item) => {
     setLeftItems(prev => prev.filter((_, i) => i !== index)); // 왼쪽에서 삭제
+    console.warn('handleRemove', item);
   };
 
   return (
@@ -75,6 +73,15 @@ const OrderModal = (props: IOrderModalProps) => {
           <Row>
             <Col md="12">
               <div className="container">
+                <ValidatedField className="select-box" type="select" register={register} id="tableId" name="tableId" data-cy="tableId">
+                  {props.tables.map((model, idx) => (
+                    <option value={model.id} key={idx}>
+                      {model.no}
+                    </option>
+                  ))}
+                </ValidatedField>
+              </div>
+              <div className="container">
                 {/* 왼쪽 Div (드롭 가능) */}
                 <div id="left" className="box" onDragOver={handleDragOver} onDrop={handleDrop}>
                   {leftItems.map((item, index) => (
@@ -85,13 +92,13 @@ const OrderModal = (props: IOrderModalProps) => {
                           <ValidatedField
                             type="hidden"
                             register={register}
-                            id={`salesItemId_${index}`}
-                            name={`salesItemId_${index}`}
-                            data-cy="salesItemId"
+                            id={`salesItemIds[${index}]`}
+                            name={`salesItemIds[${index}]`}
+                            data-cy="salesItemIds"
                             value={item.id}
                           />
                         </span>
-                        <button className="close-btn" onClick={() => handleRemove(index)}>
+                        <button className="close-btn" onClick={() => handleRemove(index, item)}>
                           ✖
                         </button>
                       </div>
@@ -100,9 +107,9 @@ const OrderModal = (props: IOrderModalProps) => {
                           className="select-box"
                           register={register}
                           type="select"
-                          id={`modelId_${index}`}
-                          name={`modelId_${index}`}
-                          data-cy="modelId"
+                          id={`modelIds[${index}]`}
+                          name={`modelIds[${index}]`}
+                          data-cy="modelIds"
                         >
                           {props.models.map((model, idx) => (
                             <option value={model.id} key={idx}>
@@ -111,14 +118,26 @@ const OrderModal = (props: IOrderModalProps) => {
                           ))}
                         </ValidatedField>
                       )}
-                      {item.snack && (
+                      {item.snack ? (
                         <ValidatedField
                           register={register}
                           type="number"
-                          id={`snackPrice_${index}`}
-                          name={`snackPrice_${index}`}
-                          min="0"
-                          data-cy="snackPrice"
+                          id={`prices[${index}]`}
+                          name={`prices[${index}]`}
+                          validate={{
+                            required: { value: true, message: 'Price is required.' },
+                            min: { value: 0, message: 'Price must be a positive number.' },
+                          }}
+                          data-cy="prices"
+                        />
+                      ) : (
+                        <ValidatedField
+                          register={register}
+                          type="hidden"
+                          id={`prices[${index}]`}
+                          name={`prices[${index}]`}
+                          data-cy="prices"
+                          value={item.price}
                         />
                       )}
                     </div>
@@ -142,7 +161,7 @@ const OrderModal = (props: IOrderModalProps) => {
             <Translate contentKey="entity.action.cancel">Cancel</Translate>
           </Button>{' '}
           <Button color="primary" type="submit" data-cy="submit">
-            <Translate contentKey="login.form.button">Sign in</Translate>
+            <Translate contentKey="order.form.button">Ordering</Translate>
           </Button>
         </ModalFooter>
       </Form>

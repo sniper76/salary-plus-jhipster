@@ -34,6 +34,7 @@ public class ShopOrderResponse implements Serializable {
         this.orderId = shopOrder.getId();
         this.shopTableId = shopOrder.getShopTableId();
         this.tableNo = shopTable.getNo();
+        this.totalPrice = shopOrder.getTotalPrice();
         this.paid = shopOrder.isPaid();
         this.createdBy = shopOrder.getCreatedBy();
         this.createdDate = shopOrder.getCreatedDate();

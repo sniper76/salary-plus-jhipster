@@ -4,15 +4,15 @@ import { Button, Col, Row } from 'reactstrap';
 import './order.scss';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getShopModels, getShopOrders, getShopSalesItems, getUserShops } from 'app/modules/order/order.reducer';
+import { getShopModels, getShopTables, getShopOrders, getShopSalesItems, getUserShops, createOrder } from 'app/modules/order/order.reducer';
 import OrderModal from 'app/modules/order/order-modal';
 
 export const Order = () => {
-  const account = useAppSelector(state => state.authentication.account);
   const orders = useAppSelector(state => state.orders.orders);
   const shops = useAppSelector(state => state.orders.shops);
   const salesItems = useAppSelector(state => state.orders.salesItems);
   const models = useAppSelector(state => state.orders.models);
+  const tables = useAppSelector(state => state.orders.tables);
   const dispatch = useAppDispatch();
   const [orderError, setOrderError] = useState(false);
   const dateNow = new Date();
@@ -31,6 +31,9 @@ export const Order = () => {
 
   const handleOrder = obj => {
     console.error('parent Orders', orders, obj);
+    obj.shopId = selectedValue;
+    obj.date = currentDate;
+    dispatch(createOrder(obj));
   };
 
   const [selectedValue, setSelectedValue] = useState(-1);
@@ -49,6 +52,7 @@ export const Order = () => {
       dispatch(getShopOrders({ shopId: shops[0].id, date: today }));
       dispatch(getShopSalesItems({ shopId: shops[0].id }));
       dispatch(getShopModels({ shopId: shops[0].id }));
+      dispatch(getShopTables({ shopId: shops[0].id }));
     }
   }, [shops]);
 
@@ -72,6 +76,7 @@ export const Order = () => {
           <OrderModal
             salesItems={salesItems}
             models={models}
+            tables={tables}
             orderId={null}
             showModal={showModal}
             handleOrder={handleOrder}
@@ -82,7 +87,8 @@ export const Order = () => {
         <Row>
           {orders.map((item, idx) => (
             <Col key={idx} xs="auto" className="border text-center p-3">
-              {item.no}
+              {item.tableNo} {item.totalPrice}
+              <button></button>
             </Col>
           ))}
         </Row>
