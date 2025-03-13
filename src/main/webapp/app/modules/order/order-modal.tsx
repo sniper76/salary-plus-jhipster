@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Translate, ValidatedField } from 'react-jhipster';
 import { Button, Col, Form, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
 import { useForm } from 'react-hook-form';
@@ -16,17 +16,13 @@ export interface IOrderModalProps {
   salesItems: ReadonlyArray<IShopSalesItem>;
   models: ReadonlyArray<IModelUser>;
   tables: ReadonlyArray<IShopTable>;
-  orderId: number;
+  orderDetails: [];
 }
 
 const OrderModal = (props: IOrderModalProps) => {
-  const order = obj => {
+  const orderHandleProps = obj => {
     props.handleOrder(obj);
   };
-  console.warn('props.salesItems', props.salesItems);
-  console.warn('props.models', props.models);
-  console.warn('props.tables', props.tables);
-  console.warn('props.orderId', props.orderId);
 
   const {
     handleSubmit,
@@ -36,13 +32,15 @@ const OrderModal = (props: IOrderModalProps) => {
 
   const { orderError, handleClose } = props;
 
-  const handleOrderSubmit = e => {
-    console.warn('handleOrderSubmit', e);
-    handleSubmit(order)(e);
-  };
-
   const [leftItems, setLeftItems] = useState([]); // 왼쪽 div 아이템들
   const [draggedItem, setDraggedItem] = useState(null); // 드래그 중인 아이템
+
+  const handleOrderSubmit = e => {
+    console.warn('handleOrderSubmit', e, leftItems);
+    handleSubmit(orderHandleProps)(e);
+    setLeftItems([]);
+    handleClose();
+  };
 
   const handleDragStart = item => {
     setDraggedItem(item); // 드래그 시작 시 아이템 저장
@@ -62,6 +60,13 @@ const OrderModal = (props: IOrderModalProps) => {
     setLeftItems(prev => prev.filter((_, i) => i !== index)); // 왼쪽에서 삭제
     console.warn('handleRemove', item);
   };
+
+  useEffect(() => {
+    if (props.orderDetails) {
+      console.warn('useEffect', props.orderDetails);
+      setLeftItems(props.orderDetails);
+    }
+  }, [props]);
 
   return (
     <Modal isOpen={props.showModal} toggle={handleClose} backdrop="static" id="order-page" autoFocus={false}>
@@ -129,6 +134,7 @@ const OrderModal = (props: IOrderModalProps) => {
                             min: { value: 0, message: 'Price must be a positive number.' },
                           }}
                           data-cy="prices"
+                          value={item.price}
                         />
                       ) : (
                         <ValidatedField

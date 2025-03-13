@@ -13,10 +13,12 @@ import com.salary.plus.service.dto.AdminShopDTO;
 import com.salary.plus.service.dto.ShopDailySalaryDTO;
 import com.salary.plus.service.dto.ShopOrderCreateDTO;
 import com.salary.plus.service.dto.ShopOrderDTO;
+import com.salary.plus.service.dto.ShopOrderDetailResponse;
 import com.salary.plus.service.dto.ShopOrderResponse;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import com.salary.plus.web.rest.errors.EmailAlreadyUsedException;
 import com.salary.plus.web.rest.errors.LoginAlreadyUsedException;
+import jakarta.persistence.PostUpdate;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -101,6 +103,17 @@ public class ShopOrderResource {
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
+    @GetMapping("/{shopId}/orders/{date}/details/{orderId}")
+    public ResponseEntity<List<ShopOrderDetailResponse>> getOrderDetails(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("date") String date,
+        @PathVariable("orderId") Long orderId
+    ) {
+        final List<ShopOrderDetailResponse> responses = shopOrderService.getOrderDetails(shopId, date, orderId);
+        LOG.debug("REST response : {}", responses);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
+    }
+
     @PostMapping("/{shopId}/orders/{date}")
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrder(
@@ -110,5 +123,16 @@ public class ShopOrderResource {
     ) {
         LOG.debug("REST shopId : {}, date : {}, shopOrderCreateDTO : {}", shopId, date, shopOrderCreateDTO);
         shopOrderService.createOrder(shopOrderCreateDTO);
+    }
+
+    @PutMapping("/{shopId}/orders/{date}/{orderId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void updateOrderPaid(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("date") String date,
+        @PathVariable("orderId") Long orderId
+    ) {
+        LOG.debug("REST shopId : {}, date : {}, orderId : {}", shopId, date, orderId);
+        shopOrderService.updateOrderPaid(shopId, date, orderId);
     }
 }

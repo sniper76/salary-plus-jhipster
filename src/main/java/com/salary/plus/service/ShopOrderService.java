@@ -8,8 +8,10 @@ import com.salary.plus.repository.ShopOrderRepository;
 import com.salary.plus.repository.ShopUserDailySalaryRepository;
 import com.salary.plus.repository.ShopUserSalesSalaryRepository;
 import com.salary.plus.service.dto.ShopOrderCreateDTO;
+import com.salary.plus.service.dto.ShopOrderDetailResponse;
 import com.salary.plus.service.dto.ShopOrderResponse;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,5 +72,18 @@ public class ShopOrderService {
         } catch (IndexOutOfBoundsException ioe) {
             return null;
         }
+    }
+
+    public void updateOrderPaid(Long shopId, String date, Long orderId) {
+        shopOrderRepository
+            .findByIdAndShopIdAndDate(orderId, shopId, date)
+            .ifPresent(it -> {
+                it.setPaid(true);
+                shopOrderRepository.save(it);
+            });
+    }
+
+    public List<ShopOrderDetailResponse> getOrderDetails(Long shopId, String date, Long orderId) {
+        return shopOrderRepository.findAllByIdAndShopIdAndDate(orderId, shopId, date);
     }
 }

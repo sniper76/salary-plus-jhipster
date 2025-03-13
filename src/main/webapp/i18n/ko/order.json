@@ -4,6 +4,11 @@
     "form": {
       "button": "주문하기"
     },
+    "button": {
+      "paid": "계산완료",
+      "pay_processing": "계산하기",
+      "order_change": "주문변경"
+    },
     "messages": {
       "error": {
         "authentication": "<strong>인증 실패!</strong> credential을 확인하고 다시 시도해 주세요."

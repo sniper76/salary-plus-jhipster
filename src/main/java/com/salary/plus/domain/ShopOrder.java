@@ -40,7 +40,7 @@ public class ShopOrder extends AbstractAuditingEntity<Long> implements Serializa
 
     @NotNull
     @Column(name = "paid", nullable = false)
-    private boolean paid = false;
+    private boolean paid = false; //손님이 계산완료 한 상태
 
     @NotNull
     @Column(name = "activated", nullable = false)

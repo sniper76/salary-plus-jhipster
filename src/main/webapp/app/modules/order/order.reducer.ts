@@ -12,6 +12,7 @@ const initialState = {
   loading: false,
   errorMessage: null,
   orders: [] as any,
+  orderDetails: [] as any,
   salesItems: [] as ReadonlyArray<IShopSalesItem>,
   models: [] as ReadonlyArray<IModelUser>,
   tables: [] as ReadonlyArray<IShopTable>,
@@ -25,6 +26,11 @@ export type OrderState = Readonly<typeof initialState>;
 
 export const getShopOrders = createAsyncThunk('order/shop_orders', async ({ shopId, date }: any) => {
   const requestUrl = `api/shops/${shopId}/orders/${date}`;
+  return axios.get<any[]>(requestUrl);
+});
+
+export const getShopOrderDetails = createAsyncThunk('order/shop_order_details', async ({ shopId, date, orderId }: any) => {
+  const requestUrl = `api/shops/${shopId}/orders/${date}/details/${orderId}`;
   return axios.get<any[]>(requestUrl);
 });
 
@@ -50,12 +56,21 @@ export const getShopTables = createAsyncThunk('order/shop_tables', async ({ shop
 export const createOrder = createAsyncThunk(
   'order/create_order',
   async (user: IOrderCreate, thunkAPI) => {
-    console.warn('createOrder', user);
-    console.warn('createOrder', typeof user.shopId);
     const shopId = user.shopId;
     const date = user.date;
     const requestUrl = `api/shops/${shopId}/orders/${date}`;
     const result = await axios.post<IOrderCreate>(requestUrl, user);
+    thunkAPI.dispatch(getShopOrders({ shopId, date }));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
+
+export const updateOrderPaid = createAsyncThunk(
+  'order/update_paid_order',
+  async ({ shopId, date, orderId }: any, thunkAPI) => {
+    const requestUrl = `api/shops/${shopId}/orders/${date}/${orderId}`;
+    const result = await axios.put<any>(requestUrl, { shopId, date, orderId });
     thunkAPI.dispatch(getShopOrders({ shopId, date }));
     return result;
   },
@@ -72,6 +87,10 @@ export const OrderSlice = createSlice({
         state.loading = false;
         state.orders = action.payload.data;
       })
+      .addCase(getShopOrderDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orderDetails = action.payload.data;
+      })
       .addCase(getShopSalesItems.fulfilled, (state, action) => {
         state.loading = false;
         state.salesItems = action.payload.data;
@@ -85,16 +104,33 @@ export const OrderSlice = createSlice({
         state.tables = action.payload.data;
       })
       .addCase(getUserShops.fulfilled, (state, action) => {
+        state.loading = false;
         state.shops = action.payload.data;
       })
-      .addMatcher(isPending(getShopOrders, getUserShops, getShopSalesItems, getShopModels, getShopTables), state => {
+      .addMatcher(isPending(getShopOrders, getShopOrderDetails, getUserShops, getShopSalesItems, getShopModels, getShopTables), state => {
         state.errorMessage = null;
         state.loading = true;
       })
-      .addMatcher(isRejected(getShopOrders, getUserShops, getShopSalesItems, getShopModels, getShopTables), (state, action) => {
-        state.errorMessage = action.error.message;
+      .addMatcher(isPending(createOrder, updateOrderPaid), state => {
+        state.errorMessage = null;
         state.loading = false;
-      });
+      })
+      .addMatcher(
+        isRejected(
+          getShopOrders,
+          getShopOrderDetails,
+          getUserShops,
+          getShopSalesItems,
+          getShopModels,
+          getShopTables,
+          createOrder,
+          updateOrderPaid,
+        ),
+        (state, action) => {
+          state.errorMessage = action.error.message;
+          state.loading = false;
+        },
+      );
   },
 });
 

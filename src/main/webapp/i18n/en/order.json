@@ -4,6 +4,11 @@
     "form": {
       "button": "Ordering"
     },
+    "button": {
+      "paid": "Payment Processed",
+      "pay_processing": "Payment Processing",
+      "order_change": "Change Order"
+    },
     "messages": {
       "error": {
         "authentication": "<strong>Failed to sign in!</strong> Please check your credentials and try again."

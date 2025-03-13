@@ -4,11 +4,21 @@ import { Button, Col, Row } from 'reactstrap';
 import './order.scss';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getShopModels, getShopTables, getShopOrders, getShopSalesItems, getUserShops, createOrder } from 'app/modules/order/order.reducer';
+import {
+  getShopModels,
+  getShopTables,
+  getShopOrders,
+  getShopSalesItems,
+  getUserShops,
+  createOrder,
+  updateOrderPaid,
+  getShopOrderDetails,
+} from 'app/modules/order/order.reducer';
 import OrderModal from 'app/modules/order/order-modal';
 
 export const Order = () => {
   const orders = useAppSelector(state => state.orders.orders);
+  const orderDetails = useAppSelector(state => state.orders.orderDetails);
   const shops = useAppSelector(state => state.orders.shops);
   const salesItems = useAppSelector(state => state.orders.salesItems);
   const models = useAppSelector(state => state.orders.models);
@@ -18,8 +28,8 @@ export const Order = () => {
   const dateNow = new Date();
   const today = dateNow.toISOString().slice(0, 10);
   const [currentDate, setCurrentDate] = useState(today);
-
   const [showModal, setShowModal] = useState(false);
+  const [currentOrderId, setCurrentOrderId] = useState(null);
 
   const handleClose = () => {
     setShowModal(false);
@@ -30,7 +40,6 @@ export const Order = () => {
   };
 
   const handleOrder = obj => {
-    console.error('parent Orders', orders, obj);
     obj.shopId = selectedValue;
     obj.date = currentDate;
     dispatch(createOrder(obj));
@@ -40,6 +49,17 @@ export const Order = () => {
 
   const handleSelect = e => {
     setSelectedValue(e.target.value);
+  };
+
+  const handlePaidClick = e => () => {
+    dispatch(updateOrderPaid({ shopId: selectedValue, date: currentDate, orderId: e.orderId }));
+  };
+
+  const handleChangeClick = e => () => {
+    console.warn('handleChangeClick', e);
+    setCurrentOrderId(e.orderId);
+    handleOpen();
+    dispatch(getShopOrderDetails({ shopId: selectedValue, date: currentDate, orderId: e.orderId }));
   };
 
   useEffect(() => {
@@ -77,7 +97,7 @@ export const Order = () => {
             salesItems={salesItems}
             models={models}
             tables={tables}
-            orderId={null}
+            orderDetails={orderDetails}
             showModal={showModal}
             handleOrder={handleOrder}
             handleClose={handleClose}
@@ -87,8 +107,24 @@ export const Order = () => {
         <Row>
           {orders.map((item, idx) => (
             <Col key={idx} xs="auto" className="border text-center p-3">
-              {item.tableNo} {item.totalPrice}
-              <button></button>
+              <p>{item.tableNo}</p>
+              <p>{item.totalPrice}</p>
+              {item.paid ? (
+                <p>
+                  <b>
+                    <Translate contentKey="order.button.paid">Payment Processed</Translate>
+                  </b>
+                </p>
+              ) : (
+                <>
+                  <Button color="secondary" onClick={handleChangeClick(item)}>
+                    <Translate contentKey="order.button.order_change">Order Change</Translate>
+                  </Button>
+                  <Button color="primary" onClick={handlePaidClick(item)}>
+                    <Translate contentKey="order.button.pay_processing">Payment Processing</Translate>
+                  </Button>
+                </>
+              )}
             </Col>
           ))}
         </Row>
