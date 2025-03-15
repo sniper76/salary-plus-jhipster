@@ -1,6 +1,8 @@
 package com.salary.plus.web.rest;
 
+import com.salary.plus.config.Constants;
 import com.salary.plus.domain.Shop;
+import com.salary.plus.domain.ShopOrderDetail;
 import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
@@ -20,8 +22,10 @@ import com.salary.plus.web.rest.errors.EmailAlreadyUsedException;
 import com.salary.plus.web.rest.errors.LoginAlreadyUsedException;
 import jakarta.persistence.PostUpdate;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +43,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -83,6 +88,9 @@ public class ShopOrderResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(ShopOrderResource.class);
 
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
     private final ShopOrderService shopOrderService;
 
     /**
@@ -125,6 +133,17 @@ public class ShopOrderResource {
         shopOrderService.createOrder(shopOrderCreateDTO);
     }
 
+    @PatchMapping("/{shopId}/orders/{date}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void updateOrder(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("date") String date,
+        @Valid @RequestBody ShopOrderCreateDTO shopOrderCreateDTO
+    ) {
+        LOG.debug("REST shopId : {}, date : {}, shopOrderCreateDTO : {}", shopId, date, shopOrderCreateDTO);
+        shopOrderService.updateOrder(shopOrderCreateDTO);
+    }
+
     @PutMapping("/{shopId}/orders/{date}/{orderId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void updateOrderPaid(
@@ -134,5 +153,23 @@ public class ShopOrderResource {
     ) {
         LOG.debug("REST shopId : {}, date : {}, orderId : {}", shopId, date, orderId);
         shopOrderService.updateOrderPaid(shopId, date, orderId);
+    }
+
+    @DeleteMapping("/orders/{orderId}/details/{orderDetailId}")
+    public ResponseEntity<Void> deleteOrderDetail(
+        @PathVariable("orderId") Long orderId,
+        @PathVariable("orderDetailId") Long orderDetailId
+    ) {
+        final Optional<ShopOrderDetail> detail = shopOrderService.getOrderDetail(orderId, orderDetailId);
+        if (detail.isEmpty()) {
+            throw new BadRequestAlertException("Not found target", "orders", "order.not.found.target");
+        }
+        final ShopOrderDetail shopOrderDetail = detail.get();
+        final String loginUser = SecurityUtils.getLoginNoneNull();
+        shopOrderDetail.delete(loginUser);
+        shopOrderService.deleteOrderDetail(shopOrderDetail);
+        return ResponseEntity.noContent()
+            .headers(HeaderUtil.createAlert(applicationName, "order.deleted", shopOrderDetail.getLastModifiedBy()))
+            .build();
     }
 }

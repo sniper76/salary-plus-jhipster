@@ -66,6 +66,8 @@ public class ShopOrderService {
         }
     }
 
+    public void updateOrder(ShopOrderCreateDTO shopOrderCreateDTO) {}
+
     private Long getLongId(List<Long> list, int k) {
         try {
             return list.get(k);
@@ -84,6 +86,14 @@ public class ShopOrderService {
     }
 
     public List<ShopOrderDetailResponse> getOrderDetails(Long shopId, String date, Long orderId) {
-        return shopOrderRepository.findAllByIdAndShopIdAndDate(orderId, shopId, date);
+        return shopOrderRepository.findAllByIdAndShopIdAndDate(orderId, shopId, date, true);
+    }
+
+    public Optional<ShopOrderDetail> getOrderDetail(Long orderId, Long orderDetailId) {
+        return shopOrderDetailRepository.findByIdAndShopOrderId(orderDetailId, orderId);
+    }
+
+    public void deleteOrderDetail(ShopOrderDetail shopOrderDetail) {
+        shopOrderDetailRepository.save(shopOrderDetail);
     }
 }

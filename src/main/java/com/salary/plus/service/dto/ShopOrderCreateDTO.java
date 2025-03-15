@@ -15,6 +15,7 @@ public class ShopOrderCreateDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long shopId;
+    private Long orderId;
     private String date;
     private Long tableId;
     private List<Long> modelIds;
@@ -27,6 +28,8 @@ public class ShopOrderCreateDTO implements Serializable {
             "ShopOrderCreateDTO{" +
             "shopId=" +
             shopId +
+            ", orderId=" +
+            orderId +
             ", date='" +
             date +
             '\'' +

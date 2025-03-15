@@ -66,6 +66,19 @@ export const createOrder = createAsyncThunk(
   { serializeError: serializeAxiosError },
 );
 
+export const updateOrder = createAsyncThunk(
+  'order/update_order',
+  async (user: IOrderCreate, thunkAPI) => {
+    const shopId = user.shopId;
+    const date = user.date;
+    const requestUrl = `api/shops/${shopId}/orders/${date}`;
+    const result = await axios.patch<IOrderCreate>(requestUrl, user);
+    thunkAPI.dispatch(getShopOrders({ shopId, date }));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
+
 export const updateOrderPaid = createAsyncThunk(
   'order/update_paid_order',
   async ({ shopId, date, orderId }: any, thunkAPI) => {
@@ -77,10 +90,24 @@ export const updateOrderPaid = createAsyncThunk(
   { serializeError: serializeAxiosError },
 );
 
+export const deleteOrderDetail = createAsyncThunk(
+  'order/delete_order_detail',
+  async ({ orderId, orderDetailId }: any, thunkAPI) => {
+    const requestUrl = `api/shops/orders/${orderId}/details/${orderDetailId}`;
+    console.warn('requestUrl', requestUrl);
+    await axios.delete<any>(requestUrl);
+  },
+  { serializeError: serializeAxiosError },
+);
+
 export const OrderSlice = createSlice({
   name: 'orders',
   initialState: initialState as OrderState,
-  reducers: {},
+  reducers: {
+    clearOrderDetails(state) {
+      state.orderDetails = []; // orderDetails 배열을 초기화
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(getShopOrders.fulfilled, (state, action) => {
@@ -111,7 +138,7 @@ export const OrderSlice = createSlice({
         state.errorMessage = null;
         state.loading = true;
       })
-      .addMatcher(isPending(createOrder, updateOrderPaid), state => {
+      .addMatcher(isPending(createOrder, updateOrderPaid, deleteOrderDetail), state => {
         state.errorMessage = null;
         state.loading = false;
       })
@@ -125,6 +152,7 @@ export const OrderSlice = createSlice({
           getShopTables,
           createOrder,
           updateOrderPaid,
+          deleteOrderDetail,
         ),
         (state, action) => {
           state.errorMessage = action.error.message;
@@ -133,6 +161,8 @@ export const OrderSlice = createSlice({
       );
   },
 });
+
+export const { clearOrderDetails } = OrderSlice.actions; // 초기화 액션 export
 
 // Reducer
 export default OrderSlice.reducer;

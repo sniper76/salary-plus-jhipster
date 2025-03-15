@@ -102,16 +102,25 @@ input[type='number']::-webkit-outer-spin-button {
 /* 아이템 상단 (이름 & 닫기 버튼) */
 .item-header {
   display: flex;
+  flex-direction: column; /* 요소를 세로로 배치 */
+  align-items: center; /* 가로 중앙 정렬 (선택사항) */
   justify-content: space-between;
   width: 100%;
-  padding-bottom: 5px;
 }
 
-.item-name {
+.top {
+  display: flex;
+  justify-content: space-between; /* 왼쪽, 오른쪽 배치 */
+  width: 100%; /* 부모 요소 크기에 맞춤 */
   font-size: 16px;
   font-weight: bold;
   color: white;
   text-align: left;
+}
+
+.bottom {
+  margin-top: 5px;
+  width: 100%; /* 부모 요소 크기에 맞춤 */
 }
 
 .close-btn {
@@ -121,6 +130,7 @@ input[type='number']::-webkit-outer-spin-button {
   padding: 3px 6px;
   cursor: pointer;
   border-radius: 5px;
+  float: right;
 }
 
 .close-btn:hover {
@@ -136,7 +146,7 @@ input[type='number']::-webkit-outer-spin-button {
   //padding: 3px;
   font-size: 10px;
   cursor: pointer;
-  width: 80%;
+  width: 100%;
   text-align: center;
   //margin-top: 5px;
 }

@@ -9,6 +9,12 @@
       "pay_processing": "Payment Processing",
       "order_change": "Change Order"
     },
+    "created": "A order is created with identifier {{ param }}",
+    "updated": "A order is updated with identifier {{ param }}",
+    "deleted": "A order item is deleted with identifier {{ param }}",
+    "delete": {
+      "question": "정말로 {{ param }} 주문 항목을 삭제하시겠습니까?"
+    },
     "messages": {
       "error": {
         "authentication": "<strong>Failed to sign in!</strong> Please check your credentials and try again."

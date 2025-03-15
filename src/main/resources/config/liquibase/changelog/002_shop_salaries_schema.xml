@@ -21,6 +21,15 @@
       <column name="price" type="int">
         <constraints nullable="false"/>
       </column>
+      <column name="shop_commission_price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="mama_commission_price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="model_commission_price" type="int">
+        <constraints nullable="false"/>
+      </column>
       <column name="is_commission_target" type="boolean" valueBoolean="false" remarks="커미션 대상 상품 여부">
         <constraints nullable="false" />
       </column>

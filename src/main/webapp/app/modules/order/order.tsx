@@ -11,8 +11,10 @@ import {
   getShopSalesItems,
   getUserShops,
   createOrder,
+  updateOrder,
   updateOrderPaid,
   getShopOrderDetails,
+  clearOrderDetails,
 } from 'app/modules/order/order.reducer';
 import OrderModal from 'app/modules/order/order-modal';
 
@@ -30,9 +32,13 @@ export const Order = () => {
   const [currentDate, setCurrentDate] = useState(today);
   const [showModal, setShowModal] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState(null);
+  const [currentTableId, setCurrentTableId] = useState(null);
 
   const handleClose = () => {
     setShowModal(false);
+    setCurrentOrderId(null);
+    setCurrentTableId(null);
+    dispatch(clearOrderDetails());
   };
 
   const handleOpen = () => {
@@ -42,7 +48,13 @@ export const Order = () => {
   const handleOrder = obj => {
     obj.shopId = selectedValue;
     obj.date = currentDate;
-    dispatch(createOrder(obj));
+    if (obj.orderId == null) {
+      console.warn('createOrder', obj);
+      dispatch(createOrder(obj));
+    } else {
+      console.warn('updateOrder', obj);
+      dispatch(updateOrder(obj));
+    }
   };
 
   const [selectedValue, setSelectedValue] = useState(-1);
@@ -58,6 +70,7 @@ export const Order = () => {
   const handleChangeClick = e => () => {
     console.warn('handleChangeClick', e);
     setCurrentOrderId(e.orderId);
+    setCurrentTableId(e.shopTableId);
     handleOpen();
     dispatch(getShopOrderDetails({ shopId: selectedValue, date: currentDate, orderId: e.orderId }));
   };
@@ -97,6 +110,8 @@ export const Order = () => {
             salesItems={salesItems}
             models={models}
             tables={tables}
+            orderId={currentOrderId}
+            tableId={currentTableId}
             orderDetails={orderDetails}
             showModal={showModal}
             handleOrder={handleOrder}

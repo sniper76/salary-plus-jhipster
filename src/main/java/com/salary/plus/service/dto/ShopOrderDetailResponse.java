@@ -41,7 +41,7 @@ public class ShopOrderDetailResponse implements Serializable {
         ShopSalesItem shopSalesItem,
         ShopUserSalesSalary shopUserSalesSalary
     ) {
-        this.id = shopOrder.getId();
+        this.id = shopOrderDetail.getId();
         this.salesItemId = shopSalesItem.getId();
         this.modelId = getModelId(shopUserSalesSalary);
         this.nameKo = shopSalesItem.getNameKo();
@@ -49,10 +49,10 @@ public class ShopOrderDetailResponse implements Serializable {
         this.price = shopOrderDetail.getPrice();
         this.isCommissionTarget = shopSalesItem.isCommissionTarget();
         this.isSnack = shopSalesItem.isSnack();
-        this.createdBy = shopOrder.getCreatedBy();
-        this.createdDate = shopOrder.getCreatedDate();
-        this.lastModifiedBy = shopOrder.getLastModifiedBy();
-        this.lastModifiedDate = shopOrder.getLastModifiedDate();
+        this.createdBy = shopOrderDetail.getCreatedBy();
+        this.createdDate = shopOrderDetail.getCreatedDate();
+        this.lastModifiedBy = shopOrderDetail.getLastModifiedBy();
+        this.lastModifiedDate = shopOrderDetail.getLastModifiedDate();
     }
 
     private Long getModelId(ShopUserSalesSalary shopUserSalesSalary) {

@@ -38,6 +38,15 @@ public class ShopSalesItem extends AbstractAuditingEntity<Long> implements Seria
     @Column(name = "price", nullable = false)
     private Integer price;
 
+    @Column(name = "shop_commission_price", nullable = false)
+    private Integer shopCommissionPrice;
+
+    @Column(name = "mama_commission_price", nullable = false)
+    private Integer mamaCommissionPrice;
+
+    @Column(name = "model_commission_price", nullable = false)
+    private Integer modelCommissionPrice;
+
     @NotNull
     @Column(name = "activated", nullable = false)
     private boolean activated = true;

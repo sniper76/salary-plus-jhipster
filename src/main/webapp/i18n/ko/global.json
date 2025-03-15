@@ -143,6 +143,9 @@
     "file": {
       "could.not.extract": "Could not extract file",
       "not.image": "File was expected to be an image but was found to be \"{{ fileType }}\""
+    },
+    "order": {
+      "not.found.target": "대상을 찾을 수 없습니다."
     }
   },
   "footer": "하단영역"

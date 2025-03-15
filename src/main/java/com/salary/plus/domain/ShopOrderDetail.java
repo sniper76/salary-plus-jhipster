@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,4 +39,10 @@ public class ShopOrderDetail extends AbstractAuditingEntity<Long> implements Ser
     @NotNull
     @Column(name = "activated", nullable = false)
     private boolean activated = true;
+
+    @Override
+    public void delete(String login) {
+        super.delete(login);
+        this.activated = false;
+    }
 }
