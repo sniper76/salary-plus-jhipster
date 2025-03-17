@@ -33,16 +33,21 @@ export const Order = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState(null);
   const [currentTableId, setCurrentTableId] = useState(null);
+  const [selectedValue, setSelectedValue] = useState(-1);
 
   const handleClose = () => {
     setShowModal(false);
-    setCurrentOrderId(null);
-    setCurrentTableId(null);
-    dispatch(clearOrderDetails());
   };
 
   const handleOpen = () => {
     setShowModal(true);
+    handleReset();
+  };
+
+  const handleReset = () => {
+    setCurrentOrderId(null);
+    setCurrentTableId(null);
+    dispatch(clearOrderDetails());
   };
 
   const handleOrder = obj => {
@@ -57,8 +62,6 @@ export const Order = () => {
     }
   };
 
-  const [selectedValue, setSelectedValue] = useState(-1);
-
   const handleSelect = e => {
     setSelectedValue(e.target.value);
   };
@@ -68,11 +71,19 @@ export const Order = () => {
   };
 
   const handleChangeClick = e => () => {
-    console.warn('handleChangeClick', e);
+    // console.warn('handleChangeClick', e, currentDate);
+    // handleOpen();
     setCurrentOrderId(e.orderId);
     setCurrentTableId(e.shopTableId);
-    handleOpen();
-    dispatch(getShopOrderDetails({ shopId: selectedValue, date: currentDate, orderId: e.orderId }));
+    // dispatch(getShopOrderDetails({ shopId: selectedValue, date: currentDate, orderId: e.orderId }));
+    dispatch(getShopOrderDetails({ shopId: selectedValue, date: currentDate, orderId: e.orderId })).then(() => {
+      setShowModal(true); // 주문 정보를 가져온 후에 모달을 열도록 설정
+    });
+  };
+
+  const handleDateChange = e => {
+    console.warn('handleDateChange', e.target.value);
+    setCurrentDate(e.target.value);
   };
 
   useEffect(() => {
@@ -82,12 +93,15 @@ export const Order = () => {
   useEffect(() => {
     if (shops.length > 0) {
       setSelectedValue(shops[0].id);
-      dispatch(getShopOrders({ shopId: shops[0].id, date: today }));
       dispatch(getShopSalesItems({ shopId: shops[0].id }));
       dispatch(getShopModels({ shopId: shops[0].id }));
       dispatch(getShopTables({ shopId: shops[0].id }));
     }
   }, [shops]);
+
+  useEffect(() => {
+    dispatch(getShopOrders({ shopId: selectedValue, date: currentDate }));
+  }, [currentDate]);
 
   return (
     <Row>
@@ -101,7 +115,7 @@ export const Order = () => {
                 </option>
               ))}
             </select>
-            <input defaultValue={currentDate} type="date" />
+            <input defaultValue={currentDate} type="date" onChange={handleDateChange} />
             <Button onClick={handleOpen} className="alert-link">
               <Translate contentKey="entity.action.open">Open</Translate>
             </Button>

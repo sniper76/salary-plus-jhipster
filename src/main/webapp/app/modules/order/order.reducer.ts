@@ -31,6 +31,7 @@ export const getShopOrders = createAsyncThunk('order/shop_orders', async ({ shop
 
 export const getShopOrderDetails = createAsyncThunk('order/shop_order_details', async ({ shopId, date, orderId }: any) => {
   const requestUrl = `api/shops/${shopId}/orders/${date}/details/${orderId}`;
+  // console.warn('requestUrl', requestUrl);
   return axios.get<any[]>(requestUrl);
 });
 

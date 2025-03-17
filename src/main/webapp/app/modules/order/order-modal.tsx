@@ -31,6 +31,8 @@ const OrderModal = (props: IOrderModalProps) => {
   const {
     handleSubmit,
     register,
+    reset,
+    watch,
     formState: { errors, touchedFields },
   } = useForm({ mode: 'onTouched' });
 
@@ -42,13 +44,13 @@ const OrderModal = (props: IOrderModalProps) => {
   const [draggedItem, setDraggedItem] = useState(null); // 드래그 중인 아이템
 
   const handleOrderSubmit = e => {
-    console.warn('handleOrderSubmit', e, leftItems);
+    // console.warn('handleOrderSubmit', e, leftItems);
     handleSubmit(orderHandleProps)(e);
     handleClose();
   };
 
   const handleDragStart = item => {
-    console.warn('handleDragStart', item);
+    // console.warn('handleDragStart', item);
     setDraggedItem(item); // 드래그 시작 시 아이템 저장
   };
 
@@ -58,13 +60,14 @@ const OrderModal = (props: IOrderModalProps) => {
 
   const handleDrop = () => {
     if (draggedItem) {
+      reset();
       setLeftItems(prev => [...prev, draggedItem]); // 왼쪽에 복사 추가
     }
   };
 
   const handleRemove = (index, item) => {
     setLeftItems(prev => prev.filter((_, i) => i !== index)); // 왼쪽에서 삭제
-    console.warn('handleRemove', item);
+    // console.warn('handleRemove', item);
     if (item.salesItemId) {
       dispatch(deleteOrderDetail({ orderId: props.orderId, orderDetailId: item.id }));
     }
@@ -75,24 +78,42 @@ const OrderModal = (props: IOrderModalProps) => {
   //     setLeftItems(props.orderDetails);
   //   }
   // }, [props]);
+  // useEffect(() => {
+  //   if (props.orderId && props.orderDetails && props.orderDetails.length > 0) {
+  //     // props.orderDetails 가 변경될 때마다 leftItems 를 업데이트
+  //     console.warn('OrderModal useEffect orderDetails', props.orderDetails);
+  //     // setLeftItems(props.orderDetails);
+  //     setLeftItems([...props.orderDetails]); // orderDetails 를 복사하여 설정
+  //     console.warn('OrderModal useEffect leftItems', leftItems);
+  //     // setLeftItems((props.orderDetails as any[]).map(prev => [...prev]));
+  //     // setLeftItems((props.orderDetails as any[]).map(item => ({ ...item })));
+  //   } else {
+  //     // 새로운 주문 생성 시 초기화
+  //     setLeftItems([]);
+  //   }
+  // }, [props.orderDetails, props.orderId]);
   useEffect(() => {
-    if (props.orderId && props.orderDetails) {
-      // props.orderDetails 가 변경될 때마다 leftItems 를 업데이트
-      console.warn('OrderModal useEffect orderDetails', props.orderDetails);
-      // setLeftItems(props.orderDetails);
-      setLeftItems([...props.orderDetails]); // orderDetails 를 복사하여 설정
-      console.warn('OrderModal useEffect leftItems', leftItems);
-      // setLeftItems((props.orderDetails as any[]).map(prev => [...prev]));
-      // setLeftItems((props.orderDetails as any[]).map(item => ({ ...item })));
-    } else {
-      // 새로운 주문 생성 시 초기화
-      setLeftItems([]);
+    reset(); // react-hook-form 의 상태도 초기화
+    if (props.orderId && props.orderDetails && props.orderDetails.length > 0) {
+      // console.warn('OrderModal: 기존 주문 불러오기', props.orderDetails);
+      setLeftItems([...props.orderDetails]); // 기존 주문 정보로 leftItems 설정
+    } else if (!props.orderId) {
+      // console.warn('OrderModal: 새로운 주문 초기화');
+      setLeftItems([]); // 새로운 주문일 경우 leftItems 초기화
     }
-  }, [props.orderDetails, props.orderId]);
+  }, [props.orderDetails, props.orderId, reset]);
+
   // leftItems 값이 실제로 업데이트된 이후 확인
   useEffect(() => {
-    console.warn('OrderModal leftItems Updated', leftItems);
+    // console.warn('OrderModal leftItems Updated', leftItems);
   }, [props]);
+
+  // watch() 는 폼의 모든 값을 실시간으로 관찰합니다.
+  const allValues = watch();
+
+  useEffect(() => {
+    // console.warn('Current Form Values:', allValues); // 값이 변경될 때마다 출력
+  }, [allValues]);
 
   return (
     <Modal isOpen={props.showModal} toggle={handleClose} backdrop="static" id="order-page" autoFocus={false}>
