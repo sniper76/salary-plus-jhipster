@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Translate, ValidatedField } from 'react-jhipster';
-import { Button, Col, Form, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
+import { Button, Col, Form, Modal, ModalBody, ModalFooter, ModalHeader, Row, Alert } from 'reactstrap';
 import { useForm } from 'react-hook-form';
 import { languages, locales } from 'app/config/translation';
 import './order.scss';
@@ -43,11 +43,24 @@ const OrderModal = (props: IOrderModalProps) => {
   const [leftItems, setLeftItems] = useState([]); // 왼쪽 div 아이템들
   const [draggedItem, setDraggedItem] = useState(null); // 드래그 중인 아이템
 
-  const handleOrderSubmit = e => {
-    // console.warn('handleOrderSubmit', e, leftItems);
-    handleSubmit(orderHandleProps)(e);
+  // const handleOrderSubmit = e => {
+  //   console.warn('handleOrderSubmit', e, leftItems, errors);
+  //   if (Object.keys(errors).length > 0) {
+  //     return; // 에러가 있으면 제출을 막음
+  //   }
+  //   handleSubmit(orderHandleProps)(e);
+  //   handleClose();
+  // };
+
+  const handleOrderSubmit = handleSubmit(data => {
+    // handleSubmit 을 먼저 실행함
+    console.warn('handleOrderSubmit', data, leftItems, errors);
+    // if (Object.keys(errors).length > 0) {
+    //   return; // 에러가 있으면 제출을 막음
+    // }
+    orderHandleProps(data);
     handleClose();
-  };
+  });
 
   const handleDragStart = item => {
     // console.warn('handleDragStart', item);
@@ -192,6 +205,13 @@ const OrderModal = (props: IOrderModalProps) => {
                                 ))}
                               </ValidatedField>
                             )}
+                            {errors?.prices && (
+                              <div>
+                                <Alert color="warning" fade={false}>
+                                  <Translate contentKey="error.order.empty.price">Price cannot be empty.</Translate>
+                                </Alert>
+                              </div>
+                            )}
                             {item.snack ? (
                               <ValidatedField
                                 register={register}
@@ -200,7 +220,7 @@ const OrderModal = (props: IOrderModalProps) => {
                                 name={`prices[${index}]`}
                                 validate={{
                                   required: { value: true, message: 'Price is required.' },
-                                  min: { value: 0, message: 'Price must be a positive number.' },
+                                  min: { value: 1, message: 'Price must be a positive number.' },
                                 }}
                                 data-cy={`prices[${index}]`}
                                 defaultValue={item.price || 0}

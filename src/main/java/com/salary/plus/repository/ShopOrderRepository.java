@@ -22,6 +22,7 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrder, Long> {
             where so.shopId = :shopId
             and so.date = :date
             and so.activated = :activated
+            order by so.id desc
         """
     )
     List<ShopOrderResponse> findAllByShopIdAndDateAndActivated(Long shopId, String date, boolean activated);

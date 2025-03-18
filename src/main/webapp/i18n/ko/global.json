@@ -132,7 +132,7 @@
     "internalServerError": "Internal server error",
     "server.not.reachable": "Server not reachable",
     "url.not.found": "Not found",
-    "NotNull": "Field {{fieldName}} cannot be empty!",
+    "NotNull": "{{fieldName}} 입력하세요!",
     "Size": "Field {{fieldName}} does not meet min/max size requirements!",
     "userexists": "Login name already used!",
     "emailexists": "Email is already in use!",
@@ -146,7 +146,8 @@
     },
     "order": {
       "not.found.target": "대상을 찾을 수 없습니다.",
-      "already.paid.order": "이미 결재 완료한 주문입니다."
+      "already.paid.order": "이미 결재 완료한 주문입니다.",
+      "empty.price": "금액을 입력하세요."
     }
   },
   "footer": "하단영역"

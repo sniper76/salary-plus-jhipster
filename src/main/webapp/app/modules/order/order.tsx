@@ -96,6 +96,7 @@ export const Order = () => {
       dispatch(getShopSalesItems({ shopId: shops[0].id }));
       dispatch(getShopModels({ shopId: shops[0].id }));
       dispatch(getShopTables({ shopId: shops[0].id }));
+      dispatch(getShopOrders({ shopId: shops[0].id, date: currentDate }));
     }
   }, [shops]);
 

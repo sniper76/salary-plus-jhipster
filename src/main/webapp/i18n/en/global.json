@@ -147,7 +147,8 @@
     },
     "order": {
       "not.found.target": "Not found target.",
-      "already.paid.order": "already paid order."
+      "already.paid.order": "Already paid order.",
+      "empty.price": "Price cannot be empty."
     }
   },
   "footer": "This is your footer"

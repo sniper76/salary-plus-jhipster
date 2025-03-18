@@ -26,6 +26,7 @@ export type OrderState = Readonly<typeof initialState>;
 
 export const getShopOrders = createAsyncThunk('order/shop_orders', async ({ shopId, date }: any) => {
   const requestUrl = `api/shops/${shopId}/orders/${date}`;
+  console.warn('requestUrl', requestUrl);
   return axios.get<any[]>(requestUrl);
 });
 
