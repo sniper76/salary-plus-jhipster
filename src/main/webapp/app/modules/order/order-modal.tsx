@@ -148,7 +148,7 @@ const OrderModal = (props: IOrderModalProps) => {
                 {/* 왼쪽 Div (드롭 가능) */}
                 <div id="left" className="box" onDragOver={handleDragOver} onDrop={handleDrop}>
                   {leftItems.map((item, index) => {
-                    console.warn('Rendering item:', item, leftItems); // 콘솔 출력
+                    // console.warn('Rendering item:', item, leftItems); // 콘솔 출력
                     return (
                       <div key={index} className="item">
                         <div className="item-header">
@@ -161,6 +161,14 @@ const OrderModal = (props: IOrderModalProps) => {
                               name={`salesItemIds[${index}]`}
                               data-cy={`salesItemIds[${index}]`}
                               value={item.id}
+                            />
+                            <ValidatedField
+                              type="hidden"
+                              register={register}
+                              id={`orderDetailIds[${index}]`}
+                              name={`orderDetailIds[${index}]`}
+                              data-cy={`orderDetailIds[${index}]`}
+                              value={item.orderDetailId}
                             />
                             <button className="close-btn" onClick={() => handleRemove(index, item)}>
                               ✖

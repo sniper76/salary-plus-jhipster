@@ -5,12 +5,14 @@ import com.salary.plus.domain.ShopOrderDetail;
 import com.salary.plus.domain.ShopUserSalesSalary;
 import com.salary.plus.repository.ShopOrderDetailRepository;
 import com.salary.plus.repository.ShopOrderRepository;
-import com.salary.plus.repository.ShopUserDailySalaryRepository;
 import com.salary.plus.repository.ShopUserSalesSalaryRepository;
 import com.salary.plus.service.dto.ShopOrderCreateDTO;
 import com.salary.plus.service.dto.ShopOrderDetailResponse;
 import com.salary.plus.service.dto.ShopOrderResponse;
+import com.salary.plus.web.rest.errors.BadRequestAlertException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -37,9 +39,7 @@ public class ShopOrderService {
         return shopOrderRepository.findAllByShopIdAndDateAndActivated(shopId, date, true);
     }
 
-    public void createOrder(ShopOrderCreateDTO shopOrderCreateDTO) {
-        final Long shopId = shopOrderCreateDTO.getShopId();
-        final String date = shopOrderCreateDTO.getDate();
+    public void createOrder(Long shopId, String date, ShopOrderCreateDTO shopOrderCreateDTO) {
         final Long tableId = shopOrderCreateDTO.getTableId();
         final List<Long> salesItemIds = shopOrderCreateDTO.getSalesItemIds();
         final List<Long> modelIds = shopOrderCreateDTO.getModelIds();
@@ -66,9 +66,93 @@ public class ShopOrderService {
         }
     }
 
-    public void updateOrder(ShopOrderCreateDTO shopOrderCreateDTO) {}
+    public void updateOrder(Long shopId, String date, ShopOrderCreateDTO shopOrderCreateDTO) {
+        //order table change??
+        //order total price change
+        //order detail price change
+        //user sales change
+        final Long tableId = shopOrderCreateDTO.getTableId();
+        final Long orderId = shopOrderCreateDTO.getOrderId();
+        final List<Long> orderDetailIds = shopOrderCreateDTO.getOrderDetailIds();
+        final List<Long> salesItemIds = shopOrderCreateDTO.getSalesItemIds();
+        final List<Long> modelIds = shopOrderCreateDTO.getModelIds();
+        final List<Integer> prices = shopOrderCreateDTO.getPrices();
+        final ShopOrder shopOrder = shopOrderRepository
+            .findByIdAndShopIdAndDate(orderId, shopId, date)
+            .orElseThrow(() -> new BadRequestAlertException("Not found target", "orders", "order.not.found.target"));
+        if (shopOrder.isPaid()) {
+            throw new BadRequestAlertException("Already paid order", "orders", "order.already.paid.order");
+        }
+        shopOrder.setShopTableId(tableId);
+        shopOrder.setTotalPrice(prices.stream().mapToInt(e -> e).sum());
+        shopOrderRepository.save(shopOrder);
+        List<ShopDetailOrderData> dataList = buildData(orderDetailIds, salesItemIds, modelIds, prices);
+        for (final ShopDetailOrderData orderData : dataList) {
+            if (orderData.orderDetailId == null) {
+                //new insert
+                ShopOrderDetail shopOrderDetail = new ShopOrderDetail();
+                shopOrderDetail.setShopOrderId(orderId);
+                shopOrderDetail.setShopSalesItemId(orderData.salesItemId());
+                shopOrderDetail.setPrice(orderData.price());
+                shopOrderDetailRepository.save(shopOrderDetail);
+                if (orderData.modelId() != null) {
+                    ShopUserSalesSalary shopUserSalesSalary = new ShopUserSalesSalary();
+                    shopUserSalesSalary.setShopOrderDetailId(shopOrderDetail.getId());
+                    shopUserSalesSalary.setPrice(orderData.price());
+                    shopUserSalesSalary.setUserId(orderData.modelId());
+                    shopUserSalesSalaryRepository.save(shopUserSalesSalary);
+                }
+            } else {
+                final ShopOrderDetail shopOrderDetail = shopOrderDetailRepository
+                    .findByIdAndShopOrderId(orderData.orderDetailId, orderId)
+                    .orElseThrow(() -> new BadRequestAlertException("Not found order detail", "orders", "order.not.found.target"));
+                shopOrderDetail.setPrice(orderData.price());
+                shopOrderDetail.setShopSalesItemId(orderData.salesItemId());
+                shopOrderDetailRepository.save(shopOrderDetail);
+                if (orderData.modelId() != null) {
+                    final ShopUserSalesSalary shopUserSalesSalary = shopUserSalesSalaryRepository
+                        .findByShopOrderDetailId(shopOrderDetail.getId())
+                        .orElseThrow(() -> new BadRequestAlertException("Not found order detail", "orders", "order.not.found.target"));
+                    if (Objects.equals(shopUserSalesSalary.getUserId(), orderData.modelId())) {
+                        shopUserSalesSalary.setPrice(orderData.price());
+                        shopUserSalesSalaryRepository.save(shopUserSalesSalary);
+                    } else {
+                        shopUserSalesSalary.setActivated(false);
+                        shopUserSalesSalaryRepository.save(shopUserSalesSalary);
+
+                        // new insert
+                        ShopUserSalesSalary newUserSalary = new ShopUserSalesSalary();
+                        newUserSalary.setShopOrderDetailId(shopOrderDetail.getId());
+                        newUserSalary.setUserId(orderData.modelId());
+                        newUserSalary.setPrice(orderData.price());
+                        shopUserSalesSalaryRepository.save(newUserSalary);
+                    }
+                }
+            }
+        }
+    }
+
+    private List<ShopDetailOrderData> buildData(
+        List<Long> orderDetailIds,
+        List<Long> salesItemIds,
+        List<Long> modelIdx,
+        List<Integer> prices
+    ) {
+        List<ShopDetailOrderData> list = new ArrayList<>();
+        for (int k = 0; k < salesItemIds.size(); k++) {
+            Long salesItemId = salesItemIds.get(k);
+            Integer price = prices.get(k);
+            list.add(new ShopDetailOrderData(getLongId(orderDetailIds, k), salesItemId, getLongId(modelIdx, k), price));
+        }
+        return list;
+    }
+
+    private record ShopDetailOrderData(Long orderDetailId, Long salesItemId, Long modelId, Integer price) {}
 
     private Long getLongId(List<Long> list, int k) {
+        if (list == null) {
+            return null; //바파인, LD 없는 경우
+        }
         try {
             return list.get(k);
         } catch (IndexOutOfBoundsException ioe) {

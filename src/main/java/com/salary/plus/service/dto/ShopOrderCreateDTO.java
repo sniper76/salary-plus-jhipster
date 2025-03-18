@@ -14,10 +14,9 @@ public class ShopOrderCreateDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long shopId;
     private Long orderId;
-    private String date;
     private Long tableId;
+    private List<Long> orderDetailIds;
     private List<Long> modelIds;
     private List<Long> salesItemIds;
     private List<Integer> prices;
@@ -26,16 +25,12 @@ public class ShopOrderCreateDTO implements Serializable {
     public String toString() {
         return (
             "ShopOrderCreateDTO{" +
-            "shopId=" +
-            shopId +
             ", orderId=" +
             orderId +
-            ", date='" +
-            date +
-            '\'' +
-            ", tableNo='" +
+            ", tableId='" +
             tableId +
-            '\'' +
+            ", orderDetailIds=" +
+            orderDetailIds +
             ", modelIds=" +
             modelIds +
             ", salesItemIds=" +

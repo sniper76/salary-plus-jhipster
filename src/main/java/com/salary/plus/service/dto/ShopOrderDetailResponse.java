@@ -18,8 +18,8 @@ public class ShopOrderDetailResponse implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id; //orderId
-    private Long salesItemId;
+    private Long id; //salesItemId;
+    private Long orderDetailId;
     private Long modelId;
     private String nameKo;
     private String nameEn;
@@ -41,8 +41,8 @@ public class ShopOrderDetailResponse implements Serializable {
         ShopSalesItem shopSalesItem,
         ShopUserSalesSalary shopUserSalesSalary
     ) {
-        this.id = shopOrderDetail.getId();
-        this.salesItemId = shopSalesItem.getId();
+        this.id = shopSalesItem.getId();
+        this.orderDetailId = shopOrderDetail.getId();
         this.modelId = getModelId(shopUserSalesSalary);
         this.nameKo = shopSalesItem.getNameKo();
         this.nameEn = shopSalesItem.getNameEn();
@@ -68,8 +68,8 @@ public class ShopOrderDetailResponse implements Serializable {
             "ShopOrderDetailResponse{" +
             "id=" +
             id +
-            ", salesItemId=" +
-            salesItemId +
+            ", orderDetailId=" +
+            orderDetailId +
             ", modelId=" +
             modelId +
             ", nameKo='" +

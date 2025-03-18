@@ -1,46 +1,25 @@
 package com.salary.plus.web.rest;
 
-import com.salary.plus.config.Constants;
-import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopOrderDetail;
 import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
-import com.salary.plus.guard.UserGuard;
-import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.ShopOrderService;
-import com.salary.plus.service.ShopService;
-import com.salary.plus.service.dto.AdminShopDTO;
-import com.salary.plus.service.dto.ShopDailySalaryDTO;
 import com.salary.plus.service.dto.ShopOrderCreateDTO;
-import com.salary.plus.service.dto.ShopOrderDTO;
 import com.salary.plus.service.dto.ShopOrderDetailResponse;
 import com.salary.plus.service.dto.ShopOrderResponse;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
-import com.salary.plus.web.rest.errors.EmailAlreadyUsedException;
-import com.salary.plus.web.rest.errors.LoginAlreadyUsedException;
-import jakarta.persistence.PostUpdate;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Pattern;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -51,10 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
-import tech.jhipster.web.util.PaginationUtil;
-import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing users.
@@ -130,7 +106,7 @@ public class ShopOrderResource {
         @Valid @RequestBody ShopOrderCreateDTO shopOrderCreateDTO
     ) {
         LOG.debug("REST shopId : {}, date : {}, shopOrderCreateDTO : {}", shopId, date, shopOrderCreateDTO);
-        shopOrderService.createOrder(shopOrderCreateDTO);
+        shopOrderService.createOrder(shopId, date, shopOrderCreateDTO);
     }
 
     @PatchMapping("/{shopId}/orders/{date}")
@@ -141,7 +117,7 @@ public class ShopOrderResource {
         @Valid @RequestBody ShopOrderCreateDTO shopOrderCreateDTO
     ) {
         LOG.debug("REST shopId : {}, date : {}, shopOrderCreateDTO : {}", shopId, date, shopOrderCreateDTO);
-        shopOrderService.updateOrder(shopOrderCreateDTO);
+        shopOrderService.updateOrder(shopId, date, shopOrderCreateDTO);
     }
 
     @PutMapping("/{shopId}/orders/{date}/{orderId}")

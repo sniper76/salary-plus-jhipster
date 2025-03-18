@@ -146,7 +146,8 @@
       "not.image": "File was expected to be an image but was found to be \"{{ fileType }}\""
     },
     "order": {
-      "not.found.target": "Not found target."
+      "not.found.target": "Not found target.",
+      "already.paid.order": "already paid order."
     }
   },
   "footer": "This is your footer"
