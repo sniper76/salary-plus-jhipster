@@ -80,14 +80,14 @@ public class ShopOrderResource {
      * @throws URISyntaxException       if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
-    @GetMapping("/{shopId}/orders/{date}")
+    @GetMapping("/{shopId}/dates/{date}/orders")
     public ResponseEntity<List<ShopOrderResponse>> getAllOrders(@PathVariable("shopId") Long shopId, @PathVariable("date") String date) {
         final List<ShopOrderResponse> responses = shopOrderService.getAllOrdersByDate(shopId, date);
         LOG.debug("REST response : {}", responses);
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
-    @GetMapping("/{shopId}/orders/{date}/details/{orderId}")
+    @GetMapping("/{shopId}/dates/{date}/orders/{orderId}")
     public ResponseEntity<List<ShopOrderDetailResponse>> getOrderDetails(
         @PathVariable("shopId") Long shopId,
         @PathVariable("date") String date,
@@ -98,7 +98,7 @@ public class ShopOrderResource {
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
-    @PostMapping("/{shopId}/orders/{date}")
+    @PostMapping("/{shopId}/dates/{date}")
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrder(
         @PathVariable("shopId") Long shopId,
@@ -109,7 +109,7 @@ public class ShopOrderResource {
         shopOrderService.createOrder(shopId, date, shopOrderCreateDTO);
     }
 
-    @PatchMapping("/{shopId}/orders/{date}")
+    @PatchMapping("/{shopId}/dates/{date}")
     @ResponseStatus(HttpStatus.CREATED)
     public void updateOrder(
         @PathVariable("shopId") Long shopId,
@@ -120,7 +120,7 @@ public class ShopOrderResource {
         shopOrderService.updateOrder(shopId, date, shopOrderCreateDTO);
     }
 
-    @PutMapping("/{shopId}/orders/{date}/{orderId}")
+    @PutMapping("/{shopId}/dates/{date}/orders/{orderId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void updateOrderPaid(
         @PathVariable("shopId") Long shopId,

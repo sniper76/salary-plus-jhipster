@@ -148,6 +148,9 @@
       "not.found.target": "대상을 찾을 수 없습니다.",
       "already.paid.order": "이미 결재 완료한 주문입니다.",
       "empty.price": "금액을 입력하세요."
+    },
+    "work": {
+      "not.found.base.salary": "기본 일당 정보를 찾을 수 없습니다."
     }
   },
   "footer": "하단영역"

@@ -1,0 +1,30 @@
+{
+  "work": {
+    "title": "근무",
+    "label": {
+      "checkInOk": "출근완료"
+    },
+    "form": {
+      "button": "주문하기"
+    },
+    "button": {
+      "checkIn": "출근하기",
+      "reset": "초기화",
+      "allCheckIn": "전체출근"
+    },
+    "created": "주문이 생성 되었습니다. {{ param }}",
+    "updated": "주문을 수정 하였습니다. {{ param }}",
+    "deleted": "주문 항목을 삭제 하였습니다. {{ param }}",
+    "delete": {
+      "question": "정말로 {{ param }} 주문 항목을 삭제하시겠습니까?"
+    },
+    "messages": {
+      "error": {
+        "notFoundBaseSalary": "사용자의 기본 일당 정보가 없습니다."
+      }
+    },
+    "password": {
+      "forgot": "비밀번호를 잊으셨나요?"
+    }
+  }
+}

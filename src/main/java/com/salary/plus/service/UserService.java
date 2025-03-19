@@ -10,7 +10,9 @@ import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.dto.AdminUserDTO;
 import com.salary.plus.service.dto.ShopModelResponse;
+import com.salary.plus.service.dto.ShopUserResponse;
 import com.salary.plus.service.dto.UserDTO;
+import com.salary.plus.web.rest.ShopUserResource;
 import io.undertow.util.BadRequestException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -372,5 +374,10 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<ShopModelResponse> getAllModels(Long shopId) {
         return userRepository.findAllByShopId(shopId, true, true);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShopUserResponse> getAllUsersByDate(Long shopId, String date) {
+        return userRepository.findAllByShopIdAndDate(shopId, date, true, true);
     }
 }

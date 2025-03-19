@@ -117,7 +117,7 @@ export const Order = () => {
               ))}
             </select>
             <input defaultValue={currentDate} type="date" onChange={handleDateChange} />
-            <Button onClick={handleOpen} className="alert-link">
+            <Button color="primary" onClick={handleOpen}>
               <Translate contentKey="entity.action.open">Open</Translate>
             </Button>
           </div>

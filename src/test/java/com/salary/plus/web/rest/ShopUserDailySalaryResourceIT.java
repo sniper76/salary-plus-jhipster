@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 @IntegrationTest
-class ShopDailySalaryResourceIT {
+class ShopUserDailySalaryResourceIT {
 
     private static final String TARGET_URL = "/api/shops/{shopId}/daily-salaries";
 

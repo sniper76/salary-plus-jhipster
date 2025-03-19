@@ -6,22 +6,42 @@ import { serializeAxiosError } from 'app/shared/reducers/reducer.utils';
 const initialState = {
   loading: false,
   errorMessage: null,
-  work: {
-    configProps: {} as any,
-    env: {} as any,
-  },
+  users: [],
 };
 
 // Actions
-// const apiUrl = 'api/account';
 
 export type WorkState = Readonly<typeof initialState>;
 
 // Actions
 
-export const getUserRoles = createAsyncThunk('work/user_roles', async () => axios.get<any>('api/account/roles'), {
-  serializeError: serializeAxiosError,
+export const getShopUsers = createAsyncThunk('work/shop_users', async ({ shopId, date }: any) => {
+  const requestUrl = `api/shops/${shopId}/dates/${date}`;
+  // console.warn('requestUrl', requestUrl);
+  return axios.get<any[]>(requestUrl);
 });
+
+export const createCheckIn = createAsyncThunk(
+  'work/create_checkIn',
+  async ({ shopId, date, userId }: any, thunkAPI) => {
+    const requestUrl = `api/shops/${shopId}/dates/${date}/users/${userId}`;
+    const result = await axios.post(requestUrl);
+    thunkAPI.dispatch(getShopUsers({ shopId, date }));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
+
+export const createAllCheckIn = createAsyncThunk(
+  'work/create_checkIn',
+  async ({ shopId, date }: any, thunkAPI) => {
+    const requestUrl = `api/shops/${shopId}/dates/${date}/users/all`;
+    const result = await axios.post(requestUrl);
+    thunkAPI.dispatch(getShopUsers({ shopId, date }));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
 
 export const WorkSlice = createSlice({
   name: 'works',
@@ -29,18 +49,19 @@ export const WorkSlice = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder
-      .addCase(getUserRoles.fulfilled, (state, action) => {
+      .addCase(getShopUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.work = {
-          ...state.work,
-          configProps: action.payload.data,
-        };
+        state.users = action.payload.data;
       })
-      .addMatcher(isPending(getUserRoles), state => {
+      .addMatcher(isPending(getShopUsers), state => {
         state.errorMessage = null;
         state.loading = true;
       })
-      .addMatcher(isRejected(getUserRoles), (state, action) => {
+      .addMatcher(isPending(createCheckIn, createAllCheckIn), state => {
+        state.errorMessage = null;
+        state.loading = false;
+      })
+      .addMatcher(isRejected(getShopUsers, createCheckIn, createAllCheckIn), (state, action) => {
         state.errorMessage = action.error.message;
         state.loading = false;
       });

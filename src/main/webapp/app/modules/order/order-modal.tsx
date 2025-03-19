@@ -54,7 +54,7 @@ const OrderModal = (props: IOrderModalProps) => {
 
   const handleOrderSubmit = handleSubmit(data => {
     // handleSubmit 을 먼저 실행함
-    console.warn('handleOrderSubmit', data, leftItems, errors);
+    // console.warn('handleOrderSubmit', data, leftItems, errors);
     // if (Object.keys(errors).length > 0) {
     //   return; // 에러가 있으면 제출을 막음
     // }

@@ -2,6 +2,8 @@ package com.salary.plus.repository;
 
 import com.salary.plus.domain.User;
 import com.salary.plus.service.dto.ShopModelResponse;
+import com.salary.plus.service.dto.ShopUserResponse;
+import com.salary.plus.web.rest.ShopUserResource;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -55,8 +57,23 @@ public interface UserRepository extends JpaRepository<User, Long> {
             inner join User u on sump.userId = u.id
             where s.id = :shopId
             and u.activated = :activated
-            and u.isCommissionTargetUser = :isCommissionTargetUser
+            and u.isCommissionTarget = :isCommissionTarget
         """
     )
-    List<ShopModelResponse> findAllByShopId(Long shopId, boolean activated, boolean isCommissionTargetUser);
+    List<ShopModelResponse> findAllByShopId(Long shopId, boolean activated, boolean isCommissionTarget);
+
+    @Query(
+        """
+            select new com.salary.plus.service.dto.ShopUserResponse(u, suds)
+            from Shop s
+            inner join ShopUserMapping sump on s.id = sump.shopId
+            inner join User u on sump.userId = u.id
+            left outer join ShopUserDailySalary suds on u.id = suds.userId and suds.date = :date
+            where s.id = :shopId
+            and u.activated = :activated
+            and u.isCommissionTarget = :isCommissionTarget
+            order by u.modelNo
+        """
+    )
+    List<ShopUserResponse> findAllByShopIdAndDate(Long shopId, String date, boolean activated, boolean isCommissionTarget);
 }

@@ -149,6 +149,9 @@
       "not.found.target": "Not found target.",
       "already.paid.order": "Already paid order.",
       "empty.price": "Price cannot be empty."
+    },
+    "work": {
+      "not.found.base.salary": "Not found base salary."
     }
   },
   "footer": "This is your footer"

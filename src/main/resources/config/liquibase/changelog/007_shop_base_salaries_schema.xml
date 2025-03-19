@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="create jhi_shop_base_salary" author="sniper">
+    <createTable tableName="jhi_shop_base_salary" remarks="상점 기본 일당 테이블 정보">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="shop_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name_ko" type="varchar(60)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name_en" type="varchar(60)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="activated" type="boolean" valueBoolean="true">
+        <constraints nullable="false" />
+      </column>
+      <column name="created_by" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_by" type="varchar(50)"/>
+      <column name="last_modified_date" type="timestamp"/>
+    </createTable>
+
+    <createTable tableName="jhi_shop_user_base_salary_mapping" remarks="상점 사용자 기본 일당 연결 정보">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="shop_base_salary_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="user_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="activated" type="boolean" valueBoolean="true">
+        <constraints nullable="false" />
+      </column>
+      <column name="created_by" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_by" type="varchar(50)"/>
+      <column name="last_modified_date" type="timestamp"/>
+    </createTable>
+
+    <createIndex unique="true" tableName="jhi_shop_user_base_salary_mapping" indexName="unique_index_jhi_shop_user_base_salary_mapping">
+      <column name="shop_base_salary_id"/>
+      <column name="user_id"/>
+    </createIndex>
+
+    <rollback>
+      <dropIndex tableName="jhi_shop_user_base_salary_mapping" indexName="unique_index_jhi_shop_user_base_salary_mapping"/>
+    </rollback>
+  </changeSet>
+
+  <changeSet id="add init jhi_shop_base_salary jhi_shop_user_base_salary_mapping" author="sniper">
+    <sql>
+      insert into jhi_shop_base_salary (shop_id, name_ko, name_en, price, activated, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '웨이츄레스 일당', 'Waitress salary', 200, true, 'admin', now());
+      insert into jhi_shop_base_salary (shop_id, name_ko, name_en, price, activated, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '모델 일당 400', 'Model salary 400', 400, true, 'admin', now());
+      insert into jhi_shop_base_salary (shop_id, name_ko, name_en, price, activated, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '모델 일당 500', 'Model salary 500', 500, true, 'admin', now());
+      insert into jhi_shop_user_base_salary_mapping (shop_base_salary_id, user_id, activated, created_by, created_date) values ((select id from jhi_shop_base_salary where name_ko = '웨이츄레스 일당'), (select id from jhi_user where login = 'user'), true, 'admin', now());
+      insert into jhi_shop_user_base_salary_mapping (shop_base_salary_id, user_id, activated, created_by, created_date) values ((select id from jhi_shop_base_salary where name_ko = '모델 일당 400'), (select id from jhi_user where login = 'admin'), true, 'admin', now());
+    </sql>
+  </changeSet>
+</databaseChangeLog>

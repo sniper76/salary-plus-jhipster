@@ -25,13 +25,13 @@ export type OrderState = Readonly<typeof initialState>;
 // Actions
 
 export const getShopOrders = createAsyncThunk('order/shop_orders', async ({ shopId, date }: any) => {
-  const requestUrl = `api/shops/${shopId}/orders/${date}`;
-  console.warn('requestUrl', requestUrl);
+  const requestUrl = `api/shops/${shopId}/dates/${date}/orders`;
+  // console.warn('requestUrl', requestUrl);
   return axios.get<any[]>(requestUrl);
 });
 
 export const getShopOrderDetails = createAsyncThunk('order/shop_order_details', async ({ shopId, date, orderId }: any) => {
-  const requestUrl = `api/shops/${shopId}/orders/${date}/details/${orderId}`;
+  const requestUrl = `api/shops/${shopId}/dates/${date}/orders/${orderId}`;
   // console.warn('requestUrl', requestUrl);
   return axios.get<any[]>(requestUrl);
 });
@@ -60,7 +60,7 @@ export const createOrder = createAsyncThunk(
   async (user: IOrderCreate, thunkAPI) => {
     const shopId = user.shopId;
     const date = user.date;
-    const requestUrl = `api/shops/${shopId}/orders/${date}`;
+    const requestUrl = `api/shops/${shopId}/dates/${date}`;
     const result = await axios.post<IOrderCreate>(requestUrl, user);
     thunkAPI.dispatch(getShopOrders({ shopId, date }));
     return result;
@@ -73,7 +73,7 @@ export const updateOrder = createAsyncThunk(
   async (user: IOrderCreate, thunkAPI) => {
     const shopId = user.shopId;
     const date = user.date;
-    const requestUrl = `api/shops/${shopId}/orders/${date}`;
+    const requestUrl = `api/shops/${shopId}/dates/${date}`;
     const result = await axios.patch<IOrderCreate>(requestUrl, user);
     thunkAPI.dispatch(getShopOrders({ shopId, date }));
     return result;
@@ -84,7 +84,7 @@ export const updateOrder = createAsyncThunk(
 export const updateOrderPaid = createAsyncThunk(
   'order/update_paid_order',
   async ({ shopId, date, orderId }: any, thunkAPI) => {
-    const requestUrl = `api/shops/${shopId}/orders/${date}/${orderId}`;
+    const requestUrl = `api/shops/${shopId}/dates/${date}/orders/${orderId}`;
     const result = await axios.put<any>(requestUrl, { shopId, date, orderId });
     thunkAPI.dispatch(getShopOrders({ shopId, date }));
     return result;

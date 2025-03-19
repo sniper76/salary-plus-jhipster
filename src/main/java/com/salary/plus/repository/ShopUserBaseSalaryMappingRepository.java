@@ -1,15 +1,15 @@
 package com.salary.plus.repository;
 
-import com.salary.plus.domain.ShopUserDailySalary;
+import com.salary.plus.domain.ShopBaseSalary;
+import com.salary.plus.domain.ShopUserBaseSalaryMapping;
 import com.salary.plus.domain.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
  * Spring Data JPA repository for the {@link User} entity.
  */
 @Repository
-public interface ShopUserDailySalaryRepository extends JpaRepository<ShopUserDailySalary, Long> {
-    Optional<ShopUserDailySalary> findByShopIdAndDateAndUserIdAndActivated(Long shopId, String date, Long userId, boolean activated);
-}
+public interface ShopUserBaseSalaryMappingRepository extends JpaRepository<ShopUserBaseSalaryMapping, Long> {}

@@ -34,6 +34,11 @@ public class ShopUserMappingService {
     }
 
     @Transactional(readOnly = true)
+    public List<User> getMappingUsersByShopIdAndCommissionTargetUser(Long shopId) {
+        return shopUserMappingRepository.findAllUserByShopIdAndCommissionTargetUser(shopId, true);
+    }
+
+    @Transactional(readOnly = true)
     public List<ShopUserMapping> getAllByUserId(Long userId) {
         return shopUserMappingRepository.findAllByUserId(userId);
     }

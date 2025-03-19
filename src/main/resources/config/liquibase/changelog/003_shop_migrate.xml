@@ -12,6 +12,8 @@
       insert into jhi_authority (name) values ('ROLE_DJ');
       insert into jhi_authority (name) values ('ROLE_MAMA');
       insert into jhi_authority (name) values ('ROLE_MODEL');
+      insert into jhi_authority (name) values ('ROLE_WAITRESS');
+      insert into jhi_authority (name) values ('ROLE_SUPERVISOR');
     </sql>
   </changeSet>
 

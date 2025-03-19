@@ -18,6 +18,7 @@
     <include file="config/liquibase/changelog/004_shop_penalties_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/005_shop_tables_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/006_change_table_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/007_shop_base_salaries_schema.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->

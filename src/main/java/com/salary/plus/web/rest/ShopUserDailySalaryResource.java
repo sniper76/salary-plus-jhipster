@@ -5,7 +5,7 @@ import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
 import com.salary.plus.security.SecurityUtils;
-import com.salary.plus.service.ShopDailySalaryService;
+import com.salary.plus.service.ShopUserDailySalaryService;
 import com.salary.plus.service.dto.ShopDailySalaryDTO;
 import com.salary.plus.service.dto.UserDTO;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
@@ -53,14 +53,14 @@ import tech.jhipster.web.util.HeaderUtil;
 @RequiredArgsConstructor
 @UseGuards({ ShopGuard.class })
 @RequestMapping("/api/shops")
-public class ShopDailySalaryResource {
+public class ShopUserDailySalaryResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ShopDailySalaryResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShopUserDailySalaryResource.class);
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final ShopDailySalaryService shopDailySalaryService;
+    private final ShopUserDailySalaryService shopDailySalaryService;
 
     /**
      * {@code POST  /api/shops}  : Creates a new user.
