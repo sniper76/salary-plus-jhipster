@@ -1,11 +1,8 @@
 package com.salary.plus.repository;
 
-import com.salary.plus.domain.ShopBaseSalary;
 import com.salary.plus.domain.ShopUserBaseSalaryMapping;
 import com.salary.plus.domain.User;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**

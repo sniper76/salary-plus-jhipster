@@ -6,14 +6,14 @@
       "createLabel": "상품 생성",
       "createOrEditLabel": "상품 생성 또는 수정"
     },
-    "created": "A new user is created with identifier {{ param }}",
-    "updated": "A user is updated with identifier {{ param }}",
-    "deleted": "A user is deleted with identifier {{ param }}",
+    "created": "상품이 등로되었습니다. {{ param }}",
+    "updated": "상품이 수정되었습니다. {{ param }}",
+    "deleted": "상품이 삭제되었습니다. {{ param }}",
     "delete": {
-      "question": "정말로 {{ login }} 사용자를 삭제하시겠습니까?"
+      "question": "정말로 {{ name }} 상품를 삭제하시겠습니까?"
     },
     "detail": {
-      "title": "사용자"
+      "title": "상품"
     },
     "login": "로그인 아이디",
     "firstName": "이름",
@@ -21,6 +21,8 @@
     "email": "이메일",
     "activated": "활성",
     "deactivated": "비활성",
+    "isCommissionTarget": "커미션 대상 여부",
+    "isSnack": "안주 여부",
     "profiles": "Profiles",
     "langKey": "언어",
     "createdBy": "생성자",

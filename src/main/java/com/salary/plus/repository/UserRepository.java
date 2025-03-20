@@ -3,7 +3,6 @@ package com.salary.plus.repository;
 import com.salary.plus.domain.User;
 import com.salary.plus.service.dto.ShopModelResponse;
 import com.salary.plus.service.dto.ShopUserResponse;
-import com.salary.plus.web.rest.ShopUserResource;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;

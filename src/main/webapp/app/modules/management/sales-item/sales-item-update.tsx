@@ -31,12 +31,10 @@ export const SalesItemUpdate = () => {
     navigate('/shop/sales-item');
   };
 
-  const mapIdList = (idList: ReadonlyArray<any>) => idList.filter((id: any) => id !== '').map((id: any) => id);
-
   const saveUser = values => {
     const entity = {
       ...values,
-      salesItem: mapIdList(values.salesItem),
+      shopId,
     };
     if (isNew) {
       dispatch(createSalesItem(entity));
@@ -115,6 +113,14 @@ export const SalesItemUpdate = () => {
                 disabled={!salesItem.id}
                 label={translate('userManagement.activated')}
               />
+              <ValidatedField
+                type="checkbox"
+                name="isCommissionTarget"
+                check
+                value={salesItem.commissionTarget}
+                label={translate('salesItem.isCommissionTarget')}
+              />
+              <ValidatedField type="checkbox" name="isSnack" check value={salesItem.snack} label={translate('salesItem.isSnack')} />
               <ValidatedField
                 type="number"
                 name="price"

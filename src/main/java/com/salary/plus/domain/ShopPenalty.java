@@ -1,7 +1,6 @@
 package com.salary.plus.domain;
 
 import com.salary.plus.enums.PenaltyType;
-import com.salary.plus.enums.ShopType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

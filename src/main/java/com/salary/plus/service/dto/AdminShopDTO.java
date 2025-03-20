@@ -1,14 +1,10 @@
 package com.salary.plus.service.dto;
 
-import com.salary.plus.domain.Authority;
 import com.salary.plus.domain.Shop;
-import com.salary.plus.domain.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 

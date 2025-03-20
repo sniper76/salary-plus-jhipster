@@ -1,5 +1,6 @@
 export interface IShopSalesItem {
   id?: any;
+  shopId?: any;
   nameKo?: string;
   nameEn?: string;
   isCommissionTarget?: boolean;
@@ -17,6 +18,7 @@ export interface IShopSalesItem {
 
 export const defaultValue: Readonly<IShopSalesItem> = {
   id: '',
+  shopId: '',
   nameKo: '',
   nameEn: '',
   isCommissionTarget: false,

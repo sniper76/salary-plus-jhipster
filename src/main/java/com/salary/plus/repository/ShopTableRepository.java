@@ -1,8 +1,6 @@
 package com.salary.plus.repository;
 
-import com.salary.plus.domain.ShopPenalty;
 import com.salary.plus.domain.ShopTable;
-import com.salary.plus.domain.User;
 import com.salary.plus.service.dto.ShopTableResponse;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

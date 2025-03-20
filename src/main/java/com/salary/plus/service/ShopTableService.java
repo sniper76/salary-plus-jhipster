@@ -1,9 +1,6 @@
 package com.salary.plus.service;
 
-import com.salary.plus.domain.ShopSalesItem;
-import com.salary.plus.repository.ShopSalesItemRepository;
 import com.salary.plus.repository.ShopTableRepository;
-import com.salary.plus.service.dto.ShopSalesItemDTO;
 import com.salary.plus.service.dto.ShopTableResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

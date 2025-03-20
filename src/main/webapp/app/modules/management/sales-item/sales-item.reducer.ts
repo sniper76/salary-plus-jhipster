@@ -33,8 +33,10 @@ export const getShopSalesItem = createAsyncThunk('management/sales_item', async 
 export const createSalesItem = createAsyncThunk(
   'management/create_sales_item',
   async (user: IShopSalesItem, thunkAPI) => {
-    const result = await axios.post<IShopSalesItem>(apiUrl, user);
-    thunkAPI.dispatch(getPageShopSalesItems({}));
+    const requestUrl = `${apiUrl}${user.shopId}/sales-items`;
+    console.warn('requestUrl', requestUrl);
+    const result = await axios.post<IShopSalesItem>(requestUrl, user);
+    thunkAPI.dispatch(getPageShopSalesItems({ id: user.shopId }));
     return result;
   },
   { serializeError: serializeAxiosError },
@@ -43,8 +45,9 @@ export const createSalesItem = createAsyncThunk(
 export const updateSalesItem = createAsyncThunk(
   'management/update_sales_item',
   async (user: IShopSalesItem, thunkAPI) => {
-    const result = await axios.put<IShopSalesItem>(apiUrl, user);
-    thunkAPI.dispatch(getPageShopSalesItems({}));
+    const requestUrl = `${apiUrl}${user.shopId}/sales-items`;
+    const result = await axios.put<IShopSalesItem>(requestUrl, user);
+    thunkAPI.dispatch(getPageShopSalesItems({ id: user.shopId }));
     return result;
   },
   { serializeError: serializeAxiosError },
@@ -52,10 +55,10 @@ export const updateSalesItem = createAsyncThunk(
 
 export const deleteSalesItem = createAsyncThunk(
   'management/delete_sales_item',
-  async (id: string, thunkAPI) => {
-    const requestUrl = `${apiUrl}/${id}`;
+  async ({ shopId, salesItemId }: any, thunkAPI) => {
+    const requestUrl = `${apiUrl}${shopId}/sales-items/${salesItemId}`;
     const result = await axios.delete<IShopSalesItem>(requestUrl);
-    thunkAPI.dispatch(getPageShopSalesItems({}));
+    thunkAPI.dispatch(getPageShopSalesItems({ id: shopId }));
     return result;
   },
   { serializeError: serializeAxiosError },

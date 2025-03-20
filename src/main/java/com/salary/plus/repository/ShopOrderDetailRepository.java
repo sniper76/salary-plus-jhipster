@@ -1,6 +1,5 @@
 package com.salary.plus.repository;
 
-import com.salary.plus.domain.ShopOrder;
 import com.salary.plus.domain.ShopOrderDetail;
 import com.salary.plus.domain.User;
 import java.util.Optional;

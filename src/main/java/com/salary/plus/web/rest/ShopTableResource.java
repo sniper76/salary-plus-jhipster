@@ -4,8 +4,6 @@ import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
 import com.salary.plus.service.ShopTableService;
-import com.salary.plus.service.UserService;
-import com.salary.plus.service.dto.ShopModelResponse;
 import com.salary.plus.service.dto.ShopTableResponse;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import java.net.URISyntaxException;

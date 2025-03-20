@@ -5,7 +5,7 @@ import { getPaginationState, JhiItemCount, JhiPagination, TextFormat, Translate 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 
-import { APP_DATE_FORMAT } from 'app/config/constants';
+import { APP_LOCAL_TIMESTAMP_FORMAT } from 'app/config/constants';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
@@ -122,7 +122,7 @@ export const SalesItem = () => {
             <FontAwesomeIcon icon="sync" spin={loading} />
             <Translate contentKey="salesItem.home.refreshListLabel">상품 조회</Translate>
           </Button>
-          <Link to="new" className="btn btn-primary jh-create-entity">
+          <Link to={`${selectedValue}/new`} className="btn btn-primary jh-create-entity">
             <FontAwesomeIcon icon="plus" /> <Translate contentKey="salesItem.home.createLabel">상품 생성</Translate>
           </Link>
         </div>
@@ -161,7 +161,7 @@ export const SalesItem = () => {
           {salesItemsForPage.map((user, i) => (
             <tr id={user.id} key={`user-${i}`}>
               <td>
-                <Button tag={Link} to={user.id} color="link" size="sm">
+                <Button tag={Link} to={`${selectedValue}/${user.id}`} color="link" size="sm">
                   {user.id}
                 </Button>
               </td>
@@ -179,17 +179,19 @@ export const SalesItem = () => {
                 )}
               </td>
               <td>
-                {user.createdDate ? <TextFormat value={user.createdDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid /> : null}
+                {user.createdDate ? (
+                  <TextFormat value={user.createdDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
+                ) : null}
               </td>
               <td>{user.lastModifiedBy}</td>
               <td>
                 {user.lastModifiedDate ? (
-                  <TextFormat value={user.lastModifiedDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid />
+                  <TextFormat value={user.lastModifiedDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
                 ) : null}
               </td>
               <td className="text-end">
                 <div className="btn-group flex-btn-group-container">
-                  <Button tag={Link} to={user.id} color="info" size="sm">
+                  <Button tag={Link} to={`${selectedValue}/${user.id}`} color="info" size="sm">
                     <FontAwesomeIcon icon="eye" />{' '}
                     <span className="d-none d-md-inline">
                       <Translate contentKey="entity.action.view">보기</Translate>
@@ -201,7 +203,7 @@ export const SalesItem = () => {
                       <Translate contentKey="entity.action.edit">수정</Translate>
                     </span>
                   </Button>
-                  <Button tag={Link} to={`${user.id}/delete`} color="danger" size="sm">
+                  <Button tag={Link} to={`${selectedValue}/${user.id}/delete`} color="danger" size="sm">
                     <FontAwesomeIcon icon="trash" />{' '}
                     <span className="d-none d-md-inline">
                       <Translate contentKey="entity.action.delete">삭제</Translate>

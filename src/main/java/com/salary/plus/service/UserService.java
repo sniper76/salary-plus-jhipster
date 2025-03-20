@@ -12,7 +12,6 @@ import com.salary.plus.service.dto.AdminUserDTO;
 import com.salary.plus.service.dto.ShopModelResponse;
 import com.salary.plus.service.dto.ShopUserResponse;
 import com.salary.plus.service.dto.UserDTO;
-import com.salary.plus.web.rest.ShopUserResource;
 import io.undertow.util.BadRequestException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

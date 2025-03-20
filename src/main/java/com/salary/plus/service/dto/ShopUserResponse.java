@@ -1,7 +1,5 @@
 package com.salary.plus.service.dto;
 
-import com.salary.plus.domain.ShopOrder;
-import com.salary.plus.domain.ShopTable;
 import com.salary.plus.domain.ShopUserDailySalary;
 import com.salary.plus.domain.User;
 import java.io.Serializable;

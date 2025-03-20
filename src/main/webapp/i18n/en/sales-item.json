@@ -6,14 +6,14 @@
       "createLabel": "Create a new Sales Item",
       "createOrEditLabel": "Create or edit a Sales Item"
     },
-    "created": "A new user is created with identifier {{ param }}",
-    "updated": "A user is updated with identifier {{ param }}",
-    "deleted": "A user is deleted with identifier {{ param }}",
+    "created": "A new sales item is created with identifier {{ param }}",
+    "updated": "A sales item is updated with identifier {{ param }}",
+    "deleted": "A sales item is deleted with identifier {{ param }}",
     "delete": {
-      "question": "Are you sure you want to delete user {{ login }}?"
+      "question": "Are you sure you want to delete sales item {{ name }}?"
     },
     "detail": {
-      "title": "User"
+      "title": "Sales Item"
     },
     "login": "Login",
     "firstName": "First name",
@@ -21,6 +21,8 @@
     "email": "Email",
     "activated": "Activated",
     "deactivated": "Deactivated",
+    "isCommissionTarget": "Is Commission target",
+    "isSnack": "Is snack",
     "profiles": "Profiles",
     "langKey": "Language",
     "createdBy": "Created by",

@@ -1,7 +1,10 @@
 package com.salary.plus.service.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.List;
+import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,9 +17,37 @@ public class ShopSalesItemDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long shopId;
+    private Long id;
 
-    private List<SalesItem> items;
+    @NotBlank
+    @Size(min = 1, max = 50)
+    private String nameKo;
 
-    public record SalesItem(String nameKo, String nameEn, Integer price) {}
+    @NotBlank
+    @Size(min = 1, max = 50)
+    private String nameEn;
+
+    private boolean activated = false;
+    private boolean isCommissionTarget = false;
+    private boolean isSnack = false;
+
+    @PositiveOrZero
+    private Integer price;
+
+    @PositiveOrZero
+    private Integer shopCommissionPrice;
+
+    @PositiveOrZero
+    private Integer mamaCommissionPrice;
+
+    @PositiveOrZero
+    private Integer modelCommissionPrice;
+
+    private String createdBy;
+
+    private Instant createdDate;
+
+    private String lastModifiedBy;
+
+    private Instant lastModifiedDate;
 }

@@ -1,16 +1,12 @@
 package com.salary.plus.web.rest;
 
-import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopSalesItem;
 import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
 import com.salary.plus.security.AuthoritiesConstants;
-import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.ShopSalesItemService;
-import com.salary.plus.service.dto.AdminUserDTO;
 import com.salary.plus.service.dto.ShopSalesItemDTO;
-import com.salary.plus.service.dto.UserDTO;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -18,6 +14,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +26,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -94,16 +93,36 @@ public class ShopSalesItemResource {
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
     @PostMapping("/{shopId}/sales-items")
-    public ResponseEntity<UserDTO> createUser(@PathVariable("shopId") Long shopId, @Valid @RequestBody ShopSalesItemDTO shopSalesItemDTO)
+    public ResponseEntity<ShopSalesItem> create(@PathVariable("shopId") Long shopId, @Valid @RequestBody ShopSalesItemDTO shopSalesItemDTO)
         throws URISyntaxException {
-        LOG.debug("REST request to save User : {}", shopSalesItemDTO);
-        List<ShopSalesItem> newUser = shopSalesItemService.create(shopId, shopSalesItemDTO);
-        final UserDTO userDTO = new UserDTO();
-        userDTO.setLogin(SecurityUtils.getLoginNoneNull());
-        userDTO.setItems(newUser);
+        LOG.debug("REST request to create shopSalesItemDTO : {}", shopSalesItemDTO);
+        ShopSalesItem newUser = shopSalesItemService.create(shopId, shopSalesItemDTO);
         return ResponseEntity.created(new URI("/api/shops/" + shopId + "/sales-items"))
-            .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", userDTO.getLogin()))
-            .body(userDTO);
+            .headers(HeaderUtil.createAlert(applicationName, "salesItem.created", shopSalesItemDTO.getNameKo()))
+            .body(newUser);
+    }
+
+    @PutMapping("/{shopId}/sales-items")
+    public ResponseEntity<ShopSalesItem> update(
+        @PathVariable("shopId") Long shopId,
+        @Valid @RequestBody ShopSalesItemDTO shopSalesItemDTO
+    ) {
+        LOG.debug("REST request to update shopSalesItemDTO : {}", shopSalesItemDTO);
+        Optional<ShopSalesItem> newUser = shopSalesItemService.update(shopId, shopSalesItemDTO);
+        return ResponseUtil.wrapOrNotFound(
+            newUser,
+            HeaderUtil.createAlert(applicationName, "salesItem.updated", shopSalesItemDTO.getNameKo())
+        );
+    }
+
+    @DeleteMapping("/{shopId}/sales-items/{salesItemId}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<Void> delete(@PathVariable("shopId") Long shopId, @PathVariable("salesItemId") long salesItemId) {
+        LOG.debug("REST request to get ShopId : {}, ShopSalesItemId : {}", shopId, salesItemId);
+        shopSalesItemService.delete(shopId, salesItemId);
+        return ResponseEntity.noContent()
+            .headers(HeaderUtil.createAlert(applicationName, "salesItem.deleted", String.valueOf(salesItemId)))
+            .build();
     }
 
     /**
