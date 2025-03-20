@@ -20,6 +20,11 @@
         "logout": "Sign out",
         "register": "Register"
       },
+      "management": {
+        "salesItem": "Sales Item",
+        "penalty": "Penalty",
+        "salary": "Salary"
+      },
       "admin": {
         "main": "Administration",
         "userManagement": "User management",
@@ -88,7 +93,15 @@
     "ribbon": {
       "dev": "Development"
     },
-    "item-count": "Showing {{first}} - {{second}} of {{total}} items."
+    "item-count": "Showing {{first}} - {{second}} of {{total}} items.",
+    "label": {
+      "nameKo": "Korean",
+      "nameEn": "English",
+      "price": "Price",
+      "shopCommissionPrice": "Shop Commission Price",
+      "mamaCommissionPrice": "Mama Commission Price",
+      "modelCommissionPrice": "Model Commission Price"
+    }
   },
   "entity": {
     "action": {

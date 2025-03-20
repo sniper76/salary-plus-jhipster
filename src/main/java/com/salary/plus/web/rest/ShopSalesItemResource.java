@@ -1,31 +1,44 @@
 package com.salary.plus.web.rest;
 
+import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopSalesItem;
 import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
+import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.ShopSalesItemService;
+import com.salary.plus.service.dto.AdminUserDTO;
 import com.salary.plus.service.dto.ShopSalesItemDTO;
 import com.salary.plus.service.dto.UserDTO;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
+import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing users.
@@ -56,6 +69,10 @@ import tech.jhipster.web.util.HeaderUtil;
 @UseGuards({ ShopGuard.class })
 @RequestMapping("/api/shops")
 public class ShopSalesItemResource {
+
+    private static final List<String> ALLOWED_ORDERED_PROPERTIES = Collections.unmodifiableList(
+        Arrays.asList("id", "nameKo", "nameEn", "price", "createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate")
+    );
 
     private static final Logger LOG = LoggerFactory.getLogger(ShopSalesItemResource.class);
 
@@ -94,10 +111,38 @@ public class ShopSalesItemResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
      */
-    @GetMapping("/{shopId}/sales-items")
+    @GetMapping("/{shopId}/sales-items/all")
     public ResponseEntity<List<ShopSalesItem>> getAllSalesItems(@PathVariable("shopId") Long shopId) {
         LOG.debug("REST request to get all sales item for an admin");
         final List<ShopSalesItem> items = shopSalesItemService.getAllSalesItems(shopId);
         return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
+    @GetMapping("/{shopId}/sales-items/{salesItemId}")
+    public ResponseEntity<ShopSalesItem> getShopShopSalesItem(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("salesItemId") long salesItemId
+    ) {
+        LOG.debug("REST request to get ShopId : {}, ShopSalesItemId : {}", shopId, salesItemId);
+        return ResponseUtil.wrapOrNotFound(shopSalesItemService.get(shopId, salesItemId));
+    }
+
+    @GetMapping("/{shopId}/sales-items")
+    public ResponseEntity<List<ShopSalesItem>> getAllSalesItemsForPage(
+        @PathVariable("shopId") Long shopId,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        LOG.debug("REST shopId: {}, pageable: {}", shopId, pageable);
+        if (!onlyContainsAllowedProperties(pageable)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        final Page<ShopSalesItem> page = shopSalesItemService.getAllSalesItems(shopId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    private boolean onlyContainsAllowedProperties(Pageable pageable) {
+        return pageable.getSort().stream().map(Sort.Order::getProperty).allMatch(ALLOWED_ORDERED_PROPERTIES::contains);
     }
 }

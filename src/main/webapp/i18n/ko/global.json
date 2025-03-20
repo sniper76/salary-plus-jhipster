@@ -20,6 +20,11 @@
         "logout": "로그아웃",
         "register": "등록"
       },
+      "management": {
+        "salesItem": "상품관리",
+        "penalty": "벌금관리",
+        "salary": "일당관리"
+      },
       "admin": {
         "main": "관리자",
         "tracker": "사용자 트랙커",
@@ -88,7 +93,15 @@
     "ribbon": {
       "dev": "Development"
     },
-    "item-count": "Showing {{first}} - {{second}} of {{total}} items."
+    "item-count": "Showing {{first}} - {{second}} of {{total}} items.",
+    "label": {
+      "nameKo": "한글명",
+      "nameEn": "영문명",
+      "price": "금액",
+      "shopCommissionPrice": "상점 커미션 금액",
+      "mamaCommissionPrice": "마마상 커미션 금액",
+      "modelCommissionPrice": "모델 커미션 금액"
+    }
   },
   "entity": {
     "action": {

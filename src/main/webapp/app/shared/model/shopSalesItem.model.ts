@@ -5,6 +5,10 @@ export interface IShopSalesItem {
   isCommissionTarget?: boolean;
   isSnack?: boolean;
   activated?: boolean;
+  price?: number;
+  shopCommissionPrice?: number;
+  mamaCommissionPrice?: number;
+  modelCommissionPrice?: number;
   createdBy?: string;
   createdDate?: Date | null;
   lastModifiedBy?: string;
@@ -18,6 +22,10 @@ export const defaultValue: Readonly<IShopSalesItem> = {
   isCommissionTarget: false,
   isSnack: false,
   activated: true,
+  price: 0,
+  shopCommissionPrice: 0,
+  mamaCommissionPrice: 0,
+  modelCommissionPrice: 0,
   createdBy: '',
   createdDate: null,
   lastModifiedBy: '',

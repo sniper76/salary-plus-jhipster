@@ -11,6 +11,7 @@ import settings from 'app/modules/account/settings/settings.reducer';
 import passwordReset from 'app/modules/account/password-reset/password-reset.reducer';
 import works from 'app/modules/work/work.reducer';
 import orders from 'app/modules/order/order.reducer';
+import salesItems from 'app/modules/management/sales-item/sales-item.reducer';
 import entitiesReducers from 'app/entities/reducers';
 import applicationProfile from './application-profile';
 import authentication from './authentication';
@@ -31,6 +32,7 @@ const rootReducer: ReducersMapObject = {
   settings,
   works,
   orders,
+  salesItems,
   loadingBar,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   ...entitiesReducers,
