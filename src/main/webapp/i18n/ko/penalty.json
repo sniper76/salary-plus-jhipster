@@ -12,12 +12,24 @@
     "delete": {
       "question": "정말로 {{ name }} 벌금를 삭제하시겠습니까?"
     },
+    "messages": {
+      "validate": {
+        "required": {
+          "typeValue": "벌금유형값 입력이 필요합니다.",
+          "price": "금액 입력이 필요합니다."
+        },
+        "pattern": {
+          "typeValue.time": "벌금유형값 입력은 1M,1H 형식만 가능합니다.",
+          "typeValue.day": "벌금유형값 입력은 MON,TUE,WED,THU,FRI,SAT,SUN 만 가능합니다."
+        }
+      }
+    },
     "detail": {
       "title": "벌금"
     },
     "login": "로그인 아이디",
-    "firstName": "이름",
-    "lastName": "성",
+    "type": "벌금유형",
+    "typeValue": "벌금유형값",
     "email": "이메일",
     "activated": "활성",
     "deactivated": "비활성",

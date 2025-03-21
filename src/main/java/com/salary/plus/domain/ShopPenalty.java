@@ -29,6 +29,9 @@ public class ShopPenalty extends AbstractAuditingEntity<Long> implements Seriali
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "shop_id", nullable = false)
+    private Long shopId;
+
     @Column(name = "name_ko", nullable = false)
     private String nameKo;
 
@@ -40,7 +43,7 @@ public class ShopPenalty extends AbstractAuditingEntity<Long> implements Seriali
     private PenaltyType type;
 
     @Column(name = "type_value", nullable = false)
-    private String typeValue; //DAY=MON,TUE,WED,THU,FRI,SAT,SUN, TIME=1minute,1hour
+    private String typeValue; //DAY=MON,TUE,WED,THU,FRI,SAT,SUN, TIME=1M,1H
 
     @Column(name = "price", nullable = false)
     private Integer price;

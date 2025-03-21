@@ -68,6 +68,12 @@
         "dontmatch": "비밀번호가 일치하지 않습니다!"
       },
       "validate": {
+        "nameKo.required": "한글명 입력이 필요합니다.",
+        "nameEn.required": "영문명 입력이 필요합니다.",
+        "price": {
+          "required": "금액 입력이 필요합니다.",
+          "size": "금액은 0 보다 커야 합니다."
+        },
         "newpassword": {
           "required": "비밀번호 입력이 필요합니다.",
           "minlength": "비밀번호는 최소 4자 이상이어야 합니다",

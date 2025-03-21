@@ -12,12 +12,24 @@
     "delete": {
       "question": "Are you sure you want to delete penalty {{ name }}?"
     },
+    "messages": {
+      "validate": {
+        "required": {
+          "typeValue": "Type value is required.",
+          "price": "Price is required."
+        },
+        "pattern": {
+          "typeValue.time": "Type value is Only 1M,1H pattern are allowed.",
+          "typeValue.day": "Type value is Only MON,TUE,WED,THU,FRI,SAT,SUN are allowed."
+        }
+      }
+    },
     "detail": {
       "title": "Penalty"
     },
     "login": "Login",
-    "firstName": "First name",
-    "lastName": "Last name",
+    "type": "Penalty type",
+    "typeValue": "Penalty type value",
     "email": "Email",
     "activated": "Activated",
     "deactivated": "Deactivated",

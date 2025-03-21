@@ -12,18 +12,18 @@ import { getShopPenalty } from './penalty.reducer';
 export const PenaltyDetail = () => {
   const dispatch = useAppDispatch();
 
-  const { shopId, salesItemId } = useParams();
+  const { shopId, shopPenaltyId } = useParams();
 
   useEffect(() => {
-    dispatch(getShopPenalty({ shopId, salesItemId }));
+    dispatch(getShopPenalty({ shopId, shopPenaltyId }));
   }, []);
 
-  const salesItem = useAppSelector(state => state.salesItems.salesItem);
+  const penalty = useAppSelector(state => state.penalties.penalty);
 
   return (
     <div>
       <h2>
-        <Translate contentKey="salesItem.detail.title">상품</Translate>
+        <Translate contentKey="penalty.detail.title">벌금</Translate>
       </h2>
       <Row size="md">
         <dl className="jh-entity-details">
@@ -31,8 +31,8 @@ export const PenaltyDetail = () => {
             <Translate contentKey="global.field.id">ID</Translate>
           </dt>
           <dd>
-            <span>{salesItem.id}</span>&nbsp;
-            {salesItem.activated ? (
+            <span>{penalty.id}</span>&nbsp;
+            {penalty.activated ? (
               <Badge color="success">
                 <Translate contentKey="userManagement.activated">Activated</Translate>
               </Badge>
@@ -45,57 +45,45 @@ export const PenaltyDetail = () => {
           <dt>
             <Translate contentKey="global.label.nameKo">한글명</Translate>
           </dt>
-          <dd>{salesItem.nameKo}</dd>
+          <dd>{penalty.nameKo}</dd>
           <dt>
             <Translate contentKey="global.label.nameEn">영문명</Translate>
           </dt>
-          <dd>{salesItem.nameEn}</dd>
-          <dt>
-            <Translate contentKey="salesItem.isCommissionTarget">커미션 대상 여부</Translate>
-          </dt>
-          <dd>{salesItem.commissionTarget ? 'Yes' : 'No'}</dd>
-          <dt>
-            <Translate contentKey="salesItem.isSnack">안주 여부</Translate>
-          </dt>
-          <dd>{salesItem.snack ? 'Yes' : 'No'}</dd>
+          <dd>{penalty.nameEn}</dd>
           <dt>
             <Translate contentKey="global.label.price">금액</Translate>
           </dt>
-          <dd>{salesItem.price}</dd>
+          <dd>{penalty.price}</dd>
           <dt>
-            <Translate contentKey="global.label.shopCommissionPrice">상점 커미션 금액</Translate>
+            <Translate contentKey="penalty.type">벌금유형</Translate>
           </dt>
-          <dd>{salesItem.shopCommissionPrice}</dd>
+          <dd>{penalty.type}</dd>
           <dt>
-            <Translate contentKey="global.label.mamaCommissionPrice">마마 커미션 금액</Translate>
+            <Translate contentKey="penalty.typeValue">벌금유형값</Translate>
           </dt>
-          <dd>{salesItem.mamaCommissionPrice}</dd>
-          <dt>
-            <Translate contentKey="global.label.modelCommissionPrice">모델 커미션 금액</Translate>
-          </dt>
-          <dd>{salesItem.modelCommissionPrice}</dd>
+          <dd>{penalty.typeValue}</dd>
           <dt>
             <Translate contentKey="userManagement.createdBy">Created By</Translate>
           </dt>
-          <dd>{salesItem.createdBy}</dd>
+          <dd>{penalty.createdBy}</dd>
           <dt>
             <Translate contentKey="userManagement.createdDate">Created Date</Translate>
           </dt>
           <dd>
-            {salesItem.createdDate ? (
-              <TextFormat value={salesItem.createdDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
+            {penalty.createdDate ? (
+              <TextFormat value={penalty.createdDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
             ) : null}
           </dd>
           <dt>
             <Translate contentKey="userManagement.lastModifiedBy">Last Modified By</Translate>
           </dt>
-          <dd>{salesItem.lastModifiedBy}</dd>
+          <dd>{penalty.lastModifiedBy}</dd>
           <dt>
             <Translate contentKey="userManagement.lastModifiedDate">Last Modified Date</Translate>
           </dt>
           <dd>
-            {salesItem.lastModifiedDate ? (
-              <TextFormat value={salesItem.lastModifiedDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
+            {penalty.lastModifiedDate ? (
+              <TextFormat value={penalty.lastModifiedDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
             ) : null}
           </dd>
         </dl>

@@ -68,6 +68,12 @@
         "dontmatch": "The password and its confirmation do not match!"
       },
       "validate": {
+        "nameKo.required": "Korean is required.",
+        "nameEn.required": "English is required.",
+        "price": {
+          "required": "Price is required.",
+          "size": "Price must be a positive number."
+        },
         "newpassword": {
           "required": "Your password is required.",
           "minlength": "Your password is required to be at least 4 characters.",

@@ -57,7 +57,7 @@ export const Penalty = () => {
   useEffect(() => {
     if (shops.length > 0) {
       setSelectedValue(shops[0].id);
-      // dispatch(getShopPenaltys({ shopId: shops[0].id }));
+      // dispatch(getShopPenalties({ shopId: shops[0].id }));
     }
   }, [shops]);
 
@@ -141,6 +141,9 @@ export const Penalty = () => {
             <th className="hand" onClick={sort('nameEn')}>
               <Translate contentKey="global.label.nameEn">영문명</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('nameEn')} />
             </th>
+            <th className="hand" onClick={sort('type')}>
+              <Translate contentKey="penalty.type">벌금유형</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('type')} />
+            </th>
             <th>
               <Translate contentKey="userManagement.profiles">Profiles</Translate>
             </th>
@@ -169,6 +172,7 @@ export const Penalty = () => {
               </td>
               <td>{user.nameKo}</td>
               <td>{user.nameEn}</td>
+              <td>{user.type}</td>
               <td>
                 {user.activated ? (
                   <Button color="success" onClick={toggleActive(user)}>

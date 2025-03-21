@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Col, FormText, Row } from 'reactstrap';
 import { isEmail, Translate, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
@@ -13,19 +13,19 @@ export const PenaltyUpdate = () => {
 
   const navigate = useNavigate();
 
-  const { shopId, salesItemId } = useParams();
-  const isNew = salesItemId === undefined;
+  const { shopId, shopPenaltyId } = useParams();
+  const isNew = shopPenaltyId === undefined;
 
   useEffect(() => {
     if (isNew) {
       dispatch(reset());
     } else {
-      dispatch(getShopPenalty({ shopId, salesItemId }));
+      dispatch(getShopPenalty({ shopId, shopPenaltyId }));
     }
     return () => {
       dispatch(reset());
     };
-  }, [salesItemId]);
+  }, [shopPenaltyId]);
 
   const handleClose = () => {
     navigate('/shop/penalty');
@@ -45,10 +45,21 @@ export const PenaltyUpdate = () => {
   };
 
   const isInvalid = false;
-  const salesItem = useAppSelector(state => state.salesItems.salesItem);
-  const loading = useAppSelector(state => state.salesItems.loading);
-  const updating = useAppSelector(state => state.salesItems.updating);
-  console.warn('salesItem', salesItem);
+  const penalty = useAppSelector(state => state.penalties.penalty);
+  const loading = useAppSelector(state => state.penalties.loading);
+  const updating = useAppSelector(state => state.penalties.updating);
+
+  const types: any = [
+    { key: 'TIME', name: '시간' },
+    { key: 'DAY', name: '요일' },
+  ];
+
+  const [selectTypeValue, setSelectTypeValue] = useState(penalty.type);
+
+  const handleOnChangeType = e => {
+    console.warn('handleOnChangeType', e.target.value);
+    setSelectTypeValue(e.target.value);
+  };
 
   return (
     <div>
@@ -64,8 +75,8 @@ export const PenaltyUpdate = () => {
           {loading ? (
             <p>Loading...</p>
           ) : (
-            <ValidatedForm onSubmit={saveUser} defaultValues={salesItem}>
-              {salesItem.id ? (
+            <ValidatedForm onSubmit={saveUser} defaultValues={penalty}>
+              {penalty.id ? (
                 <ValidatedField
                   type="text"
                   name="id"
@@ -82,7 +93,7 @@ export const PenaltyUpdate = () => {
                 validate={{
                   required: {
                     value: true,
-                    message: translate('register.messages.validate.login.required'),
+                    message: translate('global.messages.validate.nameKo.required'),
                   },
                   maxLength: {
                     value: 60,
@@ -97,11 +108,43 @@ export const PenaltyUpdate = () => {
                 validate={{
                   required: {
                     value: true,
-                    message: translate('register.messages.validate.login.required'),
+                    message: translate('global.messages.validate.nameEn.required'),
                   },
                   maxLength: {
                     value: 60,
                     message: translate('entity.validation.maxlength', { max: 60 }),
+                  },
+                }}
+              />
+              <ValidatedField type="select" name="type" label={translate('penalty.type')} onChange={handleOnChangeType}>
+                {types.map(type => (
+                  <option value={type.key} key={type.key}>
+                    {type.name}
+                  </option>
+                ))}
+              </ValidatedField>
+              <ValidatedField
+                type="text"
+                name="typeValue"
+                label={translate('penalty.typeValue')}
+                validate={{
+                  required: {
+                    value: true,
+                    message: translate('penalty.messages.validate.required.typeValue'),
+                  },
+                  maxLength: {
+                    value: 60,
+                    message: translate('entity.validation.maxlength', { max: 60 }),
+                  },
+                  pattern: {
+                    value:
+                      selectTypeValue === 'TIME'
+                        ? /^([1-9]|[1-5]\d|60)[MH]$/
+                        : /^(MON|TUE|WED|THU|FRI|SAT|SUN)(,(MON|TUE|WED|THU|FRI|SAT|SUN))*$/,
+                    message:
+                      selectTypeValue === 'TIME'
+                        ? translate('penalty.messages.validate.pattern.typeValue.time')
+                        : translate('penalty.messages.validate.pattern.typeValue.day'),
                   },
                 }}
               />
@@ -110,17 +153,9 @@ export const PenaltyUpdate = () => {
                 name="activated"
                 check
                 value={true}
-                disabled={!salesItem.id}
+                disabled={!penalty.id}
                 label={translate('userManagement.activated')}
               />
-              <ValidatedField
-                type="checkbox"
-                name="isCommissionTarget"
-                check
-                value={salesItem.commissionTarget}
-                label={translate('salesItem.isCommissionTarget')}
-              />
-              <ValidatedField type="checkbox" name="isSnack" check value={salesItem.snack} label={translate('salesItem.isSnack')} />
               <ValidatedField
                 type="number"
                 name="price"
@@ -128,45 +163,9 @@ export const PenaltyUpdate = () => {
                 validate={{
                   required: {
                     value: true,
-                    message: translate('register.messages.validate.login.required'),
+                    message: translate('global.messages.validate.price.required'),
                   },
-                  min: { value: 1, message: 'Price must be a positive number.' },
-                }}
-              />
-              <ValidatedField
-                type="number"
-                name="shopCommissionPrice"
-                label={translate('global.label.shopCommissionPrice')}
-                validate={{
-                  required: {
-                    value: true,
-                    message: translate('register.messages.validate.login.required'),
-                  },
-                  min: { value: 1, message: 'Price must be a positive number.' },
-                }}
-              />
-              <ValidatedField
-                type="number"
-                name="mamaCommissionPrice"
-                label={translate('global.label.mamaCommissionPrice')}
-                validate={{
-                  required: {
-                    value: true,
-                    message: translate('register.messages.validate.login.required'),
-                  },
-                  min: { value: 1, message: 'Price must be a positive number.' },
-                }}
-              />
-              <ValidatedField
-                type="number"
-                name="modelCommissionPrice"
-                label={translate('global.label.modelCommissionPrice')}
-                validate={{
-                  required: {
-                    value: true,
-                    message: translate('register.messages.validate.login.required'),
-                  },
-                  min: { value: 1, message: 'Price must be a positive number.' },
+                  min: { value: 1, message: translate('global.messages.validate.price.size') },
                 }}
               />
               <Button tag={Link} to="/shop/penalty" replace color="info">

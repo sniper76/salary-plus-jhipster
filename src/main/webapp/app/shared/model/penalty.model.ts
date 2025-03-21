@@ -3,13 +3,10 @@ export interface IShopPenalty {
   shopId?: any;
   nameKo?: string;
   nameEn?: string;
-  isCommissionTarget?: boolean;
-  isSnack?: boolean;
   activated?: boolean;
   price?: number;
-  shopCommissionPrice?: number;
-  mamaCommissionPrice?: number;
-  modelCommissionPrice?: number;
+  type?: string;
+  typeValue?: string;
   createdBy?: string;
   createdDate?: Date | null;
   lastModifiedBy?: string;
@@ -21,13 +18,10 @@ export const defaultValue: Readonly<IShopPenalty> = {
   shopId: '',
   nameKo: '',
   nameEn: '',
-  isCommissionTarget: false,
-  isSnack: false,
   activated: true,
   price: 0,
-  shopCommissionPrice: 0,
-  mamaCommissionPrice: 0,
-  modelCommissionPrice: 0,
+  type: '',
+  typeValue: '',
   createdBy: '',
   createdDate: null,
   lastModifiedBy: '',

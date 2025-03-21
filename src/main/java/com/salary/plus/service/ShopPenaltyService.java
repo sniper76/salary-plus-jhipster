@@ -1,0 +1,77 @@
+package com.salary.plus.service;
+
+import com.salary.plus.domain.ShopPenalty;
+import com.salary.plus.enums.PenaltyType;
+import com.salary.plus.repository.ShopPenaltyRepository;
+import com.salary.plus.repository.ShopPenaltyRepository;
+import com.salary.plus.service.dto.ShopPenaltyDTO;
+import java.util.List;
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Service class for managing users.
+ */
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class ShopPenaltyService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ShopPenaltyService.class);
+
+    private final ShopPenaltyRepository shopPenaltyRepository;
+
+    public ShopPenalty create(Long shopId, ShopPenaltyDTO shopPenaltyDTO) {
+        ShopPenalty shopPenalty = new ShopPenalty();
+        shopPenalty.setShopId(shopId);
+        shopPenalty.setNameKo(shopPenaltyDTO.getNameKo());
+        shopPenalty.setNameEn(shopPenaltyDTO.getNameEn());
+        shopPenalty.setType(PenaltyType.fromValue(shopPenaltyDTO.getType()));
+        shopPenalty.setTypeValue(shopPenaltyDTO.getTypeValue());
+        shopPenalty.setPrice(shopPenaltyDTO.getPrice());
+        shopPenalty.created(shopPenaltyDTO.getLogin());
+        return shopPenaltyRepository.save(shopPenalty);
+    }
+
+    public Optional<ShopPenalty> update(Long shopId, ShopPenaltyDTO shopPenaltyDTO) {
+        return Optional.of(get(shopId, shopPenaltyDTO.getId()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(it -> {
+                it.setShopId(shopId);
+                it.setNameKo(shopPenaltyDTO.getNameKo());
+                it.setNameEn(shopPenaltyDTO.getNameEn());
+                it.setPrice(shopPenaltyDTO.getPrice());
+                it.setType(PenaltyType.fromValue(shopPenaltyDTO.getType()));
+                it.setTypeValue(shopPenaltyDTO.getTypeValue());
+                it.setActivated(shopPenaltyDTO.isActivated());
+                it.updateLastModified(shopPenaltyDTO.getLogin());
+                return shopPenaltyRepository.save(it);
+            });
+    }
+
+    public void delete(Long shopId, long salesItemId) {
+        get(shopId, salesItemId).ifPresent(shopPenaltyRepository::delete);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShopPenalty> getAllPenalties(Long shopId) {
+        return shopPenaltyRepository.findAllByShopIdAndActivated(shopId, true);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ShopPenalty> getAllPenalties(Long shopId, Pageable pageable) {
+        return shopPenaltyRepository.findAllByShopId(shopId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<ShopPenalty> get(Long shopId, long shopPenaltyId) {
+        return shopPenaltyRepository.findByIdAndShopIdAndActivated(shopPenaltyId, shopId, true);
+    }
+}
