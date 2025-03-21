@@ -60,6 +60,10 @@ export const ShopManagementDetail = () => {
           </dt>
           <dd>{shop.type ? types.filter((type: any) => type.key === shop.type).map(type => type.name) : undefined}</dd>
           <dt>
+            <Translate contentKey="shopManagement.workStartTime">근무시작시간</Translate>
+          </dt>
+          <dd>{shop.workStartTime}</dd>
+          <dt>
             <Translate contentKey="shopManagement.createdBy">Created By</Translate>
           </dt>
           <dd>{shop.createdBy}</dd>

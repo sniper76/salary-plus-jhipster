@@ -39,6 +39,9 @@ public class ShopPenalty extends AbstractAuditingEntity<Long> implements Seriali
     @Enumerated(EnumType.STRING)
     private PenaltyType type;
 
+    @Column(name = "type_value", nullable = false)
+    private String typeValue; //DAY=MON,TUE,WED,THU,FRI,SAT,SUN, TIME=1minute,1hour
+
     @Column(name = "price", nullable = false)
     private Integer price;
 
@@ -60,6 +63,9 @@ public class ShopPenalty extends AbstractAuditingEntity<Long> implements Seriali
             '\'' +
             ", type=" +
             type +
+            ", typeValue='" +
+            typeValue +
+            '\'' +
             ", activated=" +
             activated +
             '}'

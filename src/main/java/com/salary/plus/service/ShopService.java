@@ -32,7 +32,8 @@ public class ShopService {
         shop.setNameKo(adminShopDTO.getNameKo());
         shop.setNameEn(adminShopDTO.getNameEn());
         shop.setType(ShopType.fromValue(adminShopDTO.getType()));
-        shop.setCreatedBy(login);
+        shop.setWorkStartTime(adminShopDTO.getWorkStartTime());
+        shop.created(login);
         return shopRepository.save(shop);
     }
 
@@ -51,8 +52,8 @@ public class ShopService {
         shop.setNameKo(adminShopDTO.getNameKo());
         shop.setNameEn(adminShopDTO.getNameEn());
         shop.setType(ShopType.fromValue(adminShopDTO.getType()));
-        shop.setLastModifiedBy(login);
-        shop.setLastModifiedDate(Instant.now());
+        shop.setWorkStartTime(adminShopDTO.getWorkStartTime());
+        shop.updateLastModified(login);
 
         return Optional.of(shopRepository.save(shop));
     }

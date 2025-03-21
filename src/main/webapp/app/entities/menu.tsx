@@ -11,6 +11,9 @@ const EntitiesMenu = () => {
       <MenuItem icon="users" to="/shop/sales-item">
         <Translate contentKey="global.menu.management.salesItem">상품관리</Translate>
       </MenuItem>
+      <MenuItem icon="users" to="/shop/penalty">
+        <Translate contentKey="global.menu.management.penalty">벌금관리</Translate>
+      </MenuItem>
     </>
   );
 };

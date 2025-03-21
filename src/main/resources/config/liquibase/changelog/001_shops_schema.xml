@@ -18,6 +18,9 @@
       <column name="type" type="varchar(60)">
         <constraints nullable="false"/>
       </column>
+      <column name="work_start_time" type="varchar(8)" remarks="근무 시작 시간 - 09:00:00">
+        <constraints nullable="false"/>
+      </column>
       <column name="activated" type="boolean" valueBoolean="true">
         <constraints nullable="false" />
       </column>

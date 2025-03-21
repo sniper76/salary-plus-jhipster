@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Badge, Button, Table } from 'reactstrap';
+import { Button, Table } from 'reactstrap';
 import { getPaginationState, JhiItemCount, JhiPagination, TextFormat, Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 
-import { APP_DATE_FORMAT, APP_LOCAL_TIMESTAMP_FORMAT } from 'app/config/constants';
+import { APP_LOCAL_TIMESTAMP_FORMAT } from 'app/config/constants';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
@@ -123,6 +123,10 @@ export const ShopManagement = () => {
               <Translate contentKey="shopManagement.type">type</Translate>
               <FontAwesomeIcon icon={getSortIconByFieldName('type')} />
             </th>
+            <th className="hand" onClick={sort('workStartTime')}>
+              <Translate contentKey="shopManagement.workStartTime">근무시작시간</Translate>
+              <FontAwesomeIcon icon={getSortIconByFieldName('workStartTime')} />
+            </th>
             <th className="hand" onClick={sort('activated')}>
               <Translate contentKey="shopManagement.activated">Activated</Translate>{' '}
               <FontAwesomeIcon icon={getSortIconByFieldName('activated')} />
@@ -157,6 +161,7 @@ export const ShopManagement = () => {
               <td>{shop.nameKo}</td>
               <td>{shop.nameEn}</td>
               <td>{shop.type}</td>
+              <td>{shop.workStartTime}</td>
               <td>
                 {shop.activated ? (
                   <Button color="success" onClick={toggleActive(shop)}>

@@ -7,15 +7,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { APP_LOCAL_TIMESTAMP_FORMAT } from 'app/config/constants';
 import { languages } from 'app/config/translation';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getShopSalesItem } from './sales-item.reducer';
+import { getShopPenalty } from './penalty.reducer';
 
-export const SalesItemDetail = () => {
+export const PenaltyDetail = () => {
   const dispatch = useAppDispatch();
 
   const { shopId, salesItemId } = useParams();
 
   useEffect(() => {
-    dispatch(getShopSalesItem({ shopId, salesItemId }));
+    dispatch(getShopPenalty({ shopId, salesItemId }));
   }, []);
 
   const salesItem = useAppSelector(state => state.salesItems.salesItem);
@@ -100,7 +100,7 @@ export const SalesItemDetail = () => {
           </dd>
         </dl>
       </Row>
-      <Button tag={Link} to="/shop/sales-item" replace color="info">
+      <Button tag={Link} to="/shop/penalty" replace color="info">
         <FontAwesomeIcon icon="arrow-left" />{' '}
         <span className="d-none d-md-inline">
           <Translate contentKey="entity.action.back">Back</Translate>
@@ -110,4 +110,4 @@ export const SalesItemDetail = () => {
   );
 };
 
-export default SalesItemDetail;
+export default PenaltyDetail;

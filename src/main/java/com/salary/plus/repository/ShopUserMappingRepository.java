@@ -16,10 +16,10 @@ import org.springframework.stereotype.Repository;
 public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping, Long> {
     @Query(
         """
-        select sum
+        select suma
             from User u
-            inner join ShopUserMapping sum on u.id = sum.userId
-            where sum.shopId = :shopId
+            inner join ShopUserMapping suma on u.id = suma.userId
+            where suma.shopId = :shopId
             and u.login = :login
         """
     )
@@ -29,8 +29,8 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
         """
         select u
             from User u
-            inner join ShopUserMapping sum on u.id = sum.userId
-            where sum.shopId = :shopId
+            inner join ShopUserMapping suma on u.id = suma.userId
+            where suma.shopId = :shopId
             and u.activated = true
         """
     )
@@ -40,8 +40,8 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
         """
         select u
             from User u
-            inner join ShopUserMapping sum on u.id = sum.userId
-            where sum.shopId = :shopId
+            inner join ShopUserMapping suma on u.id = suma.userId
+            where suma.shopId = :shopId
             and u.activated = true
             and u.isCommissionTarget = :isCommissionTarget
         """
@@ -54,8 +54,8 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
         """
         select s
             from Shop s
-            inner join ShopUserMapping sum on s.id = sum.shopId
-            inner join User u on sum.userId = u.id
+            inner join ShopUserMapping suma on s.id = suma.shopId
+            inner join User u on suma.userId = u.id
             where u.login = :login
             and u.activated = true
         """

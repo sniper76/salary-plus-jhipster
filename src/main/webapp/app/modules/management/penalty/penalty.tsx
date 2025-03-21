@@ -10,20 +10,20 @@ import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.cons
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUserShops } from 'app/modules/order/order.reducer';
-import { getPageShopSalesItems } from './sales-item.reducer';
+import { getPageShopPenalties } from './penalty.reducer';
 
-import './sales-item.scss';
+import './penalty.scss';
 
-export const SalesItem = () => {
+export const Penalty = () => {
   const dispatch = useAppDispatch();
 
   const pageLocation = useLocation();
   const navigate = useNavigate();
 
   const shops = useAppSelector(state => state.orders.shops);
-  const salesItemsForPage = useAppSelector(state => state.salesItems.salesItemsForPage);
-  const totalItems = useAppSelector(state => state.salesItems.totalItems);
-  const loading = useAppSelector(state => state.salesItems.loading);
+  const penaltiesForPage = useAppSelector(state => state.penalties.penaltiesForPage);
+  const totalItems = useAppSelector(state => state.penalties.totalItems);
+  const loading = useAppSelector(state => state.penalties.loading);
 
   const [pagination, setPagination] = useState(
     overridePaginationStateWithQueryParams(getPaginationState(pageLocation, ITEMS_PER_PAGE, 'id'), pageLocation.search),
@@ -33,7 +33,7 @@ export const SalesItem = () => {
   const getUsersFromProps = () => {
     console.warn('getUsersFromProps', selectedValue, this);
     dispatch(
-      getPageShopSalesItems({
+      getPageShopPenalties({
         id: selectedValue,
         page: pagination.activePage - 1,
         size: pagination.itemsPerPage,
@@ -57,7 +57,7 @@ export const SalesItem = () => {
   useEffect(() => {
     if (shops.length > 0) {
       setSelectedValue(shops[0].id);
-      // dispatch(getShopSalesItems({ shopId: shops[0].id }));
+      // dispatch(getShopPenaltys({ shopId: shops[0].id }));
     }
   }, [shops]);
 
@@ -110,8 +110,8 @@ export const SalesItem = () => {
 
   return (
     <div>
-      <h2 id="sales-item-page-heading" data-cy="salesItemPageHeading">
-        <Translate contentKey="salesItem.home.title">상품</Translate>
+      <h2 id="penalty-page-heading" data-cy="penaltyPageHeading">
+        <Translate contentKey="penalty.home.title">벌금</Translate>
         <div className="d-flex justify-content-end">
           <select onChange={handleSelect} value={selectedValue} className="custom-number-input">
             {shops.map(shop => (
@@ -122,10 +122,10 @@ export const SalesItem = () => {
           </select>
           <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />
-            <Translate contentKey="salesItem.home.refreshListLabel">상품 조회</Translate>
+            <Translate contentKey="penalty.home.refreshListLabel">벌금 조회</Translate>
           </Button>
           <Link to={`${selectedValue}/new`} className="btn btn-primary jh-create-entity">
-            <FontAwesomeIcon icon="plus" /> <Translate contentKey="salesItem.home.createLabel">상품 생성</Translate>
+            <FontAwesomeIcon icon="plus" /> <Translate contentKey="penalty.home.createLabel">벌금 생성</Translate>
           </Link>
         </div>
       </h2>
@@ -160,7 +160,7 @@ export const SalesItem = () => {
           </tr>
         </thead>
         <tbody>
-          {salesItemsForPage.map((user, i) => (
+          {penaltiesForPage.map((user, i) => (
             <tr id={user.id} key={`user-${i}`}>
               <td>
                 <Button tag={Link} to={`${selectedValue}/${user.id}`} color="link" size="sm">
@@ -220,7 +220,7 @@ export const SalesItem = () => {
         </tbody>
       </Table>
       {totalItems ? (
-        <div className={salesItemsForPage?.length > 0 ? '' : 'd-none'}>
+        <div className={penaltiesForPage?.length > 0 ? '' : 'd-none'}>
           <div className="justify-content-center d-flex">
             <JhiItemCount page={pagination.activePage} total={totalItems} itemsPerPage={pagination.itemsPerPage} i18nEnabled />
           </div>
@@ -241,4 +241,4 @@ export const SalesItem = () => {
   );
 };
 
-export default SalesItem;
+export default Penalty;

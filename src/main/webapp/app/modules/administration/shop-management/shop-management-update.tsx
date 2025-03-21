@@ -98,7 +98,6 @@ export const ShopManagementUpdate = () => {
                   },
                 }}
               />
-              <FormText>This field cannot be longer than 50 characters.</FormText>
               <ValidatedField type="select" name="type" label={translate('shopManagement.type')}>
                 {types.map(type => (
                   <option value={type.key} key={type.key}>
@@ -106,6 +105,17 @@ export const ShopManagementUpdate = () => {
                   </option>
                 ))}
               </ValidatedField>
+              <ValidatedField
+                type="text"
+                name="workStartTime"
+                label={translate('shopManagement.workStartTime')}
+                validate={{
+                  maxLength: {
+                    value: 8,
+                    message: translate('entity.validation.maxlength', { max: 8 }),
+                  },
+                }}
+              />
               <Button tag={Link} to="/admin/shop-management" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

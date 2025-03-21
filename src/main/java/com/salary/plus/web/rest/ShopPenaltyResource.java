@@ -68,13 +68,13 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequiredArgsConstructor
 @UseGuards({ ShopGuard.class })
 @RequestMapping("/api/shops")
-public class ShopSalesItemResource {
+public class ShopPenaltyResource {
 
     private static final List<String> ALLOWED_ORDERED_PROPERTIES = Collections.unmodifiableList(
         Arrays.asList("id", "nameKo", "nameEn", "price", "createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate")
     );
 
-    private static final Logger LOG = LoggerFactory.getLogger(ShopSalesItemResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShopPenaltyResource.class);
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -82,7 +82,7 @@ public class ShopSalesItemResource {
     private final ShopSalesItemService shopSalesItemService;
 
     /**
-     * {@code POST  /shops/{shopId}/sales-items}  : Creates a new user.
+     * {@code POST  /shops/{shopId}/penalties}  : Creates a new user.
      * <p>
      * Creates a new user if the login and email are not already used, and sends a
      * mail with an activation link.
@@ -93,19 +93,19 @@ public class ShopSalesItemResource {
      * @throws URISyntaxException       if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
-    @PostMapping("/{shopId}/sales-items")
+    @PostMapping("/{shopId}/penalties")
     public ResponseEntity<ShopSalesItem> create(@PathVariable("shopId") Long shopId, @Valid @RequestBody ShopSalesItemDTO shopSalesItemDTO)
         throws URISyntaxException {
         final String login = SecurityUtils.getLoginNoneNull();
         shopSalesItemDTO.setLogin(login);
         LOG.debug("REST request to create shopSalesItemDTO : {}", shopSalesItemDTO);
         ShopSalesItem newUser = shopSalesItemService.create(shopId, shopSalesItemDTO);
-        return ResponseEntity.created(new URI("/api/shops/" + shopId + "/sales-items"))
+        return ResponseEntity.created(new URI("/api/shops/" + shopId + "/penalties"))
             .headers(HeaderUtil.createAlert(applicationName, "salesItem.created", login))
             .body(newUser);
     }
 
-    @PutMapping("/{shopId}/sales-items")
+    @PutMapping("/{shopId}/penalties")
     public ResponseEntity<ShopSalesItem> update(
         @PathVariable("shopId") Long shopId,
         @Valid @RequestBody ShopSalesItemDTO shopSalesItemDTO
@@ -117,37 +117,37 @@ public class ShopSalesItemResource {
         return ResponseUtil.wrapOrNotFound(newUser, HeaderUtil.createAlert(applicationName, "salesItem.updated", login));
     }
 
-    @DeleteMapping("/{shopId}/sales-items/{salesItemId}")
+    @DeleteMapping("/{shopId}/penalties/{shopPenaltyId}")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<Void> delete(@PathVariable("shopId") Long shopId, @PathVariable("salesItemId") long salesItemId) {
-        LOG.debug("REST request to get ShopId : {}, ShopSalesItemId : {}", shopId, salesItemId);
+    public ResponseEntity<Void> delete(@PathVariable("shopId") Long shopId, @PathVariable("shopPenaltyId") long shopPenaltyId) {
+        LOG.debug("REST request to get ShopId : {}, ShopSalesItemId : {}", shopId, shopPenaltyId);
         final String login = SecurityUtils.getLoginNoneNull();
-        shopSalesItemService.delete(shopId, salesItemId);
+        shopSalesItemService.delete(shopId, shopPenaltyId);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "salesItem.deleted", login)).build();
     }
 
     /**
-     * {@code GET /shops/{shopId}/sales-items} : get all users with all the details - calling this are only allowed for the administrators.
+     * {@code GET /shops/{shopId}/penalties} : get all users with all the details - calling this are only allowed for the administrators.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
      */
-    @GetMapping("/{shopId}/sales-items/all")
+    @GetMapping("/{shopId}/penalties/all")
     public ResponseEntity<List<ShopSalesItem>> getAllSalesItems(@PathVariable("shopId") Long shopId) {
         LOG.debug("REST request to get all sales item for an admin");
         final List<ShopSalesItem> items = shopSalesItemService.getAllSalesItems(shopId);
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
-    @GetMapping("/{shopId}/sales-items/{salesItemId}")
+    @GetMapping("/{shopId}/penalties/{shopPenaltyId}")
     public ResponseEntity<ShopSalesItem> getShopShopSalesItem(
         @PathVariable("shopId") Long shopId,
-        @PathVariable("salesItemId") long salesItemId
+        @PathVariable("shopPenaltyId") long shopPenaltyId
     ) {
-        LOG.debug("REST request to get ShopId : {}, ShopSalesItemId : {}", shopId, salesItemId);
-        return ResponseUtil.wrapOrNotFound(shopSalesItemService.get(shopId, salesItemId));
+        LOG.debug("REST request to get ShopId : {}, ShopSalesItemId : {}", shopId, shopPenaltyId);
+        return ResponseUtil.wrapOrNotFound(shopSalesItemService.get(shopId, shopPenaltyId));
     }
 
-    @GetMapping("/{shopId}/sales-items")
+    @GetMapping("/{shopId}/penalties")
     public ResponseEntity<List<ShopSalesItem>> getAllSalesItemsForPage(
         @PathVariable("shopId") Long shopId,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable

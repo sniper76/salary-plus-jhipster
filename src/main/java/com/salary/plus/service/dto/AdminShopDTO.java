@@ -1,7 +1,9 @@
 package com.salary.plus.service.dto;
 
+import com.salary.plus.config.Constants;
 import com.salary.plus.domain.Shop;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
@@ -31,6 +33,14 @@ public class AdminShopDTO implements Serializable {
     @Size(min = 1, max = 50)
     private String type;
 
+    @NotBlank
+    @Size(min = 1, max = 8)
+    @Pattern(
+        regexp = Constants.WORK_START_TIME_REGEX,
+        message = "유효하지 않은 시간 형식입니다. 올바른 형식은 HH:mm:ss 입니다 (예: 09:00:00 또는 23:59:59)."
+    )
+    private String workStartTime;
+
     private boolean activated = false;
 
     private String createdBy;
@@ -50,6 +60,7 @@ public class AdminShopDTO implements Serializable {
         this.nameKo = shop.getNameKo();
         this.nameEn = shop.getNameEn();
         this.type = shop.getType().name();
+        this.workStartTime = shop.getWorkStartTime();
         this.activated = shop.isActivated();
         this.createdBy = shop.getCreatedBy();
         this.createdDate = shop.getCreatedDate();

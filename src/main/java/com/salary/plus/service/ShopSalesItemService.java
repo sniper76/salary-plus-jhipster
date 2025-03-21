@@ -25,35 +25,37 @@ public class ShopSalesItemService {
 
     private final ShopSalesItemRepository shopSalesItemRepository;
 
-    public ShopSalesItem create(Long shopId, ShopSalesItemDTO userDTO) {
+    public ShopSalesItem create(Long shopId, ShopSalesItemDTO shopSalesItemDTO) {
         ShopSalesItem shopSalesItem = new ShopSalesItem();
         shopSalesItem.setShopId(shopId);
-        shopSalesItem.setNameKo(userDTO.getNameKo());
-        shopSalesItem.setNameEn(userDTO.getNameEn());
-        shopSalesItem.setCommissionTarget(userDTO.isCommissionTarget());
-        shopSalesItem.setSnack(userDTO.isSnack());
-        shopSalesItem.setPrice(userDTO.getPrice());
-        shopSalesItem.setShopCommissionPrice(userDTO.getShopCommissionPrice());
-        shopSalesItem.setMamaCommissionPrice(userDTO.getMamaCommissionPrice());
-        shopSalesItem.setModelCommissionPrice(userDTO.getModelCommissionPrice());
+        shopSalesItem.setNameKo(shopSalesItemDTO.getNameKo());
+        shopSalesItem.setNameEn(shopSalesItemDTO.getNameEn());
+        shopSalesItem.setCommissionTarget(shopSalesItemDTO.isCommissionTarget());
+        shopSalesItem.setSnack(shopSalesItemDTO.isSnack());
+        shopSalesItem.setPrice(shopSalesItemDTO.getPrice());
+        shopSalesItem.setShopCommissionPrice(shopSalesItemDTO.getShopCommissionPrice());
+        shopSalesItem.setMamaCommissionPrice(shopSalesItemDTO.getMamaCommissionPrice());
+        shopSalesItem.setModelCommissionPrice(shopSalesItemDTO.getModelCommissionPrice());
+        shopSalesItem.created(shopSalesItemDTO.getLogin());
         return shopSalesItemRepository.save(shopSalesItem);
     }
 
-    public Optional<ShopSalesItem> update(Long shopId, ShopSalesItemDTO userDTO) {
-        return Optional.of(get(shopId, userDTO.getId()))
+    public Optional<ShopSalesItem> update(Long shopId, ShopSalesItemDTO shopSalesItemDTO) {
+        return Optional.of(get(shopId, shopSalesItemDTO.getId()))
             .filter(Optional::isPresent)
             .map(Optional::get)
             .map(it -> {
                 it.setShopId(shopId);
-                it.setNameKo(userDTO.getNameKo());
-                it.setNameEn(userDTO.getNameEn());
-                it.setPrice(userDTO.getPrice());
-                it.setActivated(userDTO.isActivated());
-                it.setCommissionTarget(userDTO.isCommissionTarget());
-                it.setSnack(userDTO.isSnack());
-                it.setShopCommissionPrice(userDTO.getShopCommissionPrice());
-                it.setMamaCommissionPrice(userDTO.getMamaCommissionPrice());
-                it.setModelCommissionPrice(userDTO.getModelCommissionPrice());
+                it.setNameKo(shopSalesItemDTO.getNameKo());
+                it.setNameEn(shopSalesItemDTO.getNameEn());
+                it.setPrice(shopSalesItemDTO.getPrice());
+                it.setActivated(shopSalesItemDTO.isActivated());
+                it.setCommissionTarget(shopSalesItemDTO.isCommissionTarget());
+                it.setSnack(shopSalesItemDTO.isSnack());
+                it.setShopCommissionPrice(shopSalesItemDTO.getShopCommissionPrice());
+                it.setMamaCommissionPrice(shopSalesItemDTO.getMamaCommissionPrice());
+                it.setModelCommissionPrice(shopSalesItemDTO.getModelCommissionPrice());
+                it.updateLastModified(shopSalesItemDTO.getLogin());
                 return shopSalesItemRepository.save(it);
             });
     }

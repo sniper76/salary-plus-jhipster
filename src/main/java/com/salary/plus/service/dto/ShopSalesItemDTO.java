@@ -18,6 +18,7 @@ public class ShopSalesItemDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    private String login;
 
     @NotBlank
     @Size(min = 1, max = 50)

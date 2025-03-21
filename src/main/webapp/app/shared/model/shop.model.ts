@@ -3,6 +3,7 @@ export interface IShop {
   nameKo?: string;
   nameEn?: string;
   type?: string;
+  workStartTime?: string;
   activated?: boolean;
   createdBy?: string;
   createdDate?: Date | null;
@@ -15,6 +16,7 @@ export const defaultValue: Readonly<IShop> = {
   nameKo: '',
   nameEn: '',
   type: '',
+  workStartTime: '',
   activated: true,
   createdBy: '',
   createdDate: null,

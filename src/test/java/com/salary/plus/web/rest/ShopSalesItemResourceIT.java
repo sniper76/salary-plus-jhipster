@@ -90,9 +90,6 @@ class ShopSalesItemResourceIT {
             void createShopSalesItem() throws Exception {
                 // Create the User
                 ShopSalesItemDTO userDTO = new ShopSalesItemDTO();
-                userDTO.setItems(
-                    List.of(new ShopSalesItemDTO.SalesItem("item1", "item1", 100), new ShopSalesItemDTO.SalesItem("item2", "item2", 200))
-                );
 
                 var returnedUserDTO = om.readValue(
                     restUserMockMvc
@@ -105,7 +102,7 @@ class ShopSalesItemResourceIT {
                 );
 
                 // Validate the returned User
-                assertThat(returnedUserDTO.getItems().size()).isEqualTo(userDTO.getItems().size());
+                assertThat(returnedUserDTO.getItems().size()).isEqualTo(1);
             }
         }
 

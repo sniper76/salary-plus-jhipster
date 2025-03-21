@@ -19,7 +19,7 @@
 
   <changeSet id="add init jhi_shop" author="sniper">
     <sql>
-      insert into jhi_shop (name_ko, name_en, type, activated, created_by, created_date) values ('테스트 낮바', 'Test Day shift', 'BAR', true, 'admin', now());
+      insert into jhi_shop (name_ko, name_en, type, work_start_time, activated, created_by, created_date) values ('테스트 낮바', 'Test Day shift', 'BAR', '09:00:00', true, 'admin', now());
     </sql>
   </changeSet>
 

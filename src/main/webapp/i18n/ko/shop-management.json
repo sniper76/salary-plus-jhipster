@@ -6,9 +6,9 @@
       "createLabel": "상점 생성",
       "createOrEditLabel": "상점 생성 또는 수정"
     },
-    "created": "A new user is created with identifier {{ param }}",
-    "updated": "A user is updated with identifier {{ param }}",
-    "deleted": "A user is deleted with identifier {{ param }}",
+    "created": "상점이 신규 등록되었습니다. {{ param }}",
+    "updated": "상점이 수정되었습니다. {{ param }}",
+    "deleted": "상점이 삭제되었습니다. {{ param }}",
     "delete": {
       "question": "정말로 {{ nameKo }} 상점을 삭제하시겠습니까?"
     },
@@ -19,6 +19,7 @@
     "nameKo": "한글명",
     "nameEn": "영문명",
     "type": "상점 타입",
+    "workStartTime": "근무시작시간",
     "email": "이메일",
     "activated": "활성",
     "deactivated": "비활성",

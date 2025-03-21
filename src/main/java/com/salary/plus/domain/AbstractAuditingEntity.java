@@ -74,7 +74,16 @@ public abstract class AbstractAuditingEntity<T> implements Serializable {
     }
 
     public void delete(String login) {
+        updateLastModified(login);
+    }
+
+    public void updateLastModified(String login) {
         this.lastModifiedBy = login;
         this.lastModifiedDate = Instant.now();
+    }
+
+    public void created(String login) {
+        this.createdBy = login;
+        this.createdDate = Instant.now();
     }
 }

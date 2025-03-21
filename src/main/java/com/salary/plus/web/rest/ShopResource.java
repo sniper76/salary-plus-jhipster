@@ -97,7 +97,7 @@ public class ShopResource {
      */
     @PostMapping("/shops")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<Shop> createUser(@Valid @RequestBody AdminShopDTO userDTO) throws URISyntaxException {
+    public ResponseEntity<Shop> create(@Valid @RequestBody AdminShopDTO userDTO) throws URISyntaxException {
         LOG.debug("REST request to save User : {}", userDTO);
         final String loginUser = SecurityUtils.getLoginNoneNull();
         Shop newUser = shopService.create(userDTO, loginUser);
@@ -116,7 +116,7 @@ public class ShopResource {
      */
     @PutMapping({ "/shops" })
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<Shop> updateShop(@Valid @RequestBody AdminShopDTO userDTO) {
+    public ResponseEntity<Shop> update(@Valid @RequestBody AdminShopDTO userDTO) {
         LOG.debug("REST request to update Shop : {}", userDTO);
         final String loginUser = SecurityUtils.getLoginNoneNull();
         Optional<Shop> existingShop = shopService.get(userDTO.getId());

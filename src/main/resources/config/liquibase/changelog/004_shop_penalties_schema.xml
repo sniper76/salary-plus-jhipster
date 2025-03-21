@@ -18,7 +18,10 @@
       <column name="name_en" type="varchar(60)">
         <constraints nullable="false"/>
       </column>
-      <column name="type" type="varchar(60)">
+      <column name="type" type="varchar(60)" remarks="DAY,TIME">
+        <constraints nullable="false"/>
+      </column>
+      <column name="type_value" type="varchar(60)" remarks="벌금 적용 기준값 - DAY=MON,TUE,WED,THU,FRI,SAT,SUN, TIME=1M,1H">
         <constraints nullable="false"/>
       </column>
       <column name="price" type="int">
@@ -65,5 +68,22 @@
       <column name="last_modified_by" type="varchar(50)"/>
       <column name="last_modified_date" type="timestamp"/>
     </createTable>
+
+    <createIndex unique="true" tableName="jhi_shop_user_penalty_mapping" indexName="unique_index_jhi_shop_user_penalty_mapping">
+      <column name="shop_penalty_id"/>
+      <column name="user_id"/>
+      <column name="date"/>
+    </createIndex>
+
+    <rollback>
+      <dropIndex tableName="jhi_shop_user_penalty_mapping" indexName="unique_index_jhi_shop_user_penalty_mapping"/>
+    </rollback>
+  </changeSet>
+
+  <changeSet id="add init jhi_shop_penalty" author="sniper">
+    <sql>
+      insert into jhi_shop_penalty (shop_id, name_ko, name_en, type, type_value, price, activated, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '지각', 'Be late for bar', 'TIME', '1M', 100, true, 'admin', now());
+      insert into jhi_shop_penalty (shop_id, name_ko, name_en, type, type_value, price, activated, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '필수근무일', 'Mandatory day', 'DAY', 'THU,FRI,SAT,SUN', 1000, true, 'admin', now());
+    </sql>
   </changeSet>
 </databaseChangeLog>

@@ -39,6 +39,9 @@ public class Shop extends AbstractAuditingEntity<Long> implements Serializable {
     @Enumerated(EnumType.STRING)
     private ShopType type;
 
+    @Column(name = "work_start_time", nullable = false)
+    private String workStartTime; //근무 시작 시간 - 09:00:00
+
     @NotNull
     @Column(name = "activated", nullable = false)
     private boolean activated = true;
