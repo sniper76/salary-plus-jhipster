@@ -4,7 +4,9 @@
       "title": "상점",
       "refreshListLabel": "Refresh list",
       "createLabel": "상점 생성",
-      "createOrEditLabel": "상점 생성 또는 수정"
+      "createOrEditLabel": "상점 생성 또는 수정",
+      "userMappingTargetLabel": "연결 대상 사용자 정보",
+      "userMappingLabel": "연결된 사용자 정보"
     },
     "created": "상점이 신규 등록되었습니다. {{ param }}",
     "updated": "상점이 수정되었습니다. {{ param }}",

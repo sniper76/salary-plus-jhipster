@@ -2,17 +2,23 @@ package com.salary.plus.service;
 
 import com.salary.plus.config.Constants;
 import com.salary.plus.domain.Authority;
+import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
 import com.salary.plus.repository.AuthorityRepository;
 import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
+import com.salary.plus.service.dto.AdminModelDTO;
 import com.salary.plus.service.dto.AdminUserDTO;
 import com.salary.plus.service.dto.ShopModelResponse;
 import com.salary.plus.service.dto.ShopUserResponse;
 import com.salary.plus.service.dto.UserDTO;
+import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import io.undertow.util.BadRequestException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -22,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -50,6 +57,7 @@ public class UserService {
     private final AuthorityRepository authorityRepository;
     private final CacheManager cacheManager;
     private final ShopUserMappingService shopUserMappingService;
+    private final ShopService shopService;
 
     public Optional<User> activateRegistration(String key) {
         LOG.debug("Activating user for activation key {}", key);
@@ -143,7 +151,7 @@ public class UserService {
         return true;
     }
 
-    public User createUser(AdminUserDTO userDTO) {
+    public User createUser(AdminUserDTO userDTO, String generatePassword, String generateResetKey) {
         User user = new User();
         user.setLogin(userDTO.getLogin().toLowerCase());
         user.setFirstName(userDTO.getFirstName());
@@ -157,11 +165,13 @@ public class UserService {
         } else {
             user.setLangKey(userDTO.getLangKey());
         }
-        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
+        String encryptedPassword = passwordEncoder.encode(generatePassword);
         user.setPassword(encryptedPassword);
-        user.setResetKey(RandomUtil.generateResetKey());
+        user.setResetKey(generateResetKey);
         user.setResetDate(Instant.now());
         user.setActivated(true);
+        user.setModelNo(userDTO.getModelNo());
+        user.setCommissionTarget(true);
         if (userDTO.getAuthorities() != null) {
             Set<Authority> authorities = userDTO
                 .getAuthorities()
@@ -378,5 +388,46 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<ShopUserResponse> getAllUsersByDate(Long shopId, String date) {
         return userRepository.findAllByShopIdAndDate(shopId, date, true, true);
+    }
+
+    public void createModels(String login, AdminModelDTO modelDTO) {
+        final String csvData = modelDTO.getCsvData();
+        final Shop shop = shopService
+            .get(modelDTO.getShopId())
+            .orElseThrow(() -> new BadRequestAlertException("Not found shop", "shopManagement", "idexists"));
+        final int userSize = shopUserMappingService.getMappingUsersByShopId(modelDTO.getShopId()).size();
+        AtomicInteger count = new AtomicInteger(userSize);
+
+        try (BufferedReader reader = new BufferedReader(new StringReader(csvData))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                final String[] strings = line.split(",");
+                createModel(shop, count.incrementAndGet(), login, strings);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createModel(Shop shop, int userSize, String login, String[] strings) {
+        final String shopNameEn = shop.getNameEn().replaceAll("\\s", "");
+        final String email = "%s_%s".formatted(shopNameEn, userSize);
+        AdminUserDTO adminUserDTO = new AdminUserDTO();
+        adminUserDTO.setLogin(email);
+        adminUserDTO.setFirstName(strings[0]);
+        adminUserDTO.setLastName(strings[1]);
+        adminUserDTO.setAuthorities(build(strings[2]));
+        adminUserDTO.setModelNo(strings[3]);
+        adminUserDTO.setLangKey("en");
+        adminUserDTO.setCreatedBy(login);
+        adminUserDTO.setEmail(email + "@salary-plus.ph");
+        adminUserDTO.setShopStrings(build(String.valueOf(shop.getId())));
+        createUser(adminUserDTO, RandomUtil.generatePassword(), RandomUtil.generateResetKey());
+    }
+
+    private HashSet<String> build(String value) {
+        final HashSet<String> objects = new HashSet<>();
+        objects.add(value);
+        return objects;
     }
 }

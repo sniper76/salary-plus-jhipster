@@ -2,7 +2,9 @@ import axios from 'axios';
 import { createAsyncThunk, createSlice, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
 
 import { defaultValue, IShop } from 'app/shared/model/shop.model';
+import { IShopModel } from 'app/shared/model/shopModel.model';
 import { IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
+import { getShopModels } from 'app/modules/order/order.reducer';
 
 const initialState = {
   loading: false,
@@ -39,6 +41,17 @@ export const createShop = createAsyncThunk(
   async (shop: IShop, thunkAPI) => {
     const result = await axios.post<IShop>(adminUrl, shop);
     thunkAPI.dispatch(getShopsAsAdmin({}));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
+
+export const createShopModels = createAsyncThunk(
+  'shopManagement/create_shop_models',
+  async (shop: IShopModel, thunkAPI) => {
+    const requestUrl = `api/shops/${shop.shopId}/models`;
+    const result = await axios.post<IShopModel>(requestUrl, shop);
+    thunkAPI.dispatch(getShopModels({ shopId: shop.shopId }));
     return result;
   },
   { serializeError: serializeAxiosError },
@@ -102,12 +115,12 @@ export const ShopManagementSlice = createSlice({
         state.updateSuccess = false;
         state.loading = true;
       })
-      .addMatcher(isPending(createShop, updateShop, deleteShop), state => {
+      .addMatcher(isPending(createShop, updateShop, deleteShop, createShopModels), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.updating = true;
       })
-      .addMatcher(isRejected(getShopsAsAdmin, getShop, createShop, updateShop, deleteShop), (state, action) => {
+      .addMatcher(isRejected(getShopsAsAdmin, getShop, createShop, updateShop, deleteShop, createShopModels), (state, action) => {
         state.loading = false;
         state.updating = false;
         state.updateSuccess = false;

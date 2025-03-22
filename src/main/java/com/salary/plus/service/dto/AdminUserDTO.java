@@ -51,6 +51,10 @@ public class AdminUserDTO implements Serializable {
 
     private String lastModifiedBy;
 
+    private String modelNo;
+
+    private boolean isCommissionTarget = false;
+
     private Instant lastModifiedDate;
 
     private Set<String> authorities;
@@ -68,6 +72,8 @@ public class AdminUserDTO implements Serializable {
         this.login = user.getLogin();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
+        this.modelNo = user.getModelNo();
+        this.isCommissionTarget = user.isCommissionTarget();
         this.email = user.getEmail();
         this.activated = user.isActivated();
         this.imageUrl = user.getImageUrl();
@@ -199,6 +205,22 @@ public class AdminUserDTO implements Serializable {
         this.shops = shops;
     }
 
+    public String getModelNo() {
+        return modelNo;
+    }
+
+    public void setModelNo(String modelNo) {
+        this.modelNo = modelNo;
+    }
+
+    public boolean isCommissionTarget() {
+        return isCommissionTarget;
+    }
+
+    public void setCommissionTarget(boolean commissionTarget) {
+        isCommissionTarget = commissionTarget;
+    }
+
     // prettier-ignore
     @Override
     public String toString() {
@@ -207,6 +229,8 @@ public class AdminUserDTO implements Serializable {
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
+            ", modelNo='" + modelNo + '\'' +
+            ", isCommissionTarget=" + isCommissionTarget +
             ", imageUrl='" + imageUrl + '\'' +
             ", activated=" + activated +
             ", langKey='" + langKey + '\'' +

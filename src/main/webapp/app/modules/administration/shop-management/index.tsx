@@ -6,6 +6,7 @@ import ShopManagement from './shop-management';
 import ShopManagementDetail from './shop-management-detail';
 import ShopManagementUpdate from './shop-management-update';
 import ShopManagementDeleteDialog from './shop-management-delete-dialog';
+import ShopManagementUserMapping from './shop-management-user-mapping';
 
 const ShopManagementRoutes = () => (
   <ErrorBoundaryRoutes>
@@ -15,6 +16,7 @@ const ShopManagementRoutes = () => (
       <Route index element={<ShopManagementDetail />} />
       <Route path="edit" element={<ShopManagementUpdate />} />
       <Route path="delete" element={<ShopManagementDeleteDialog />} />
+      <Route path="user-mapping" element={<ShopManagementUserMapping />} />
     </Route>
   </ErrorBoundaryRoutes>
 );

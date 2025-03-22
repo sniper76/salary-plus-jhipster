@@ -8,7 +8,6 @@ import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.ShopBaseSalaryService;
 import com.salary.plus.service.dto.ShopBaseSalaryDTO;
-import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
