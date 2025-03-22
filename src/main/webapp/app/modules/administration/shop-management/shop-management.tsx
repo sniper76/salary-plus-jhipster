@@ -199,6 +199,12 @@ export const ShopManagement = () => {
                       <Translate contentKey="entity.action.edit">Edit</Translate>
                     </span>
                   </Button>
+                  <Button tag={Link} to={`${shop.id}/user-mapping`} color="danger" size="sm">
+                    <FontAwesomeIcon icon="pencil-alt" />{' '}
+                    <span className="d-none d-md-inline">
+                      <Translate contentKey="entity.action.edit">사용자 연결</Translate>
+                    </span>
+                  </Button>
                 </div>
               </td>
             </tr>

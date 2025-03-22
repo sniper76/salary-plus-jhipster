@@ -2,7 +2,7 @@ import axios from 'axios';
 import { createAsyncThunk, createSlice, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
 
 import { IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
-import { IShopSalesItem, defaultValue } from 'app/shared/model/shopSalesItem.model';
+import { defaultValue, IShopSalesItem } from 'app/shared/model/shopSalesItem.model';
 
 const initialState = {
   loading: false,

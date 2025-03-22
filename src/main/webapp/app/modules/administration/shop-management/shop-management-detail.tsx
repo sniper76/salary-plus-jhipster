@@ -5,7 +5,6 @@ import { TextFormat, Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { APP_DATE_FORMAT } from 'app/config/constants';
-import { languages } from 'app/config/translation';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getShop } from './shop-management.reducer';
 

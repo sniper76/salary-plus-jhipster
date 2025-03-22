@@ -23,7 +23,7 @@
       "management": {
         "salesItem": "상품관리",
         "penalty": "벌금관리",
-        "salary": "일당관리"
+        "baseSalary": "일당관리"
       },
       "admin": {
         "main": "관리자",

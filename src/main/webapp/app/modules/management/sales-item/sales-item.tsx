@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Badge, Button, Table } from 'reactstrap';
+import { Button, Table } from 'reactstrap';
 import { getPaginationState, JhiItemCount, JhiPagination, TextFormat, Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
@@ -141,6 +141,9 @@ export const SalesItem = () => {
             <th className="hand" onClick={sort('nameEn')}>
               <Translate contentKey="global.label.nameEn">영문명</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('nameEn')} />
             </th>
+            <th className="hand" onClick={sort('price')}>
+              <Translate contentKey="global.label.price">금액</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('price')} />
+            </th>
             <th>
               <Translate contentKey="userManagement.profiles">Profiles</Translate>
             </th>
@@ -169,6 +172,7 @@ export const SalesItem = () => {
               </td>
               <td>{user.nameKo}</td>
               <td>{user.nameEn}</td>
+              <td>{user.price}</td>
               <td>
                 {user.activated ? (
                   <Button color="success" onClick={toggleActive(user)}>

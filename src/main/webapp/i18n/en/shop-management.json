@@ -15,6 +15,9 @@
     "detail": {
       "title": "User"
     },
+    "button": {
+      "userMapping": "User mapping"
+    },
     "id": "ID",
     "nameKo": "Korean name",
     "nameEn": "English name",

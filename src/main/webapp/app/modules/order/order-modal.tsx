@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Translate, ValidatedField } from 'react-jhipster';
-import { Button, Col, Form, Modal, ModalBody, ModalFooter, ModalHeader, Row, Alert } from 'reactstrap';
+import { Alert, Button, Col, Form, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
 import { useForm } from 'react-hook-form';
-import { languages, locales } from 'app/config/translation';
 import './order.scss';
 import { IShopSalesItem } from 'app/shared/model/shopSalesItem.model';
 import { IModelUser } from 'app/shared/model/modelUser.model';

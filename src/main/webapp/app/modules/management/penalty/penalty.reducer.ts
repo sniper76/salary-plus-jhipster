@@ -2,7 +2,7 @@ import axios from 'axios';
 import { createAsyncThunk, createSlice, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
 
 import { IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
-import { IShopPenalty, defaultValue } from 'app/shared/model/penalty.model';
+import { defaultValue, IShopPenalty } from 'app/shared/model/penalty.model';
 
 const initialState = {
   loading: false,

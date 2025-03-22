@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice, isPending, isRejected } from '@reduxjs/toolkit';
 
-import { IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
+import { serializeAxiosError } from 'app/shared/reducers/reducer.utils';
 import { IShop } from 'app/shared/model/shop.model';
 import { IShopSalesItem } from 'app/shared/model/shopSalesItem.model';
 import { IModelUser } from 'app/shared/model/modelUser.model';

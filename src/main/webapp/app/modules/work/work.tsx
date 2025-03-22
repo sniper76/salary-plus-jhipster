@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Row, Button } from 'reactstrap';
+import { Button, Col, Row } from 'reactstrap';
 import { Translate } from 'react-jhipster';
 import './work.scss';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { createCheckIn, createAllCheckIn, getShopUsers } from 'app/modules/work/work.reducer';
+import { createAllCheckIn, createCheckIn, getShopUsers } from 'app/modules/work/work.reducer';
 import { getUserShops } from 'app/modules/order/order.reducer';
 
 export const Work = () => {

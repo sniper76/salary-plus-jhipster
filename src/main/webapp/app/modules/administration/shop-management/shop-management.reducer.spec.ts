@@ -3,7 +3,6 @@ import axios from 'axios';
 import sinon from 'sinon';
 
 import { defaultValue } from 'app/shared/model/shop.model';
-import { AUTHORITIES } from 'app/config/constants';
 import shopManagement, { createShop, deleteShop, getShop, getShopsAsAdmin, reset, updateShop } from './shop-management.reducer';
 
 describe('User management reducer tests', () => {

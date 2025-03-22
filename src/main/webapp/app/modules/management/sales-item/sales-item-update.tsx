@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Button, Col, FormText, Row } from 'reactstrap';
-import { isEmail, Translate, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
+import { Button, Col, Row } from 'reactstrap';
+import { Translate, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import { languages, locales } from 'app/config/translation';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { createSalesItem, reset, updateSalesItem, getShopSalesItem } from './sales-item.reducer';
+import { createSalesItem, getShopSalesItem, reset, updateSalesItem } from './sales-item.reducer';
 
 export const SalesItemUpdate = () => {
   const dispatch = useAppDispatch();

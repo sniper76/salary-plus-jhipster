@@ -2,24 +2,19 @@ package com.salary.plus.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salary.plus.IntegrationTest;
 import com.salary.plus.domain.Shop;
-import com.salary.plus.domain.ShopSalesItem;
 import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
 import com.salary.plus.enums.ShopType;
 import com.salary.plus.repository.ShopRepository;
-import com.salary.plus.repository.ShopSalesItemRepository;
 import com.salary.plus.repository.ShopUserMappingRepository;
 import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.AuthoritiesConstants;
-import com.salary.plus.service.dto.ShopSalesItemDTO;
-import com.salary.plus.service.dto.UserDTO;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

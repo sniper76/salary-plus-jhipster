@@ -5,16 +5,16 @@ import './order.scss';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import {
+  clearOrderDetails,
+  createOrder,
   getShopModels,
-  getShopTables,
+  getShopOrderDetails,
   getShopOrders,
   getShopSalesItems,
+  getShopTables,
   getUserShops,
-  createOrder,
   updateOrder,
   updateOrderPaid,
-  getShopOrderDetails,
-  clearOrderDetails,
 } from 'app/modules/order/order.reducer';
 import OrderModal from 'app/modules/order/order-modal';
 

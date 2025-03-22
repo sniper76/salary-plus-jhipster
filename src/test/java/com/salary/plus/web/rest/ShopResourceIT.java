@@ -1,6 +1,5 @@
 package com.salary.plus.web.rest;
 
-import static com.salary.plus.web.rest.TestUtil.someEmail;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -9,19 +8,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static shiver.me.timbers.data.random.RandomStrings.someAlphanumericString;
-import static shiver.me.timbers.data.random.RandomThings.someThing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salary.plus.IntegrationTest;
 import com.salary.plus.domain.Shop;
-import com.salary.plus.domain.User;
 import com.salary.plus.enums.ShopType;
 import com.salary.plus.repository.ShopRepository;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.service.dto.AdminShopDTO;
-import com.salary.plus.service.dto.AdminUserDTO;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.BeforeEach;

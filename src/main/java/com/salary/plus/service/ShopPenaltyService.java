@@ -3,7 +3,6 @@ package com.salary.plus.service;
 import com.salary.plus.domain.ShopPenalty;
 import com.salary.plus.enums.PenaltyType;
 import com.salary.plus.repository.ShopPenaltyRepository;
-import com.salary.plus.repository.ShopPenaltyRepository;
 import com.salary.plus.service.dto.ShopPenaltyDTO;
 import java.util.List;
 import java.util.Optional;

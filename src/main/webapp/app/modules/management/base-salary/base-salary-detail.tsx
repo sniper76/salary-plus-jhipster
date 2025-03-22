@@ -6,23 +6,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { APP_LOCAL_TIMESTAMP_FORMAT } from 'app/config/constants';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getShopSalesItem } from './sales-item.reducer';
+import { getShopBaseSalary } from './base-salary.reducer';
 
-export const SalesItemDetail = () => {
+export const BaseSalaryDetail = () => {
   const dispatch = useAppDispatch();
 
-  const { shopId, salesItemId } = useParams();
+  const { shopId, shopBaseSalaryId } = useParams();
 
   useEffect(() => {
-    dispatch(getShopSalesItem({ shopId, salesItemId }));
+    dispatch(getShopBaseSalary({ shopId, shopBaseSalaryId }));
   }, []);
 
-  const salesItem = useAppSelector(state => state.salesItems.salesItem);
+  const baseSalary = useAppSelector(state => state.baseSalaries.baseSalary);
 
   return (
     <div>
       <h2>
-        <Translate contentKey="salesItem.detail.title">상품</Translate>
+        <Translate contentKey="baseSalary.detail.title">벌금</Translate>
       </h2>
       <Row size="md">
         <dl className="jh-entity-details">
@@ -30,8 +30,8 @@ export const SalesItemDetail = () => {
             <Translate contentKey="global.field.id">ID</Translate>
           </dt>
           <dd>
-            <span>{salesItem.id}</span>&nbsp;
-            {salesItem.activated ? (
+            <span>{baseSalary.id}</span>&nbsp;
+            {baseSalary.activated ? (
               <Badge color="success">
                 <Translate contentKey="userManagement.activated">Activated</Translate>
               </Badge>
@@ -44,62 +44,42 @@ export const SalesItemDetail = () => {
           <dt>
             <Translate contentKey="global.label.nameKo">한글명</Translate>
           </dt>
-          <dd>{salesItem.nameKo}</dd>
+          <dd>{baseSalary.nameKo}</dd>
           <dt>
             <Translate contentKey="global.label.nameEn">영문명</Translate>
           </dt>
-          <dd>{salesItem.nameEn}</dd>
-          <dt>
-            <Translate contentKey="salesItem.isCommissionTarget">커미션 대상 여부</Translate>
-          </dt>
-          <dd>{salesItem.commissionTarget ? 'Yes' : 'No'}</dd>
-          <dt>
-            <Translate contentKey="salesItem.isSnack">안주 여부</Translate>
-          </dt>
-          <dd>{salesItem.snack ? 'Yes' : 'No'}</dd>
+          <dd>{baseSalary.nameEn}</dd>
           <dt>
             <Translate contentKey="global.label.price">금액</Translate>
           </dt>
-          <dd>{salesItem.price}</dd>
-          <dt>
-            <Translate contentKey="global.label.shopCommissionPrice">상점 커미션 금액</Translate>
-          </dt>
-          <dd>{salesItem.shopCommissionPrice}</dd>
-          <dt>
-            <Translate contentKey="global.label.mamaCommissionPrice">마마 커미션 금액</Translate>
-          </dt>
-          <dd>{salesItem.mamaCommissionPrice}</dd>
-          <dt>
-            <Translate contentKey="global.label.modelCommissionPrice">모델 커미션 금액</Translate>
-          </dt>
-          <dd>{salesItem.modelCommissionPrice}</dd>
+          <dd>{baseSalary.price}</dd>
           <dt>
             <Translate contentKey="userManagement.createdBy">Created By</Translate>
           </dt>
-          <dd>{salesItem.createdBy}</dd>
+          <dd>{baseSalary.createdBy}</dd>
           <dt>
             <Translate contentKey="userManagement.createdDate">Created Date</Translate>
           </dt>
           <dd>
-            {salesItem.createdDate ? (
-              <TextFormat value={salesItem.createdDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
+            {baseSalary.createdDate ? (
+              <TextFormat value={baseSalary.createdDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
             ) : null}
           </dd>
           <dt>
             <Translate contentKey="userManagement.lastModifiedBy">Last Modified By</Translate>
           </dt>
-          <dd>{salesItem.lastModifiedBy}</dd>
+          <dd>{baseSalary.lastModifiedBy}</dd>
           <dt>
             <Translate contentKey="userManagement.lastModifiedDate">Last Modified Date</Translate>
           </dt>
           <dd>
-            {salesItem.lastModifiedDate ? (
-              <TextFormat value={salesItem.lastModifiedDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
+            {baseSalary.lastModifiedDate ? (
+              <TextFormat value={baseSalary.lastModifiedDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
             ) : null}
           </dd>
         </dl>
       </Row>
-      <Button tag={Link} to="/shop/sales-item" replace color="info">
+      <Button tag={Link} to="/shop/base-salary" replace color="info">
         <FontAwesomeIcon icon="arrow-left" />{' '}
         <span className="d-none d-md-inline">
           <Translate contentKey="entity.action.back">Back</Translate>
@@ -109,4 +89,4 @@ export const SalesItemDetail = () => {
   );
 };
 
-export default SalesItemDetail;
+export default BaseSalaryDetail;

@@ -10,20 +10,20 @@ import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.cons
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUserShops } from 'app/modules/order/order.reducer';
-import { getPageShopPenalties } from './penalty.reducer';
+import { getPageShopBaseSalaries } from './base-salary.reducer';
 
-import './penalty.scss';
+import './base-salary.scss';
 
-export const Penalty = () => {
+export const BaseSalary = () => {
   const dispatch = useAppDispatch();
 
   const pageLocation = useLocation();
   const navigate = useNavigate();
 
   const shops = useAppSelector(state => state.orders.shops);
-  const penaltiesForPage = useAppSelector(state => state.penalties.penaltiesForPage);
-  const totalItems = useAppSelector(state => state.penalties.totalItems);
-  const loading = useAppSelector(state => state.penalties.loading);
+  const baseSalariesForPage = useAppSelector(state => state.baseSalaries.baseSalariesForPage);
+  const totalItems = useAppSelector(state => state.baseSalaries.totalItems);
+  const loading = useAppSelector(state => state.baseSalaries.loading);
 
   const [pagination, setPagination] = useState(
     overridePaginationStateWithQueryParams(getPaginationState(pageLocation, ITEMS_PER_PAGE, 'id'), pageLocation.search),
@@ -33,7 +33,7 @@ export const Penalty = () => {
   const getUsersFromProps = () => {
     console.warn('getUsersFromProps', selectedValue, this);
     dispatch(
-      getPageShopPenalties({
+      getPageShopBaseSalaries({
         id: selectedValue,
         page: pagination.activePage - 1,
         size: pagination.itemsPerPage,
@@ -57,7 +57,7 @@ export const Penalty = () => {
   useEffect(() => {
     if (shops.length > 0) {
       setSelectedValue(shops[0].id);
-      // dispatch(getShopPenalties({ shopId: shops[0].id }));
+      // dispatch(getShopBaseSalaries({ shopId: shops[0].id }));
     }
   }, [shops]);
 
@@ -111,7 +111,7 @@ export const Penalty = () => {
   return (
     <div>
       <h2 id="penalty-page-heading" data-cy="penaltyPageHeading">
-        <Translate contentKey="penalty.home.title">벌금</Translate>
+        <Translate contentKey="baseSalary.home.title">벌금</Translate>
         <div className="d-flex justify-content-end">
           <select onChange={handleSelect} value={selectedValue} className="custom-number-input">
             {shops.map(shop => (
@@ -122,10 +122,10 @@ export const Penalty = () => {
           </select>
           <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />
-            <Translate contentKey="penalty.home.refreshListLabel">벌금 조회</Translate>
+            <Translate contentKey="baseSalary.home.refreshListLabel">목록 조회</Translate>
           </Button>
           <Link to={`${selectedValue}/new`} className="btn btn-primary jh-create-entity">
-            <FontAwesomeIcon icon="plus" /> <Translate contentKey="penalty.home.createLabel">벌금 생성</Translate>
+            <FontAwesomeIcon icon="plus" /> <Translate contentKey="baseSalary.home.createLabel">일당 생성</Translate>
           </Link>
         </div>
       </h2>
@@ -143,9 +143,6 @@ export const Penalty = () => {
             </th>
             <th className="hand" onClick={sort('price')}>
               <Translate contentKey="global.label.price">금액</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('price')} />
-            </th>
-            <th className="hand" onClick={sort('type')}>
-              <Translate contentKey="penalty.type">벌금유형</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('type')} />
             </th>
             <th>
               <Translate contentKey="userManagement.profiles">Profiles</Translate>
@@ -166,7 +163,7 @@ export const Penalty = () => {
           </tr>
         </thead>
         <tbody>
-          {penaltiesForPage.map((user, i) => (
+          {baseSalariesForPage.map((user, i) => (
             <tr id={user.id} key={`user-${i}`}>
               <td>
                 <Button tag={Link} to={`${selectedValue}/${user.id}`} color="link" size="sm">
@@ -176,7 +173,6 @@ export const Penalty = () => {
               <td>{user.nameKo}</td>
               <td>{user.nameEn}</td>
               <td>{user.price}</td>
-              <td>{user.type}</td>
               <td>
                 {user.activated ? (
                   <Button color="success" onClick={toggleActive(user)}>
@@ -228,7 +224,7 @@ export const Penalty = () => {
         </tbody>
       </Table>
       {totalItems ? (
-        <div className={penaltiesForPage?.length > 0 ? '' : 'd-none'}>
+        <div className={baseSalariesForPage?.length > 0 ? '' : 'd-none'}>
           <div className="justify-content-center d-flex">
             <JhiItemCount page={pagination.activePage} total={totalItems} itemsPerPage={pagination.itemsPerPage} i18nEnabled />
           </div>
@@ -249,4 +245,4 @@ export const Penalty = () => {
   );
 };
 
-export default Penalty;
+export default BaseSalary;

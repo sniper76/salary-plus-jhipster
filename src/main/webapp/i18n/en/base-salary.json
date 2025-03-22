@@ -1,0 +1,33 @@
+{
+  "baseSalary": {
+    "home": {
+      "title": "Base Salary",
+      "refreshListLabel": "Refresh list",
+      "createLabel": "Create a new Base Salary",
+      "createOrEditLabel": "Create or edit a Base Salary"
+    },
+    "created": "A new penalty is created with identifier {{ param }}",
+    "updated": "A penalty is updated with identifier {{ param }}",
+    "deleted": "A penalty is deleted with identifier {{ param }}",
+    "delete": {
+      "question": "Are you sure you want to delete penalty {{ name }}?"
+    },
+    "detail": {
+      "title": "Base Salary"
+    },
+    "login": "Login",
+    "type": "Base Salary type",
+    "typeValue": "Base Salary type value",
+    "email": "Email",
+    "activated": "Activated",
+    "deactivated": "Deactivated",
+    "isCommissionTarget": "Is Commission target",
+    "isSnack": "Is snack",
+    "profiles": "Profiles",
+    "langKey": "Language",
+    "createdBy": "Created by",
+    "createdDate": "Created date",
+    "lastModifiedBy": "Modified by",
+    "lastModifiedDate": "Modified date"
+  }
+}

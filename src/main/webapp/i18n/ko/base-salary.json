@@ -1,0 +1,31 @@
+{
+  "baseSalary": {
+    "home": {
+      "title": "일당",
+      "refreshListLabel": "목록 조회",
+      "createLabel": "일당 생성",
+      "createOrEditLabel": "일당 생성 또는 수정"
+    },
+    "created": "일당이 등로되었습니다. {{ param }}",
+    "updated": "일당이 수정되었습니다. {{ param }}",
+    "deleted": "일당이 삭제되었습니다. {{ param }}",
+    "delete": {
+      "question": "정말로 {{ name }} 일당를 삭제하시겠습니까?"
+    },
+    "detail": {
+      "title": "일당"
+    },
+    "login": "로그인 아이디",
+    "email": "이메일",
+    "activated": "활성",
+    "deactivated": "비활성",
+    "isCommissionTarget": "커미션 대상 여부",
+    "isSnack": "안주 여부",
+    "profiles": "Profiles",
+    "langKey": "언어",
+    "createdBy": "생성자",
+    "createdDate": "생성일",
+    "lastModifiedBy": "수정자",
+    "lastModifiedDate": "수정일"
+  }
+}
