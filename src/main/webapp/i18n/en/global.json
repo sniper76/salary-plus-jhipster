@@ -23,7 +23,8 @@
       "management": {
         "salesItem": "Sales Item",
         "penalty": "Penalty",
-        "baseSalary": "Salary"
+        "baseSalary": "Salary",
+        "userSalaryMapping": "User Salary"
       },
       "admin": {
         "main": "Administration",

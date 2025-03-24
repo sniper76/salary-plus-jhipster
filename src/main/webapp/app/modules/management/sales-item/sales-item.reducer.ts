@@ -14,18 +14,18 @@ const initialState = {
   totalItems: 0,
 };
 
-const apiUrl = 'api/shops/';
+const apiUrl = 'api/shops';
 
 // Async Actions
 
 export const getPageShopSalesItems = createAsyncThunk('management/sales_items_page', async ({ id, page, size, sort }: IQueryParams) => {
-  const requestUrl = `${apiUrl}${id}/sales-items${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
+  const requestUrl = `${apiUrl}/${id}/sales-items${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
   console.warn('requestUrl', requestUrl);
   return axios.get<IShopSalesItem[]>(requestUrl);
 });
 
 export const getShopSalesItem = createAsyncThunk('management/sales_item', async ({ shopId, salesItemId }: any) => {
-  const requestUrl = `${apiUrl}${shopId}/sales-items/${salesItemId}`;
+  const requestUrl = `${apiUrl}/${shopId}/sales-items/${salesItemId}`;
   console.warn('requestUrl', requestUrl);
   return axios.get<IShopSalesItem>(requestUrl);
 });
@@ -33,7 +33,7 @@ export const getShopSalesItem = createAsyncThunk('management/sales_item', async 
 export const createSalesItem = createAsyncThunk(
   'management/create_sales_item',
   async (user: IShopSalesItem, thunkAPI) => {
-    const requestUrl = `${apiUrl}${user.shopId}/sales-items`;
+    const requestUrl = `${apiUrl}/${user.shopId}/sales-items`;
     console.warn('requestUrl', requestUrl);
     const result = await axios.post<IShopSalesItem>(requestUrl, user);
     thunkAPI.dispatch(getPageShopSalesItems({ id: user.shopId }));
@@ -45,7 +45,7 @@ export const createSalesItem = createAsyncThunk(
 export const updateSalesItem = createAsyncThunk(
   'management/update_sales_item',
   async (user: IShopSalesItem, thunkAPI) => {
-    const requestUrl = `${apiUrl}${user.shopId}/sales-items`;
+    const requestUrl = `${apiUrl}/${user.shopId}/sales-items`;
     const result = await axios.put<IShopSalesItem>(requestUrl, user);
     thunkAPI.dispatch(getPageShopSalesItems({ id: user.shopId }));
     return result;
@@ -56,7 +56,7 @@ export const updateSalesItem = createAsyncThunk(
 export const deleteSalesItem = createAsyncThunk(
   'management/delete_sales_item',
   async ({ shopId, salesItemId }: any, thunkAPI) => {
-    const requestUrl = `${apiUrl}${shopId}/sales-items/${salesItemId}`;
+    const requestUrl = `${apiUrl}/${shopId}/sales-items/${salesItemId}`;
     const result = await axios.delete<IShopSalesItem>(requestUrl);
     thunkAPI.dispatch(getPageShopSalesItems({ id: shopId }));
     return result;

@@ -116,7 +116,7 @@ public class ShopBaseSalaryResource {
     }
 
     @GetMapping("/{shopId}/base-salaries/all")
-    public ResponseEntity<List<ShopBaseSalary>> getAllSalesItems(@PathVariable("shopId") Long shopId) {
+    public ResponseEntity<List<ShopBaseSalary>> getAllBaseSalaries(@PathVariable("shopId") Long shopId) {
         LOG.debug("REST request to get all sales item for an admin");
         final List<ShopBaseSalary> items = shopBaseSalaryService.getAllBaseSalaries(shopId);
         return new ResponseEntity<>(items, HttpStatus.OK);

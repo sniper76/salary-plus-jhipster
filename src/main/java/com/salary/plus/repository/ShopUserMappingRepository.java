@@ -3,8 +3,11 @@ package com.salary.plus.repository;
 import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
+import com.salary.plus.service.dto.ShopUserSalaryBaseMappingResponse;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -46,7 +49,7 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
             and u.isCommissionTarget = :isCommissionTarget
         """
     )
-    List<User> findAllUserByShopIdAndCommissionTargetUser(Long shopId, boolean isCommissionTarget);
+    List<User> findAllUserByShopIdAndCommissionTarget(Long shopId, boolean isCommissionTarget);
 
     List<ShopUserMapping> findAllByUserId(Long userId);
 
@@ -63,4 +66,28 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
     List<Shop> findAllShopByLogin(String login);
 
     void deleteByUserIdAndShopId(Long userId, Long shopId);
+
+    @Query(
+        """
+            select new com.salary.plus.service.dto.ShopUserSalaryBaseMappingResponse(u, sbs)
+            from User u
+            inner join ShopUserMapping sums on u.id = sums.userId
+            inner join Shop s on sums.shopId = s.id
+            inner join ShopBaseSalary sbs on s.id = sbs.shopId
+            inner join ShopUserBaseSalaryMapping subsm on sbs.id = subsm.shopBaseSalaryId and u.id = subsm.userId
+            where s.id = :shopId
+            and u.isCommissionTarget = :isCommissionTarget
+            and u.activated = :activated
+            and sums.activated = :activated
+            and s.activated = :activated
+            and sbs.activated = :activated
+            and subsm.activated = :activated
+        """
+    )
+    Page<ShopUserSalaryBaseMappingResponse> findAllByShopIdAndCommissionTargetAndActivated(
+        Long shopId,
+        boolean isCommissionTarget,
+        boolean activated,
+        Pageable pageable
+    );
 }

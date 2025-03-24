@@ -2,6 +2,7 @@ package com.salary.plus.repository;
 
 import com.salary.plus.domain.ShopUserBaseSalaryMapping;
 import com.salary.plus.domain.User;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Repository;
  * Spring Data JPA repository for the {@link User} entity.
  */
 @Repository
-public interface ShopUserBaseSalaryMappingRepository extends JpaRepository<ShopUserBaseSalaryMapping, Long> {}
+public interface ShopUserBaseSalaryMappingRepository extends JpaRepository<ShopUserBaseSalaryMapping, Long> {
+    Optional<ShopUserBaseSalaryMapping> findByShopBaseSalaryIdAndUserId(Long shopBaseSalaryId, Long userId);
+}

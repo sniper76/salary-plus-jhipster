@@ -4,6 +4,7 @@ export interface IModelUser {
   firstName?: string;
   lastName?: string;
   modelNo?: string;
+  price?: number;
   createdBy?: string;
   createdDate?: Date | null;
   lastModifiedBy?: string;
@@ -16,6 +17,7 @@ export const defaultValue: Readonly<IModelUser> = {
   firstName: '',
   lastName: '',
   modelNo: '',
+  price: 0,
   createdBy: '',
   createdDate: null,
   lastModifiedBy: '',

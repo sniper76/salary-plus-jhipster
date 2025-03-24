@@ -1,10 +1,19 @@
 package com.salary.plus.service;
 
 import com.salary.plus.domain.ShopBaseSalary;
+import com.salary.plus.domain.ShopUserBaseSalaryMapping;
+import com.salary.plus.domain.User;
 import com.salary.plus.repository.ShopBaseSalaryRepository;
+import com.salary.plus.repository.ShopUserBaseSalaryMappingRepository;
+import com.salary.plus.service.dto.AdminUserSalaryMappingDTO;
 import com.salary.plus.service.dto.ShopBaseSalaryDTO;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +33,8 @@ public class ShopBaseSalaryService {
     private static final Logger LOG = LoggerFactory.getLogger(ShopBaseSalaryService.class);
 
     private final ShopBaseSalaryRepository shopBaseSalaryRepository;
+    private final ShopUserBaseSalaryMappingRepository shopUserBaseSalaryMappingRepository;
+    private final ShopUserMappingService shopUserMappingService;
 
     public ShopBaseSalary create(Long shopId, ShopBaseSalaryDTO shopPenaltyDTO) {
         ShopBaseSalary shopPenalty = new ShopBaseSalary();
@@ -67,5 +78,53 @@ public class ShopBaseSalaryService {
     @Transactional(readOnly = true)
     public Optional<ShopBaseSalary> get(Long shopId, long shopBaseSalaryId) {
         return shopBaseSalaryRepository.findByIdAndShopIdAndActivated(shopBaseSalaryId, shopId, true);
+    }
+
+    public void createUserBaseSalaryMappings(String login, AdminUserSalaryMappingDTO mappingDTO) {
+        if (mappingDTO.getUserId() == null) {
+            //all
+            final List<User> users = shopUserMappingService.getMappingUsersByShopIdAndCommissionTargetUser(mappingDTO.getShopId());
+            users.forEach(it -> createAndUpdate(login, mappingDTO, it.getId()));
+        } else {
+            createAndUpdate(login, mappingDTO, mappingDTO.getUserId());
+        }
+    }
+
+    private void createAndUpdate(String login, AdminUserSalaryMappingDTO mappingDTO, Long userId) {
+        shopUserBaseSalaryMappingRepository
+            .findByShopBaseSalaryIdAndUserId(mappingDTO.getShopBaseSalaryId(), userId)
+            .ifPresentOrElse(
+                elem -> {
+                    elem.setActivated(false);
+                    elem.updateLastModified(login);
+                    shopUserBaseSalaryMappingRepository.save(elem);
+                },
+                () -> createUserBaseSalaryMapping(login, mappingDTO.getShopBaseSalaryId(), userId)
+            );
+    }
+
+    private void createUserBaseSalaryMapping(String login, Long shopBaseSalaryId, Long userId) {
+        ShopUserBaseSalaryMapping mapping = new ShopUserBaseSalaryMapping();
+        mapping.setShopBaseSalaryId(shopBaseSalaryId);
+        mapping.setUserId(userId);
+        mapping.created(login);
+        shopUserBaseSalaryMappingRepository.save(mapping);
+    }
+
+    public Map<String, Set<String>> compareSets(Set<String> left, Set<String> right) {
+        Set<String> deleteTarget = new HashSet<>(left);
+        Set<String> noneTarget = new HashSet<>(left);
+        Set<String> createTarget = new HashSet<>(right);
+
+        deleteTarget.removeAll(right); // 왼쪽에만 있는 값
+        noneTarget.retainAll(right); // 양쪽에 모두 있는 값
+        createTarget.removeAll(left); // 오른쪽에만 있는 값
+
+        Map<String, Set<String>> result = new HashMap<>();
+        result.put("deleteTarget", deleteTarget);
+        result.put("noneTarget", noneTarget);
+        result.put("createTarget", createTarget);
+
+        return result;
     }
 }
