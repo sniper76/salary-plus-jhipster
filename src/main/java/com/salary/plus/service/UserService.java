@@ -395,7 +395,7 @@ public class UserService {
         final Shop shop = shopService
             .get(modelDTO.getShopId())
             .orElseThrow(() -> new BadRequestAlertException("Not found shop", "shopManagement", "idexists"));
-        final int userSize = shopUserMappingService.getMappingUsersByShopId(modelDTO.getShopId()).size();
+        final int userSize = shopUserMappingService.getMappingUsersByShopIdAndActivated(modelDTO.getShopId()).size();
         AtomicInteger count = new AtomicInteger(userSize);
 
         try (BufferedReader reader = new BufferedReader(new StringReader(csvData))) {

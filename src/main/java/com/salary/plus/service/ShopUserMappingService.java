@@ -32,13 +32,13 @@ public class ShopUserMappingService {
     }
 
     @Transactional(readOnly = true)
-    public List<User> getMappingUsersByShopId(Long shopId) {
-        return shopUserMappingRepository.findAllUserByShopId(shopId);
+    public List<User> getMappingUsersByShopIdAndActivated(Long shopId) {
+        return shopUserMappingRepository.findAllUserByShopIdAndActivated(shopId, true);
     }
 
     @Transactional(readOnly = true)
     public List<User> getMappingUsersByShopIdAndCommissionTargetUser(Long shopId) {
-        return shopUserMappingRepository.findAllUserByShopIdAndCommissionTarget(shopId, true);
+        return shopUserMappingRepository.findAllUserByShopIdAndActivatedAndCommissionTarget(shopId, true, true);
     }
 
     @Transactional(readOnly = true)
@@ -48,7 +48,7 @@ public class ShopUserMappingService {
 
     @Transactional(readOnly = true)
     public List<Shop> getMappingShops(String username) {
-        return shopUserMappingRepository.findAllShopByLogin(username);
+        return shopUserMappingRepository.findAllShopByLoginAndActivated(username, true);
     }
 
     public ShopUserMapping save(ShopUserMapping userMapping) {

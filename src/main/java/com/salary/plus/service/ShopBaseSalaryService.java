@@ -7,13 +7,9 @@ import com.salary.plus.repository.ShopBaseSalaryRepository;
 import com.salary.plus.repository.ShopUserBaseSalaryMappingRepository;
 import com.salary.plus.service.dto.AdminUserSalaryMappingDTO;
 import com.salary.plus.service.dto.ShopBaseSalaryDTO;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,12 +88,17 @@ public class ShopBaseSalaryService {
 
     private void createAndUpdate(String login, AdminUserSalaryMappingDTO mappingDTO, Long userId) {
         shopUserBaseSalaryMappingRepository
-            .findByShopBaseSalaryIdAndUserId(mappingDTO.getShopBaseSalaryId(), userId)
+            .findByShopIdAndUserId(mappingDTO.getShopId(), userId)
             .ifPresentOrElse(
                 elem -> {
-                    elem.setActivated(false);
-                    elem.updateLastModified(login);
-                    shopUserBaseSalaryMappingRepository.save(elem);
+                    if (Objects.equals(elem.getShopBaseSalaryId(), mappingDTO.getShopBaseSalaryId())) {
+                        elem.setActivated(true);
+                        elem.updateLastModified(login);
+                        shopUserBaseSalaryMappingRepository.save(elem);
+                    } else {
+                        shopUserBaseSalaryMappingRepository.delete(elem);
+                        createUserBaseSalaryMapping(login, mappingDTO.getShopBaseSalaryId(), userId);
+                    }
                 },
                 () -> createUserBaseSalaryMapping(login, mappingDTO.getShopBaseSalaryId(), userId)
             );
@@ -109,22 +110,5 @@ public class ShopBaseSalaryService {
         mapping.setUserId(userId);
         mapping.created(login);
         shopUserBaseSalaryMappingRepository.save(mapping);
-    }
-
-    public Map<String, Set<String>> compareSets(Set<String> left, Set<String> right) {
-        Set<String> deleteTarget = new HashSet<>(left);
-        Set<String> noneTarget = new HashSet<>(left);
-        Set<String> createTarget = new HashSet<>(right);
-
-        deleteTarget.removeAll(right); // 왼쪽에만 있는 값
-        noneTarget.retainAll(right); // 양쪽에 모두 있는 값
-        createTarget.removeAll(left); // 오른쪽에만 있는 값
-
-        Map<String, Set<String>> result = new HashMap<>();
-        result.put("deleteTarget", deleteTarget);
-        result.put("noneTarget", noneTarget);
-        result.put("createTarget", createTarget);
-
-        return result;
     }
 }

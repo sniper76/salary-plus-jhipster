@@ -32,7 +32,9 @@ public class ShopUserDailySalaryService {
     public List<ShopUserDailySalary> create(ShopDailySalaryDTO userDTO) {
         final Integer salary = 0; //salary 조회
         if (CollectionUtils.isEmpty(userDTO.getUserIds())) {
-            userDTO.setUserIds(shopUserMappingService.getMappingUsersByShopId(userDTO.getShopId()).stream().map(User::getId).toList());
+            userDTO.setUserIds(
+                shopUserMappingService.getMappingUsersByShopIdAndActivated(userDTO.getShopId()).stream().map(User::getId).toList()
+            );
         }
         return userDTO
             .getUserIds()

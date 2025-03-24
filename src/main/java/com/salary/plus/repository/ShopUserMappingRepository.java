@@ -34,10 +34,10 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
             from User u
             inner join ShopUserMapping suma on u.id = suma.userId
             where suma.shopId = :shopId
-            and u.activated = true
+            and u.activated = :activated
         """
     )
-    List<User> findAllUserByShopId(Long shopId);
+    List<User> findAllUserByShopIdAndActivated(Long shopId, boolean activated);
 
     @Query(
         """
@@ -45,11 +45,11 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
             from User u
             inner join ShopUserMapping suma on u.id = suma.userId
             where suma.shopId = :shopId
-            and u.activated = true
+            and u.activated = :activated
             and u.isCommissionTarget = :isCommissionTarget
         """
     )
-    List<User> findAllUserByShopIdAndCommissionTarget(Long shopId, boolean isCommissionTarget);
+    List<User> findAllUserByShopIdAndActivatedAndCommissionTarget(Long shopId, boolean activated, boolean isCommissionTarget);
 
     List<ShopUserMapping> findAllByUserId(Long userId);
 
@@ -60,10 +60,10 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
             inner join ShopUserMapping suma on s.id = suma.shopId
             inner join User u on suma.userId = u.id
             where u.login = :login
-            and u.activated = true
+            and u.activated = :activated
         """
     )
-    List<Shop> findAllShopByLogin(String login);
+    List<Shop> findAllShopByLoginAndActivated(String login, boolean activated);
 
     void deleteByUserIdAndShopId(Long userId, Long shopId);
 
