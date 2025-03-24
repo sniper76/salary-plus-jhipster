@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Badge, Button, Table } from 'reactstrap';
+import { Button, Table } from 'reactstrap';
 import { getPaginationState, JhiItemCount, JhiPagination, TextFormat, Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
@@ -9,10 +9,10 @@ import { APP_DATE_FORMAT } from 'app/config/constants';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getBaseSalaryMappingUsers } from './user-salary-mapping.reducer';
+import { getBaseSalaryMappingUsers } from './user-base-salary-mapping.reducer';
 import { getUserShops } from 'app/modules/order/order.reducer';
 
-export const UserSalaryMapping = () => {
+export const UserBaseSalaryMapping = () => {
   const dispatch = useAppDispatch();
 
   const pageLocation = useLocation();
@@ -87,9 +87,9 @@ export const UserSalaryMapping = () => {
   };
 
   const account = useAppSelector(state => state.authentication.account);
-  const users = useAppSelector(state => state.userSalaryMappings.users);
-  const totalItems = useAppSelector(state => state.userSalaryMappings.totalItems);
-  const loading = useAppSelector(state => state.userSalaryMappings.loading);
+  const users = useAppSelector(state => state.userBaseSalaryMappings.users);
+  const totalItems = useAppSelector(state => state.userBaseSalaryMappings.totalItems);
+  const loading = useAppSelector(state => state.userBaseSalaryMappings.loading);
   const getSortIconByFieldName = (fieldName: string) => {
     const sortFieldName = pagination.sort;
     const order = pagination.order;
@@ -106,7 +106,7 @@ export const UserSalaryMapping = () => {
   return (
     <div>
       <h2 id="user-management-page-heading" data-cy="userManagementPageHeading">
-        <Translate contentKey="userSalaryMapping.home.title">Users</Translate>
+        <Translate contentKey="userBaseSalaryMapping.home.title">Users</Translate>
         <div className="d-flex justify-content-end">
           <select onChange={handleSelect} value={selectedValue} className="custom-number-input">
             {shops.map(shop => (
@@ -117,10 +117,10 @@ export const UserSalaryMapping = () => {
           </select>
           <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="userSalaryMapping.home.refreshListLabel">Refresh List</Translate>
+            <Translate contentKey="userBaseSalaryMapping.home.refreshListLabel">Refresh List</Translate>
           </Button>
           <Link to={`${selectedValue}/all_create`} className="btn btn-primary jh-create-entity">
-            <FontAwesomeIcon icon="plus" /> <Translate contentKey="userSalaryMapping.home.allMappingLabel">전체 사용자 연결</Translate>
+            <FontAwesomeIcon icon="plus" /> <Translate contentKey="userBaseSalaryMapping.home.allMappingLabel">전체 사용자 연결</Translate>
           </Link>
         </div>
       </h2>
@@ -131,33 +131,34 @@ export const UserSalaryMapping = () => {
               <Translate contentKey="global.field.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
             </th>
             <th className="hand" onClick={sort('login')}>
-              <Translate contentKey="userSalaryMapping.login">Login</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('login')} />
+              <Translate contentKey="userBaseSalaryMapping.login">Login</Translate>
+              <FontAwesomeIcon icon={getSortIconByFieldName('login')} />
             </th>
             <th className="hand" onClick={sort('firstName')}>
-              <Translate contentKey="userSalaryMapping.firstName">FirstName</Translate>
+              <Translate contentKey="userBaseSalaryMapping.firstName">FirstName</Translate>
               <FontAwesomeIcon icon={getSortIconByFieldName('firstName')} />
             </th>
             <th className="hand" onClick={sort('lastName')}>
-              <Translate contentKey="userSalaryMapping.lastName">LastName</Translate>
+              <Translate contentKey="userBaseSalaryMapping.lastName">LastName</Translate>
               <FontAwesomeIcon icon={getSortIconByFieldName('lastName')} />
             </th>
             <th className="hand" onClick={sort('modelNo')}>
-              <Translate contentKey="userSalaryMapping.modelNo">ModelNo</Translate>
+              <Translate contentKey="userBaseSalaryMapping.modelNo">ModelNo</Translate>
               <FontAwesomeIcon icon={getSortIconByFieldName('modelNo')} />
             </th>
             <th className="hand" onClick={sort('price')}>
               <Translate contentKey="global.label.price">Price</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('price')} />
             </th>
             <th className="hand" onClick={sort('createdDate')}>
-              <Translate contentKey="userSalaryMapping.createdDate">Created Date</Translate>{' '}
+              <Translate contentKey="userBaseSalaryMapping.createdDate">Created Date</Translate>{' '}
               <FontAwesomeIcon icon={getSortIconByFieldName('createdDate')} />
             </th>
             <th className="hand" onClick={sort('lastModifiedBy')}>
-              <Translate contentKey="userSalaryMapping.lastModifiedBy">Last Modified By</Translate>{' '}
+              <Translate contentKey="userBaseSalaryMapping.lastModifiedBy">Last Modified By</Translate>{' '}
               <FontAwesomeIcon icon={getSortIconByFieldName('lastModifiedBy')} />
             </th>
             <th id="modified-date-sort" className="hand" onClick={sort('lastModifiedDate')}>
-              <Translate contentKey="userSalaryMapping.lastModifiedDate">Last Modified Date</Translate>{' '}
+              <Translate contentKey="userBaseSalaryMapping.lastModifiedDate">Last Modified Date</Translate>{' '}
               <FontAwesomeIcon icon={getSortIconByFieldName('lastModifiedDate')} />
             </th>
             <th />
@@ -187,24 +188,12 @@ export const UserSalaryMapping = () => {
               </td>
               <td className="text-end">
                 <div className="btn-group flex-btn-group-container">
-                  <Button tag={Link} to={user.login} color="info" size="sm">
-                    <FontAwesomeIcon icon="eye" />{' '}
-                    <span className="d-none d-md-inline">
-                      <Translate contentKey="entity.action.view">View</Translate>
-                    </span>
-                  </Button>
-                  <Button tag={Link} to={`${user.login}/edit`} color="primary" size="sm">
+                  <Link to={`${selectedValue}/${user.id}/create`} className="btn btn-primary jh-create-entity">
                     <FontAwesomeIcon icon="pencil-alt" />{' '}
                     <span className="d-none d-md-inline">
-                      <Translate contentKey="entity.action.edit">Edit</Translate>
+                      <Translate contentKey="userBaseSalaryMapping.home.mappingLabel">사용자 일당 연결하기</Translate>
                     </span>
-                  </Button>
-                  <Button tag={Link} to={`${user.login}/delete`} color="danger" size="sm" disabled={account.login === user.login}>
-                    <FontAwesomeIcon icon="trash" />{' '}
-                    <span className="d-none d-md-inline">
-                      <Translate contentKey="entity.action.delete">Delete</Translate>
-                    </span>
-                  </Button>
+                  </Link>
                 </div>
               </td>
             </tr>
@@ -233,4 +222,4 @@ export const UserSalaryMapping = () => {
   );
 };
 
-export default UserSalaryMapping;
+export default UserBaseSalaryMapping;

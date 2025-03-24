@@ -17,8 +17,8 @@ const EntitiesMenu = () => {
       <MenuItem icon="users" to="/shop/base-salary">
         <Translate contentKey="global.menu.management.baseSalary">기본일당관리</Translate>
       </MenuItem>
-      <MenuItem icon="users" to="/shop/user-salary-mapping">
-        <Translate contentKey="global.menu.management.userSalaryMapping">모델일당관리</Translate>
+      <MenuItem icon="users" to="/shop/user-base-salary-mapping">
+        <Translate contentKey="global.menu.management.userBaseSalaryMapping">모델일당관리</Translate>
       </MenuItem>
     </>
   );

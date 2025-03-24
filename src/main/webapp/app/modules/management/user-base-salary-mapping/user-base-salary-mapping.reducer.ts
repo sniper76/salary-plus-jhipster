@@ -20,18 +20,30 @@ const apiUrl = 'api/shops';
 // Async Actions
 
 export const getBaseSalaryMappingUsers = createAsyncThunk(
-  'userSalaryMapping/fetch_all_mapping_users',
+  'userBaseSalaryMapping/fetch_all_mapping_users',
   async ({ id, page, size, sort }: IQueryParams) => {
-    const requestUrl = `${apiUrl}/${id}/user-salary-mappings${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
+    const requestUrl = `${apiUrl}/${id}/user-base-salary-mappings${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
     return axios.get<IModelUser[]>(requestUrl);
   },
 );
 
 export const createMappingAllUsers = createAsyncThunk(
-  'userSalaryMapping/create_all_mapping_users',
+  'userBaseSalaryMapping/create_all_mapping_users',
   async (user: IUserBaseSalaryMapping, thunkAPI) => {
-    const requestUrl = `${apiUrl}/${user.shopId}/user-salary-mappings/all`;
+    const requestUrl = `${apiUrl}/${user.shopId}/user-base-salary-mappings/all`;
     console.warn('createMappingAllUsers', requestUrl, user);
+    const result = await axios.post<IUserBaseSalaryMapping>(requestUrl, user);
+    thunkAPI.dispatch(getBaseSalaryMappingUsers({ id: user.shopId }));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
+
+export const createMappingUsers = createAsyncThunk(
+  'userBaseSalaryMapping/create_mapping_users',
+  async (user: IUserBaseSalaryMapping, thunkAPI) => {
+    const requestUrl = `${apiUrl}/${user.shopId}/user-base-salary-mappings/${user.userId}`;
+    console.warn('createMappingUsers', requestUrl, user);
     const result = await axios.post<IUserBaseSalaryMapping>(requestUrl, user);
     thunkAPI.dispatch(getBaseSalaryMappingUsers({ id: user.shopId }));
     return result;
@@ -42,7 +54,7 @@ export const createMappingAllUsers = createAsyncThunk(
 export type UserSalaryMappingState = Readonly<typeof initialState>;
 
 export const UserSalaryMappingSlice = createSlice({
-  name: 'userSalaryMappings',
+  name: 'userBaseSalaryMappings',
   initialState: initialState as UserSalaryMappingState,
   reducers: {
     reset() {
@@ -55,12 +67,16 @@ export const UserSalaryMappingSlice = createSlice({
         state.updating = false;
         state.updateSuccess = true;
       })
+      .addCase(createMappingUsers.fulfilled, state => {
+        state.updating = false;
+        state.updateSuccess = true;
+      })
       .addMatcher(isFulfilled(getBaseSalaryMappingUsers), (state, action) => {
         state.loading = false;
         state.users = action.payload.data;
         state.totalItems = parseInt(action.payload.headers['x-total-count'], 10);
       })
-      .addMatcher(isFulfilled(createMappingAllUsers), (state, action) => {
+      .addMatcher(isFulfilled(createMappingAllUsers, createMappingUsers), (state, action) => {
         state.updating = false;
         state.loading = false;
         state.updateSuccess = true;
@@ -70,12 +86,12 @@ export const UserSalaryMappingSlice = createSlice({
         state.updateSuccess = false;
         state.loading = true;
       })
-      .addMatcher(isPending(createMappingAllUsers, createMappingAllUsers), state => {
+      .addMatcher(isPending(createMappingAllUsers, createMappingAllUsers, createMappingUsers), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.updating = true;
       })
-      .addMatcher(isRejected(getBaseSalaryMappingUsers, createMappingAllUsers, createMappingAllUsers), (state, action) => {
+      .addMatcher(isRejected(getBaseSalaryMappingUsers, createMappingAllUsers, createMappingUsers), (state, action) => {
         state.loading = false;
         state.updating = false;
         state.updateSuccess = false;

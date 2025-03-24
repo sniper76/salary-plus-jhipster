@@ -1,20 +1,23 @@
 {
-  "userSalaryMapping": {
+  "userBaseSalaryMapping": {
     "home": {
       "title": "사용자 기본 일당 연결",
       "refreshListLabel": "Refresh list",
       "createLabel": "사용자 생성",
       "createOrEditLabel": "사용자 생성 또는 수정",
-      "allMappingLabel": "전체 사용자 일당 연결하기"
+      "allMappingLabel": "전체 사용자 일당 연결하기",
+      "mappingLabel": "사용자 일당 연결하기"
     },
-    "created": "A new user is created with identifier {{ param }}",
+    "allCreated": "전체 사용자의 기본 일당 정보가 등록되었습니다 {{ param }}",
+    "created": "사용자의 기본 일당 정보가 등록되었습니다 {{ param }}",
     "updated": "A user is updated with identifier {{ param }}",
     "deleted": "A user is deleted with identifier {{ param }}",
     "delete": {
       "question": "정말로 {{ login }} 사용자를 삭제하시겠습니까?"
     },
     "questions": {
-      "allMapping": "전체 사용자의 기본 일당을 연결하시겠습니까?"
+      "allMapping": "전체 사용자의 기본 일당을 연결하시겠습니까?",
+      "mapping": "사용자의 기본 일당을 연결하시겠습니까?"
     },
     "detail": {
       "title": "사용자"

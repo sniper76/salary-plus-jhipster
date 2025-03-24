@@ -24,7 +24,7 @@
         "salesItem": "Sales Item",
         "penalty": "Penalty",
         "baseSalary": "Salary",
-        "userSalaryMapping": "User Salary"
+        "userBaseSalaryMapping": "User Salary"
       },
       "admin": {
         "main": "Administration",

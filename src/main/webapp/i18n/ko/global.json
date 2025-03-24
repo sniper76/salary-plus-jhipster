@@ -24,7 +24,7 @@
         "salesItem": "상품관리",
         "penalty": "벌금관리",
         "baseSalary": "일당관리",
-        "userSalaryMapping": "모델일당관리"
+        "userBaseSalaryMapping": "모델일당관리"
       },
       "admin": {
         "main": "관리자",

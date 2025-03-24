@@ -1,10 +1,6 @@
 package com.salary.plus.service.dto;
 
 import com.salary.plus.domain.ShopBaseSalary;
-import com.salary.plus.domain.ShopOrder;
-import com.salary.plus.domain.ShopOrderDetail;
-import com.salary.plus.domain.ShopSalesItem;
-import com.salary.plus.domain.ShopUserSalesSalary;
 import com.salary.plus.domain.User;
 import java.io.Serializable;
 import java.time.Instant;
@@ -36,7 +32,7 @@ public class ShopUserSalaryBaseMappingResponse implements Serializable {
     }
 
     public ShopUserSalaryBaseMappingResponse(User user, ShopBaseSalary shopBaseSalary) {
-        this.id = shopBaseSalary.getId();
+        this.id = user.getId();
         this.login = user.getLogin();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();

@@ -1,6 +1,5 @@
 package com.salary.plus.service.dto;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import lombok.Getter;

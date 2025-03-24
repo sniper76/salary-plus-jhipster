@@ -97,7 +97,7 @@ public class ShopUserMappingResource {
         return new ResponseEntity<>(shops, HttpStatus.OK);
     }
 
-    @GetMapping("/shops/{shopId}/user-salary-mappings")
+    @GetMapping("/shops/{shopId}/user-base-salary-mappings")
     public ResponseEntity<List<ShopUserSalaryBaseMappingResponse>> getAllUserSalaryMappingForPage(
         @PathVariable("shopId") Long shopId,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
@@ -112,7 +112,7 @@ public class ShopUserMappingResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    @PostMapping("/shops/{shopId}/user-salary-mappings/all")
+    @PostMapping("/shops/{shopId}/user-base-salary-mappings/all")
     public ResponseEntity<Void> createAllUserSalaryMappings(
         @PathVariable("shopId") Long shopId,
         @Valid @RequestBody AdminUserSalaryMappingDTO mappingDTO
@@ -121,12 +121,12 @@ public class ShopUserMappingResource {
         mappingDTO.setShopId(shopId);
         LOG.debug("REST login: {}, mappingDTO: {}", login, mappingDTO);
         shopBaseSalaryService.createUserBaseSalaryMappings(login, mappingDTO);
-        return ResponseEntity.created(new URI("/api/shops/" + shopId + "/user-salary-mappings/all"))
-            .headers(HeaderUtil.createAlert(applicationName, "userSalaryMapping.created", login))
+        return ResponseEntity.created(new URI("/api/shops/" + shopId + "/user-base-salary-mappings/all"))
+            .headers(HeaderUtil.createAlert(applicationName, "userBaseSalaryMapping.allCreated", login))
             .build();
     }
 
-    @PostMapping("/shops/{shopId}/user-salary-mappings/{userId}")
+    @PostMapping("/shops/{shopId}/user-base-salary-mappings/{userId}")
     public ResponseEntity<Void> createUserSalaryMappings(
         @PathVariable("shopId") Long shopId,
         @PathVariable("userId") Long userId,
@@ -136,8 +136,8 @@ public class ShopUserMappingResource {
         mappingDTO.setShopId(shopId);
         mappingDTO.setUserId(userId);
         shopBaseSalaryService.createUserBaseSalaryMappings(login, mappingDTO);
-        return ResponseEntity.created(new URI("/api/shops/" + shopId + "/user-salary-mappings/" + userId))
-            .headers(HeaderUtil.createAlert(applicationName, "userSalaryMapping.created", login))
+        return ResponseEntity.created(new URI("/api/shops/" + shopId + "/user-base-salary-mappings/" + userId))
+            .headers(HeaderUtil.createAlert(applicationName, "userBaseSalaryMapping.created", login))
             .build();
     }
 

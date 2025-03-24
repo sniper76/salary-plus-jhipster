@@ -1,16 +1,23 @@
 {
-  "userSalaryMapping": {
+  "userBaseSalaryMapping": {
     "home": {
       "title": "Users Base Salary Mapping",
       "refreshListLabel": "Refresh list",
       "createLabel": "Create a new user",
-      "createOrEditLabel": "Create or edit a user"
+      "createOrEditLabel": "Create or edit a user",
+      "allMappingLabel": "All user base salary mappings",
+      "mappingLabel": "User base salary mapping"
     },
-    "created": "A new user is created with identifier {{ param }}",
+    "allCreated": "A new all user base salary is created with identifier {{ param }}",
+    "created": "A new user base salary is created with identifier {{ param }}",
     "updated": "A user is updated with identifier {{ param }}",
     "deleted": "A user is deleted with identifier {{ param }}",
     "delete": {
       "question": "Are you sure you want to delete user {{ login }}?"
+    },
+    "questions": {
+      "allMapping": "Are you sure you want to all user base salary mappings?",
+      "mapping": "Are you sure you want to user base salary mapping?"
     },
     "detail": {
       "title": "User"

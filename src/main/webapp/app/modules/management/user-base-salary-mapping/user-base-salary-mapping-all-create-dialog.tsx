@@ -5,10 +5,10 @@ import { Translate, ValidatedField } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { createMappingAllUsers } from './user-salary-mapping.reducer';
+import { createMappingAllUsers } from './user-base-salary-mapping.reducer';
 import { getShopBaseSalaries } from 'app/modules/management/base-salary/base-salary.reducer';
 
-export const UserSalaryMappingAllCreateDialog = () => {
+export const UserBaseSalaryMappingAllCreateDialog = () => {
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export const UserSalaryMappingAllCreateDialog = () => {
 
   const handleClose = event => {
     event.stopPropagation();
-    navigate('/shop/user-salary-mapping');
+    navigate('/shop/user-base-salary-mapping');
   };
 
   const handleSelect = event => {
@@ -48,10 +48,10 @@ export const UserSalaryMappingAllCreateDialog = () => {
   return (
     <Modal isOpen toggle={handleClose}>
       <ModalHeader toggle={handleClose}>
-        <Translate contentKey="userSalaryMapping.home.allMappingLabel">전체 사용자 일당 연결하기</Translate>
+        <Translate contentKey="userBaseSalaryMapping.home.allMappingLabel">전체 사용자 일당 연결하기</Translate>
       </ModalHeader>
       <ModalBody>
-        <Translate contentKey="userSalaryMapping.questions.allMapping">전체 사용자의 기본 일당을 연결하시겠습니까?</Translate>
+        <Translate contentKey="userBaseSalaryMapping.questions.allMapping">전체 사용자의 기본 일당을 연결하시겠습니까?</Translate>
         <ValidatedField type="select" name="shopBaseSalaryId" defaultValue={selectedValue} onChange={handleSelect}>
           {baseSalariesForPage.map(shop => (
             <option value={shop.id} key={shop.id}>
@@ -76,4 +76,4 @@ export const UserSalaryMappingAllCreateDialog = () => {
   );
 };
 
-export default UserSalaryMappingAllCreateDialog;
+export default UserBaseSalaryMappingAllCreateDialog;
