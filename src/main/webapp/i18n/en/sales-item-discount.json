@@ -1,0 +1,34 @@
+{
+  "salesItemDiscount": {
+    "home": {
+      "title": "Sales Item Discount",
+      "refreshListLabel": "Refresh list",
+      "createLabel": "Create a new Sales Item Discount",
+      "createOrEditLabel": "Create or edit a Sales Item Discount"
+    },
+    "created": "A new sales item discount is created with identifier {{ param }}",
+    "updated": "A sales item discount is updated with identifier {{ param }}",
+    "deleted": "A sales item discount is deleted with identifier {{ param }}",
+    "delete": {
+      "question": "Are you sure you want to delete sales item discount {{ name }}?"
+    },
+    "detail": {
+      "title": "Sales Item Discount"
+    },
+    "login": "Login",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "type": "Discount type",
+    "activated": "Activated",
+    "deactivated": "Deactivated",
+    "isCommissionTarget": "Is Commission target",
+    "isSnack": "Is snack",
+    "profiles": "Profiles",
+    "langKey": "Language",
+    "createdBy": "Created by",
+    "createdDate": "Created date",
+    "lastModifiedBy": "Modified by",
+    "lastModifiedDate": "Modified date"
+  }
+}

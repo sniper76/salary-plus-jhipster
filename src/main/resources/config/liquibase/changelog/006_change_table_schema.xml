@@ -7,18 +7,20 @@
   <changeSet id="add column jhi_user to is_commission_target" author="sniper">
     <addColumn tableName="jhi_user">
       <column name="is_commission_target" type="boolean" valueBoolean="false" remarks="커미션 지급 대상 여부"/>
+      <column name="is_discount_accept" type="boolean" valueBoolean="false" remarks="커미션 할인 가능 여부"/>
       <column name="model_no" type="varchar(60)" remarks="모델 번호"/>
     </addColumn>
     <rollback>
       <dropColumn tableName="jhi_user" columnName="is_commission_target"/>
+      <dropColumn tableName="jhi_user" columnName="is_discount_accept"/>
       <dropColumn tableName="jhi_user" columnName="model_no"/>
     </rollback>
   </changeSet>
 
   <changeSet id="modify init jhi_user" author="sniper">
     <sql>
-      update jhi_user set model_no = 'TEST01', is_commission_target = true where login = 'admin';
-      update jhi_user set model_no = 'TEST02', is_commission_target = true where login = 'user';
+      update jhi_user set model_no = 'TEST01', is_commission_target = true, is_discount_accept = false where login = 'admin';
+      update jhi_user set model_no = 'TEST02', is_commission_target = true, is_discount_accept = true where login = 'user';
     </sql>
   </changeSet>
 </databaseChangeLog>

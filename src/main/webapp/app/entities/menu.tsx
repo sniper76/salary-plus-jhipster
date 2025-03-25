@@ -20,6 +20,9 @@ const EntitiesMenu = () => {
       <MenuItem icon="users" to="/shop/user-base-salary-mapping">
         <Translate contentKey="global.menu.management.userBaseSalaryMapping">모델기본일당관리</Translate>
       </MenuItem>
+      <MenuItem icon="users" to="/shop/sales-item-discount">
+        <Translate contentKey="global.menu.management.salesItemDiscount">할인관리</Translate>
+      </MenuItem>
     </>
   );
 };

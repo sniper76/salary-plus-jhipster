@@ -24,7 +24,8 @@
         "salesItem": "Sales Item",
         "penalty": "Penalty",
         "baseSalary": "Salary",
-        "userBaseSalaryMapping": "User Base Salary"
+        "userBaseSalaryMapping": "User Base Salary",
+        "salesItemDiscount": "Sales Item Discount"
       },
       "admin": {
         "main": "Administration",
@@ -55,6 +56,7 @@
     },
     "messages": {
       "info": {
+        "noDataList": "No data has been searched.",
         "authenticated": {
           "prefix": "If you want to ",
           "link": "sign in",
@@ -71,6 +73,8 @@
       "validate": {
         "nameKo.required": "Korean is required.",
         "nameEn.required": "English is required.",
+        "salesItem.required": "Sales item is required.",
+        "discountType.required": "Discount type is required.",
         "price": {
           "required": "Price is required.",
           "size": "Price must be a positive number."

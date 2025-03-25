@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="create jhi_shop_sales_item_discount jhi_shop_order_detail_discount" author="sniper">
+    <createTable tableName="jhi_shop_sales_item_discount" remarks="상점 상품 할인 정보">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="shop_sales_item_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name_ko" type="varchar(60)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name_en" type="varchar(60)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="type" type="varchar(60)" remarks="할인 타입">
+        <constraints nullable="false"/>
+      </column>
+      <column name="price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="shop_commission_price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="mama_commission_price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="model_commission_price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="activated" type="boolean" valueBoolean="true">
+        <constraints nullable="false" />
+      </column>
+      <column name="created_by" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_by" type="varchar(50)"/>
+      <column name="last_modified_date" type="timestamp"/>
+    </createTable>
+
+    <createTable tableName="jhi_shop_order_detail_discount" remarks="상점 주문 상세 할인 정보">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="shop_order_detail_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="shop_sales_item_discount_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="activated" type="boolean" valueBoolean="true">
+        <constraints nullable="false" />
+      </column>
+      <column name="created_by" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_by" type="varchar(50)"/>
+      <column name="last_modified_date" type="timestamp"/>
+    </createTable>
+  </changeSet>
+</databaseChangeLog>

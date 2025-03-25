@@ -6,6 +6,7 @@ import SalesItem from './sales-item';
 import Penalty from './penalty';
 import BaseSalary from './base-salary';
 import UserSalaryMapping from './user-base-salary-mapping';
+import SalesItemDiscount from './sales-item-discount';
 
 const ManagementRoutes = () => (
   <div>
@@ -14,6 +15,7 @@ const ManagementRoutes = () => (
       <Route path="shop/penalty/*" element={<Penalty />} />
       <Route path="shop/base-salary/*" element={<BaseSalary />} />
       <Route path="shop/user-base-salary-mapping/*" element={<UserSalaryMapping />} />
+      <Route path="shop/sales-item-discount/*" element={<SalesItemDiscount />} />
     </ErrorBoundaryRoutes>
   </div>
 );

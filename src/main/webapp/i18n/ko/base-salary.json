@@ -6,7 +6,7 @@
       "createLabel": "일당 생성",
       "createOrEditLabel": "일당 생성 또는 수정"
     },
-    "created": "일당이 등로되었습니다. {{ param }}",
+    "created": "일당이 등록되었습니다. {{ param }}",
     "updated": "일당이 수정되었습니다. {{ param }}",
     "deleted": "일당이 삭제되었습니다. {{ param }}",
     "delete": {

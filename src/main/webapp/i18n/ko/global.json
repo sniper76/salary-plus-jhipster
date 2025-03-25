@@ -24,7 +24,8 @@
         "salesItem": "상품관리",
         "penalty": "벌금관리",
         "baseSalary": "일당관리",
-        "userBaseSalaryMapping": "사용자기본일당관리"
+        "userBaseSalaryMapping": "사용자기본일당관리",
+        "salesItemDiscount": "할인관리"
       },
       "admin": {
         "main": "관리자",
@@ -55,6 +56,7 @@
     },
     "messages": {
       "info": {
+        "noDataList": "조회된 데이터가 없습니다.",
         "authenticated": {
           "prefix": "",
           "link": "인증",
@@ -71,6 +73,8 @@
       "validate": {
         "nameKo.required": "한글명 입력이 필요합니다.",
         "nameEn.required": "영문명 입력이 필요합니다.",
+        "salesItem.required": "상품 선택이 필요합니다.",
+        "discountType.required": "할인타입 선택이 필요합니다.",
         "price": {
           "required": "금액 입력이 필요합니다.",
           "size": "금액은 0 보다 커야 합니다."

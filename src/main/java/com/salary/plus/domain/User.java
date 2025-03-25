@@ -73,6 +73,9 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
     @Column(name = "is_commission_target", nullable = false)
     private boolean isCommissionTarget = false;
 
+    @Column(name = "is_discount_accept", nullable = false)
+    private boolean isDiscountAccept = true;
+
     @Size(max = 60)
     @Column(name = "model_no", length = 60)
     private String modelNo;
@@ -214,6 +217,14 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
         isCommissionTarget = commissionTarget;
     }
 
+    public boolean isDiscountAccept() {
+        return isDiscountAccept;
+    }
+
+    public void setDiscountAccept(boolean discountAccept) {
+        isDiscountAccept = discountAccept;
+    }
+
     public String getModelNo() {
         return modelNo;
     }
@@ -257,6 +268,9 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
             ", email='" + email + '\'' +
             ", imageUrl='" + imageUrl + '\'' +
             ", activated='" + activated + '\'' +
+            ", isCommissionTarget='" + isCommissionTarget + '\'' +
+            ", isDiscountAccept='" + isDiscountAccept + '\'' +
+            ", modelNo='" + modelNo + '\'' +
             ", langKey='" + langKey + '\'' +
             ", activationKey='" + activationKey + '\'' +
             "}";

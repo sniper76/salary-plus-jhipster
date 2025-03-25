@@ -1,24 +1,25 @@
 {
-  "salesItem": {
+  "salesItemDiscount": {
     "home": {
-      "title": "상품",
+      "title": "할인",
       "refreshListLabel": "목록 조회",
-      "createLabel": "상품 생성",
-      "createOrEditLabel": "상품 생성 또는 수정"
+      "createLabel": "할인 생성",
+      "createOrEditLabel": "할인 생성 또는 수정"
     },
-    "created": "상품이 등록되었습니다. {{ param }}",
-    "updated": "상품이 수정되었습니다. {{ param }}",
-    "deleted": "상품이 삭제되었습니다. {{ param }}",
+    "created": "할인이 등록되었습니다. {{ param }}",
+    "updated": "할인이 수정되었습니다. {{ param }}",
+    "deleted": "할인이 삭제되었습니다. {{ param }}",
     "delete": {
-      "question": "정말로 {{ name }} 상품를 삭제하시겠습니까?"
+      "question": "정말로 {{ name }} 할인를 삭제하시겠습니까?"
     },
     "detail": {
-      "title": "상품"
+      "title": "할인"
     },
     "login": "로그인 아이디",
     "firstName": "이름",
     "lastName": "성",
     "email": "이메일",
+    "type": "할인방식",
     "activated": "활성",
     "deactivated": "비활성",
     "isCommissionTarget": "커미션 대상 여부",

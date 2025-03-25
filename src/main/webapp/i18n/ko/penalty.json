@@ -6,7 +6,7 @@
       "createLabel": "벌금 생성",
       "createOrEditLabel": "벌금 생성 또는 수정"
     },
-    "created": "벌금이 등로되었습니다. {{ param }}",
+    "created": "벌금이 등록되었습니다. {{ param }}",
     "updated": "벌금이 수정되었습니다. {{ param }}",
     "deleted": "벌금이 삭제되었습니다. {{ param }}",
     "delete": {
