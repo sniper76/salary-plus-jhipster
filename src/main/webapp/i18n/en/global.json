@@ -24,7 +24,7 @@
         "salesItem": "Sales Item",
         "penalty": "Penalty",
         "baseSalary": "Salary",
-        "userBaseSalaryMapping": "User Salary"
+        "userBaseSalaryMapping": "User Base Salary"
       },
       "admin": {
         "main": "Administration",
@@ -171,7 +171,8 @@
       "empty.price": "Price cannot be empty."
     },
     "work": {
-      "not.found.base.salary": "Not found base salary."
+      "not.found.base.salary": "Not found base salary.",
+      "not.found.user.daily.salary": "Not found daily salary. {{entityName}}"
     }
   },
   "footer": "This is your footer"

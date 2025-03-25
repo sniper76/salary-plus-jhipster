@@ -74,4 +74,22 @@ public class ShopUserResource {
         LOG.debug("REST shopId : {}, date : {}", shopId, date);
         shopUserDailySalaryService.createAllCheckIn(shopId, date);
     }
+
+    @PostMapping("/{shopId}/dates/{date}/users/half-salaries/all")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void updateAllHalfSalary(@PathVariable("shopId") Long shopId, @PathVariable("date") String date) {
+        LOG.debug("REST shopId : {}, date : {}", shopId, date);
+        shopUserDailySalaryService.updateAllHalfSalary(shopId, date);
+    }
+
+    @PostMapping("/{shopId}/dates/{date}/users/half-salaries/{userId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void updateHalfSalary(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("date") String date,
+        @PathVariable("userId") Long userId
+    ) {
+        LOG.debug("REST shopId : {}, date : {}, userId : {}", shopId, date, userId);
+        shopUserDailySalaryService.updateHalfSalary(shopId, date, userId);
+    }
 }

@@ -4,7 +4,7 @@ import { Translate } from 'react-jhipster';
 import './work.scss';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { createAllCheckIn, createCheckIn, getShopUsers } from 'app/modules/work/work.reducer';
+import { createAllCheckIn, updateAllHalfSalary, createCheckIn, updateHalfSalary, getShopUsers } from 'app/modules/work/work.reducer';
 import { getUserShops } from 'app/modules/order/order.reducer';
 
 export const Work = () => {
@@ -34,6 +34,14 @@ export const Work = () => {
     dispatch(createAllCheckIn({ shopId: shops[0].id, date: currentDate }));
   };
 
+  const handleAllHalfSalaryClick = () => {
+    dispatch(updateAllHalfSalary({ shopId: shops[0].id, date: currentDate }));
+  };
+
+  const handleHalfSalaryClick = e => () => {
+    dispatch(updateHalfSalary({ shopId: shops[0].id, date: currentDate, userId: e.userId }));
+  };
+
   useEffect(() => {
     dispatch(getUserShops());
   }, []);
@@ -58,8 +66,11 @@ export const Work = () => {
               ))}
             </select>
             <input defaultValue={currentDate} type="date" onChange={handleDateChange} />
-            <Button color="primary" onClick={handleAllCheckInClick}>
+            <Button color="primary" onClick={handleAllCheckInClick} className="style-margin-right">
               <Translate contentKey="work.button.allCheckIn">전체출근</Translate>
+            </Button>
+            <Button color="info" onClick={handleAllHalfSalaryClick}>
+              <Translate contentKey="work.button.allHalfSalary">전체 Half 일당적용하기</Translate>
             </Button>
           </div>
         </Row>
@@ -73,9 +84,14 @@ export const Work = () => {
               <p>{item.checkIn}</p>
               <p>
                 {item.checkIn ? (
-                  <Button color="secondary">
-                    <Translate contentKey="work.label.checkInOk">출근완료</Translate>
-                  </Button>
+                  <>
+                    <Button color="secondary" className="style-margin-right">
+                      <Translate contentKey="work.label.checkInOk">출근완료</Translate>
+                    </Button>
+                    <Button color="info" onClick={handleHalfSalaryClick(item)}>
+                      <Translate contentKey="work.button.halfSalary">Half 일당적용하기</Translate>
+                    </Button>
+                  </>
                 ) : (
                   <Button color="primary" onClick={handleCheckInClick(item)}>
                     <Translate contentKey="work.button.checkIn">출근하기</Translate>

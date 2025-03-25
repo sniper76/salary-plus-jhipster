@@ -10,7 +10,9 @@
     "button": {
       "checkIn": "Check In",
       "reset": "Reset",
-      "allCheckIn": "All Check In"
+      "allCheckIn": "All Check In",
+      "halfSalary": "Half Salary",
+      "allHalfSalary": "All Half Salary"
     },
     "created": "A order is created with identifier {{ param }}",
     "updated": "A order is updated with identifier {{ param }}",

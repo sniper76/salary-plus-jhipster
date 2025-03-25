@@ -32,10 +32,32 @@ export const createCheckIn = createAsyncThunk(
   { serializeError: serializeAxiosError },
 );
 
+export const updateHalfSalary = createAsyncThunk(
+  'work/update_half_salary',
+  async ({ shopId, date, userId }: any, thunkAPI) => {
+    const requestUrl = `api/shops/${shopId}/dates/${date}/users/half-salaries/${userId}`;
+    const result = await axios.post(requestUrl);
+    thunkAPI.dispatch(getShopUsers({ shopId, date }));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
+
 export const createAllCheckIn = createAsyncThunk(
   'work/create_checkIn',
   async ({ shopId, date }: any, thunkAPI) => {
     const requestUrl = `api/shops/${shopId}/dates/${date}/users/all`;
+    const result = await axios.post(requestUrl);
+    thunkAPI.dispatch(getShopUsers({ shopId, date }));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
+
+export const updateAllHalfSalary = createAsyncThunk(
+  'work/update_all_half_salary',
+  async ({ shopId, date }: any, thunkAPI) => {
+    const requestUrl = `api/shops/${shopId}/dates/${date}/users/half-salaries/all`;
     const result = await axios.post(requestUrl);
     thunkAPI.dispatch(getShopUsers({ shopId, date }));
     return result;
@@ -57,11 +79,11 @@ export const WorkSlice = createSlice({
         state.errorMessage = null;
         state.loading = true;
       })
-      .addMatcher(isPending(createCheckIn, createAllCheckIn), state => {
+      .addMatcher(isPending(createCheckIn, createAllCheckIn, updateAllHalfSalary, updateHalfSalary), state => {
         state.errorMessage = null;
         state.loading = false;
       })
-      .addMatcher(isRejected(getShopUsers, createCheckIn, createAllCheckIn), (state, action) => {
+      .addMatcher(isRejected(getShopUsers, createCheckIn, createAllCheckIn, updateAllHalfSalary, updateHalfSalary), (state, action) => {
         state.errorMessage = action.error.message;
         state.loading = false;
       });

@@ -55,9 +55,7 @@ public class ShopUserDailySalaryService {
     }
 
     public void createCheckIn(Long shopId, String date, Long userId) {
-        final ShopBaseSalary mapping = shopBaseSalaryRepository
-            .findByShopIdAndUserId(shopId, userId, true)
-            .orElseThrow(() -> new BadRequestAlertException("Not found base salary", "works", "work.not.found.base.salary"));
+        final ShopBaseSalary mapping = getShopBaseSalaryByUserId(shopId, userId);
         shopUserDailySalaryRepository
             .findByShopIdAndDateAndUserIdAndActivated(shopId, date, userId, true)
             .ifPresentOrElse(
@@ -71,10 +69,37 @@ public class ShopUserDailySalaryService {
             );
     }
 
+    private ShopBaseSalary getShopBaseSalaryByUserId(Long shopId, Long userId) {
+        return shopBaseSalaryRepository
+            .findByShopIdAndUserId(shopId, userId, true)
+            .orElseThrow(() -> new BadRequestAlertException("Not found base salary", "works", "work.not.found.base.salary"));
+    }
+
     public void createAllCheckIn(Long shopId, String date) {
         final List<User> users = shopUserMappingService.getMappingUsersByShopIdAndCommissionTargetUser(shopId);
         users.forEach(it -> {
             createCheckIn(shopId, date, it.getId());
         });
+    }
+
+    public void updateAllHalfSalary(Long shopId, String date) {
+        final List<ShopUserDailySalary> dailySalaries = shopUserDailySalaryRepository.findAllByShopIdAndDate(shopId, date);
+        updateHalfSalaryByList(shopId, date, dailySalaries);
+    }
+
+    private void updateHalfSalaryByList(Long shopId, String date, List<ShopUserDailySalary> dailySalaries) {
+        if (dailySalaries.isEmpty()) {
+            throw new BadRequestAlertException("현재일 일당 정보를 찾을 수 없습니다", date, "work.not.found.user.daily.salary");
+        }
+        dailySalaries.forEach(it -> {
+            final ShopBaseSalary mapping = getShopBaseSalaryByUserId(shopId, it.getUserId());
+            it.setPrice(mapping.getPrice() / 2);
+            shopUserDailySalaryRepository.save(it);
+        });
+    }
+
+    public void updateHalfSalary(Long shopId, String date, Long userId) {
+        final List<ShopUserDailySalary> dailySalaries = shopUserDailySalaryRepository.findAllByShopIdAndDateAndUserId(shopId, date, userId);
+        updateHalfSalaryByList(shopId, date, dailySalaries);
     }
 }

@@ -10,7 +10,9 @@
     "button": {
       "checkIn": "출근하기",
       "reset": "초기화",
-      "allCheckIn": "전체출근"
+      "allCheckIn": "전체출근",
+      "halfSalary": "Half 일당적용하기",
+      "allHalfSalary": "전체 Half 일당적용하기"
     },
     "created": "주문이 생성 되었습니다. {{ param }}",
     "updated": "주문을 수정 하였습니다. {{ param }}",
