@@ -8,6 +8,7 @@ import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.ShopOrderService;
 import com.salary.plus.service.dto.ShopOrderCreateDTO;
 import com.salary.plus.service.dto.ShopOrderDetailResponse;
+import com.salary.plus.service.dto.ShopOrderDetailWithDiscountResponse;
 import com.salary.plus.service.dto.ShopOrderResponse;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -94,6 +95,17 @@ public class ShopOrderResource {
         @PathVariable("orderId") Long orderId
     ) {
         final List<ShopOrderDetailResponse> responses = shopOrderService.getOrderDetails(shopId, date, orderId);
+        LOG.debug("REST response : {}", responses);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
+    }
+
+    @GetMapping("/{shopId}/dates/{date}/orders/{orderId}/discounts")
+    public ResponseEntity<List<ShopOrderDetailWithDiscountResponse>> getOrderDetailWithDiscounts(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("date") String date,
+        @PathVariable("orderId") Long orderId
+    ) {
+        final List<ShopOrderDetailWithDiscountResponse> responses = shopOrderService.getOrderDetailWithDiscounts(shopId, date, orderId);
         LOG.debug("REST response : {}", responses);
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }

@@ -8,6 +8,7 @@ import com.salary.plus.repository.ShopOrderRepository;
 import com.salary.plus.repository.ShopUserSalesSalaryRepository;
 import com.salary.plus.service.dto.ShopOrderCreateDTO;
 import com.salary.plus.service.dto.ShopOrderDetailResponse;
+import com.salary.plus.service.dto.ShopOrderDetailWithDiscountResponse;
 import com.salary.plus.service.dto.ShopOrderResponse;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import java.util.ArrayList;
@@ -145,6 +146,10 @@ public class ShopOrderService {
             list.add(new ShopDetailOrderData(getLongId(orderDetailIds, k), salesItemId, getLongId(modelIdx, k), price));
         }
         return list;
+    }
+
+    public List<ShopOrderDetailWithDiscountResponse> getOrderDetailWithDiscounts(Long shopId, String date, Long orderId) {
+        return shopOrderDetailRepository.findAllOrderDetailWithDiscounts(shopId, date, orderId);
     }
 
     private record ShopDetailOrderData(Long orderDetailId, Long salesItemId, Long modelId, Integer price) {}

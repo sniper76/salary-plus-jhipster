@@ -64,6 +64,18 @@ input[type='number']::-webkit-outer-spin-button {
   margin: 50px auto;
 }
 
+.container-discount {
+  display: flex;
+  justify-content: space-between;
+  width: 650px;
+  margin: 50px auto;
+}
+
+.custom-discount-modal .modal-dialog {
+  max-width: 700px; /* 원하는 크기로 조정 */
+  width: 80%;
+}
+
 .box {
   width: 200px;
   height: 500px;

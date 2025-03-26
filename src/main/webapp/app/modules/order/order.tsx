@@ -9,6 +9,7 @@ import {
   createOrder,
   getShopModels,
   getShopOrderDetails,
+  getShopOrderDetailWithDiscounts,
   getShopOrders,
   getShopSalesItems,
   getShopTables,
@@ -17,10 +18,12 @@ import {
   updateOrderPaid,
 } from 'app/modules/order/order.reducer';
 import OrderModal from 'app/modules/order/order-modal';
+import OrderModalDiscount from 'app/modules/order/order-discount-modal';
 
 export const Order = () => {
   const orders = useAppSelector(state => state.orders.orders);
   const orderDetails = useAppSelector(state => state.orders.orderDetails);
+  const orderDetailWithDiscounts = useAppSelector(state => state.orders.orderDetailWithDiscounts);
   const shops = useAppSelector(state => state.orders.shops);
   const salesItems = useAppSelector(state => state.orders.salesItems);
   const models = useAppSelector(state => state.orders.models);
@@ -34,9 +37,14 @@ export const Order = () => {
   const [currentOrderId, setCurrentOrderId] = useState(null);
   const [currentTableId, setCurrentTableId] = useState(null);
   const [selectedValue, setSelectedValue] = useState(-1);
+  const [showPayModal, setShowPayModal] = useState(false);
 
   const handleClose = () => {
     setShowModal(false);
+  };
+
+  const handlePayClose = () => {
+    setShowPayModal(false);
   };
 
   const handleOpen = () => {
@@ -62,12 +70,20 @@ export const Order = () => {
     }
   };
 
+  const handlePayOrder = obj => {};
+
   const handleSelect = e => {
     setSelectedValue(e.target.value);
   };
 
   const handlePaidClick = e => () => {
-    dispatch(updateOrderPaid({ shopId: selectedValue, date: currentDate, orderId: e.orderId }));
+    // dispatch(updateOrderPaid({ shopId: selectedValue, date: currentDate, orderId: e.orderId }));
+    setCurrentOrderId(e.orderId);
+    setCurrentTableId(e.shopTableId);
+    dispatch(getShopOrderDetailWithDiscounts({ shopId: selectedValue, date: currentDate, orderId: e.orderId }));
+    dispatch(getShopOrderDetails({ shopId: selectedValue, date: currentDate, orderId: e.orderId })).then(() => {
+      setShowPayModal(true);
+    });
   };
 
   const handleChangeClick = e => () => {
@@ -131,6 +147,15 @@ export const Order = () => {
             showModal={showModal}
             handleOrder={handleOrder}
             handleClose={handleClose}
+            orderError={orderError}
+          />
+          <OrderModalDiscount
+            orderId={currentOrderId}
+            orderDetails={orderDetails}
+            orderDetailWithDiscounts={orderDetailWithDiscounts}
+            showPayModal={showPayModal}
+            handlePayOrder={handlePayOrder}
+            handlePayClose={handlePayClose}
             orderError={orderError}
           />
         </Row>

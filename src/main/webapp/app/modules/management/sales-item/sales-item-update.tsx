@@ -151,7 +151,7 @@ export const SalesItemUpdate = () => {
                     value: true,
                     message: translate('register.messages.validate.login.required'),
                   },
-                  min: { value: 1, message: 'Price must be a positive number.' },
+                  min: { value: 0, message: 'Price must be a positive number.' },
                 }}
               />
               <ValidatedField
@@ -163,7 +163,7 @@ export const SalesItemUpdate = () => {
                     value: true,
                     message: translate('register.messages.validate.login.required'),
                   },
-                  min: { value: 1, message: 'Price must be a positive number.' },
+                  min: { value: 0, message: 'Price must be a positive number.' },
                 }}
               />
               <Button tag={Link} to="/shop/sales-item" replace color="info">
