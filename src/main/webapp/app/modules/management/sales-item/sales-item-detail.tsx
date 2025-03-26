@@ -50,11 +50,11 @@ export const SalesItemDetail = () => {
           </dt>
           <dd>{salesItem.nameEn}</dd>
           <dt>
-            <Translate contentKey="salesItem.isCommissionTarget">커미션 대상 여부</Translate>
+            <Translate contentKey="userManagement.commissionTargetYn">커미션 대상 여부</Translate>
           </dt>
           <dd>{salesItem.commissionTarget ? 'Yes' : 'No'}</dd>
           <dt>
-            <Translate contentKey="salesItem.isSnack">안주 여부</Translate>
+            <Translate contentKey="salesItem.snackYn">안주 여부</Translate>
           </dt>
           <dd>{salesItem.snack ? 'Yes' : 'No'}</dd>
           <dt>

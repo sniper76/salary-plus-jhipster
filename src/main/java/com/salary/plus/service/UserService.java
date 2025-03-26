@@ -171,7 +171,8 @@ public class UserService {
         user.setResetDate(Instant.now());
         user.setActivated(true);
         user.setModelNo(userDTO.getModelNo());
-        user.setCommissionTarget(true);
+        user.setCommissionTargetYn(userDTO.isCommissionTargetYn());
+        user.setDiscountAcceptYn(userDTO.isDiscountAcceptYn());
         if (userDTO.getAuthorities() != null) {
             Set<Authority> authorities = userDTO
                 .getAuthorities()
@@ -250,6 +251,9 @@ public class UserService {
                 }
                 user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
+                user.setModelNo(userDTO.getModelNo());
+                user.setCommissionTargetYn(userDTO.isCommissionTargetYn());
+                user.setDiscountAcceptYn(userDTO.isDiscountAcceptYn());
                 user.setLangKey(userDTO.getLangKey());
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();

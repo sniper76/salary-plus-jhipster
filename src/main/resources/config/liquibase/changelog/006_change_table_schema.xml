@@ -4,23 +4,23 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-  <changeSet id="add column jhi_user to is_commission_target" author="sniper">
+  <changeSet id="add column jhi_user to commission_target_yn" author="sniper">
     <addColumn tableName="jhi_user">
-      <column name="is_commission_target" type="boolean" valueBoolean="false" remarks="커미션 지급 대상 여부"/>
-      <column name="is_discount_accept" type="boolean" valueBoolean="false" remarks="커미션 할인 가능 여부"/>
+      <column name="commission_target_yn" type="boolean" valueBoolean="false" remarks="커미션 지급 대상 여부"/>
+      <column name="discount_accept_yn" type="boolean" valueBoolean="false" remarks="커미션 할인 가능 여부"/>
       <column name="model_no" type="varchar(60)" remarks="모델 번호"/>
     </addColumn>
     <rollback>
-      <dropColumn tableName="jhi_user" columnName="is_commission_target"/>
-      <dropColumn tableName="jhi_user" columnName="is_discount_accept"/>
+      <dropColumn tableName="jhi_user" columnName="commission_target_yn"/>
+      <dropColumn tableName="jhi_user" columnName="discount_accept_yn"/>
       <dropColumn tableName="jhi_user" columnName="model_no"/>
     </rollback>
   </changeSet>
 
   <changeSet id="modify init jhi_user" author="sniper">
     <sql>
-      update jhi_user set model_no = 'TEST01', is_commission_target = true, is_discount_accept = false where login = 'admin';
-      update jhi_user set model_no = 'TEST02', is_commission_target = true, is_discount_accept = true where login = 'user';
+      update jhi_user set model_no = 'TEST01', commission_target_yn = true, discount_accept_yn = false where login = 'admin';
+      update jhi_user set model_no = 'TEST02', commission_target_yn = true, discount_accept_yn = true where login = 'user';
     </sql>
   </changeSet>
 </databaseChangeLog>

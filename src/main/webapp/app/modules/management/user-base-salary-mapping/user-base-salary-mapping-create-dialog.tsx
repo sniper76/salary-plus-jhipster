@@ -43,7 +43,7 @@ export const UserBaseSalaryMappingCreateDialog = () => {
       shopId,
       userId,
     };
-    // console.warn('entity', entity);
+    console.warn('entity', entity);
     dispatch(createMappingUsers(entity));
     handleClose(event);
   };

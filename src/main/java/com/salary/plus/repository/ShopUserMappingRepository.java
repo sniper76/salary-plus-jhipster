@@ -22,7 +22,8 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
         select suma
             from User u
             inner join ShopUserMapping suma on u.id = suma.userId
-            where suma.shopId = :shopId
+            inner join Shop s on suma.shopId = s.id
+            where s.id = :shopId
             and u.login = :login
         """
     )
@@ -33,8 +34,10 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
         select u
             from User u
             inner join ShopUserMapping suma on u.id = suma.userId
-            where suma.shopId = :shopId
+            inner join Shop s on suma.shopId = s.id
+            where s.id = :shopId
             and u.activated = :activated
+            and s.activated = :activated
         """
     )
     List<User> findAllUserByShopIdAndActivated(Long shopId, boolean activated);
@@ -44,12 +47,14 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
         select u
             from User u
             inner join ShopUserMapping suma on u.id = suma.userId
-            where suma.shopId = :shopId
+            inner join Shop s on suma.shopId = s.id
+            where s.id = :shopId
             and u.activated = :activated
-            and u.isCommissionTarget = :isCommissionTarget
+            and s.activated = :activated
+            and u.commissionTargetYn = :commissionTargetYn
         """
     )
-    List<User> findAllUserByShopIdAndActivatedAndCommissionTarget(Long shopId, boolean activated, boolean isCommissionTarget);
+    List<User> findAllUserByShopIdAndActivatedAndCommissionTarget(Long shopId, boolean activated, boolean commissionTargetYn);
 
     List<ShopUserMapping> findAllByUserId(Long userId);
 
@@ -61,6 +66,7 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
             inner join User u on suma.userId = u.id
             where u.login = :login
             and u.activated = :activated
+            and s.activated = :activated
         """
     )
     List<Shop> findAllShopByLoginAndActivated(String login, boolean activated);
@@ -69,24 +75,20 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
 
     @Query(
         """
-            select new com.salary.plus.service.dto.ShopUserSalaryBaseMappingResponse(u, sbs)
+            select new com.salary.plus.service.dto.ShopUserSalaryBaseMappingResponse(u)
             from User u
-            inner join ShopUserMapping sums on u.id = sums.userId
-            inner join Shop s on sums.shopId = s.id
-            inner join ShopBaseSalary sbs on s.id = sbs.shopId
-            inner join ShopUserBaseSalaryMapping subsm on sbs.id = subsm.shopBaseSalaryId and u.id = subsm.userId
+            inner join ShopUserMapping suma on u.id = suma.userId
+            inner join Shop s on suma.shopId = s.id
             where s.id = :shopId
-            and u.isCommissionTarget = :isCommissionTarget
+            and u.commissionTargetYn = :commissionTargetYn
             and u.activated = :activated
-            and sums.activated = :activated
+            and suma.activated = :activated
             and s.activated = :activated
-            and sbs.activated = :activated
-            and subsm.activated = :activated
         """
     )
     Page<ShopUserSalaryBaseMappingResponse> findAllByShopIdAndCommissionTargetAndActivated(
         Long shopId,
-        boolean isCommissionTarget,
+        boolean commissionTargetYn,
         boolean activated,
         Pageable pageable
     );

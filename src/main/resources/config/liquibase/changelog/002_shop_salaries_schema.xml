@@ -30,10 +30,10 @@
       <column name="model_commission_price" type="int">
         <constraints nullable="false"/>
       </column>
-      <column name="is_commission_target" type="boolean" valueBoolean="false" remarks="커미션 대상 상품 여부">
+      <column name="commission_target_yn" type="boolean" valueBoolean="false" remarks="커미션 대상 상품 여부">
         <constraints nullable="false" />
       </column>
-      <column name="is_snack" type="boolean" valueBoolean="false" remarks="안주 상품 여부">
+      <column name="snack_yn" type="boolean" valueBoolean="false" remarks="안주 상품 여부">
         <constraints nullable="false" />
       </column>
       <column name="activated" type="boolean" valueBoolean="true">

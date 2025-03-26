@@ -1,6 +1,7 @@
 package com.salary.plus.service.dto;
 
 import com.salary.plus.domain.ShopBaseSalary;
+import com.salary.plus.domain.ShopUserBaseSalaryMapping;
 import com.salary.plus.domain.User;
 import java.io.Serializable;
 import java.time.Instant;
@@ -17,6 +18,7 @@ public class ShopUserSalaryBaseMappingResponse implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id; //shopUserBaseSalaryMappingId;
+    private Long userId;
     private String login;
     private String firstName;
     private String lastName;
@@ -31,16 +33,27 @@ public class ShopUserSalaryBaseMappingResponse implements Serializable {
         // Empty constructor needed for Jackson.
     }
 
-    public ShopUserSalaryBaseMappingResponse(User user, ShopBaseSalary shopBaseSalary) {
-        this.id = user.getId();
+    public ShopUserSalaryBaseMappingResponse(User user) {
+        this.userId = user.getId();
         this.login = user.getLogin();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.modelNo = user.getModelNo();
-        this.price = shopBaseSalary.getPrice();
-        this.createdBy = shopBaseSalary.getCreatedBy();
-        this.createdDate = shopBaseSalary.getCreatedDate();
-        this.lastModifiedBy = shopBaseSalary.getLastModifiedBy();
-        this.lastModifiedDate = shopBaseSalary.getLastModifiedDate();
+        this.createdBy = user.getCreatedBy();
+        this.createdDate = user.getCreatedDate();
+        this.lastModifiedBy = user.getLastModifiedBy();
+        this.lastModifiedDate = user.getLastModifiedDate();
+    }
+
+    public ShopUserSalaryBaseMappingResponse(ShopBaseSalary shopBaseSalary, ShopUserBaseSalaryMapping shopUserBaseSalaryMapping) {
+        this.id = shopUserBaseSalaryMapping.getId();
+        this.price = getPrice(shopBaseSalary, shopUserBaseSalaryMapping);
+    }
+
+    private Integer getPrice(ShopBaseSalary shopBaseSalary, ShopUserBaseSalaryMapping shopUserBaseSalaryMapping) {
+        if (shopUserBaseSalaryMapping == null) {
+            return null;
+        }
+        return shopBaseSalary.getPrice();
     }
 }

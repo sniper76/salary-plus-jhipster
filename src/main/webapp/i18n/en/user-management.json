@@ -21,6 +21,8 @@
     "modelNo": "Model no",
     "email": "Email",
     "activated": "Activated",
+    "commissionTargetYn": "Commission target",
+    "discountAcceptYn": "Discount accept",
     "deactivated": "Deactivated",
     "profiles": "Profiles",
     "langKey": "Language",

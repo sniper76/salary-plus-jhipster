@@ -62,9 +62,6 @@ class ShopOrderResourceIT {
     private ShopTableRepository shopTableRepository;
 
     @Autowired
-    private ShopUserMappingRepository shopUserMappingRepository;
-
-    @Autowired
     private ShopSalesItemRepository shopSalesItemRepository;
 
     @Autowired
@@ -75,9 +72,6 @@ class ShopOrderResourceIT {
 
     @Autowired
     private ShopUserSalesSalaryRepository shopUserSalesSalaryRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private MockMvc restUserMockMvc;
@@ -124,11 +118,11 @@ class ShopOrderResourceIT {
             shopSalesItem1.setNameKo("item1 ko");
             shopSalesItem1.setNameEn("item1 en");
             shopSalesItem1.setPrice(longTimeBarFinePrice);
-            shopSalesItem1.setCommissionTarget(true);
+            shopSalesItem1.setCommissionTargetYn(true);
             shopSalesItem1.setShopCommissionPrice(0);
             shopSalesItem1.setMamaCommissionPrice(0);
             shopSalesItem1.setModelCommissionPrice(0);
-            shopSalesItem1.setSnack(false);
+            shopSalesItem1.setSnackYn(false);
             shopSalesItemRepository.saveAndFlush(shopSalesItem1);
 
             ShopSalesItem shopSalesItem2 = new ShopSalesItem();
@@ -136,11 +130,11 @@ class ShopOrderResourceIT {
             shopSalesItem2.setNameKo("item2 ko");
             shopSalesItem2.setNameEn("item2 en");
             shopSalesItem2.setPrice(ladyDrinkPrice);
-            shopSalesItem2.setCommissionTarget(true);
+            shopSalesItem2.setCommissionTargetYn(true);
             shopSalesItem2.setShopCommissionPrice(0);
             shopSalesItem2.setMamaCommissionPrice(0);
             shopSalesItem2.setModelCommissionPrice(0);
-            shopSalesItem2.setSnack(false);
+            shopSalesItem2.setSnackYn(false);
             shopSalesItemRepository.saveAndFlush(shopSalesItem2);
 
             ShopSalesItem shopSalesItem3 = new ShopSalesItem();
@@ -148,11 +142,11 @@ class ShopOrderResourceIT {
             shopSalesItem3.setNameKo("item3 ko");
             shopSalesItem3.setNameEn("item3 en");
             shopSalesItem3.setPrice(guestDrinkPrice);
-            shopSalesItem3.setCommissionTarget(false);
+            shopSalesItem3.setCommissionTargetYn(false);
             shopSalesItem3.setShopCommissionPrice(0);
             shopSalesItem3.setMamaCommissionPrice(0);
             shopSalesItem3.setModelCommissionPrice(0);
-            shopSalesItem3.setSnack(false);
+            shopSalesItem3.setSnackYn(false);
             shopSalesItemRepository.saveAndFlush(shopSalesItem3);
 
             date = DateUtils.getFormatted(DateTimeFormatUtil.yyyy_MM_dd());
@@ -277,11 +271,11 @@ class ShopOrderResourceIT {
                     shopSalesItem4.setNameKo("item3 ko");
                     shopSalesItem4.setNameEn("item3 en");
                     shopSalesItem4.setPrice(snackPrice);
-                    shopSalesItem4.setCommissionTarget(false);
+                    shopSalesItem4.setCommissionTargetYn(false);
                     shopSalesItem4.setShopCommissionPrice(0);
                     shopSalesItem4.setMamaCommissionPrice(0);
                     shopSalesItem4.setModelCommissionPrice(0);
-                    shopSalesItem4.setSnack(true);
+                    shopSalesItem4.setSnackYn(true);
                     shopSalesItemRepository.saveAndFlush(shopSalesItem4);
 
                     salesItemIds.add(shopSalesItem4.getId());
@@ -317,7 +311,7 @@ class ShopOrderResourceIT {
                     );
                     assertThat(allOrderDetailResponse.size()).isEqualTo(4);
                     final ShopOrderDetailResponse shopOrderDetailResponse = allOrderDetailResponse.get(3);
-                    assertThat(shopOrderDetailResponse.isSnack()).isEqualTo(true);
+                    assertThat(shopOrderDetailResponse.isSnackYn()).isEqualTo(true);
                     assertThat(shopOrderDetailResponse.getPrice()).isEqualTo(snackPrice);
                 }
             }
@@ -341,11 +335,11 @@ class ShopOrderResourceIT {
                     shopSalesItem4.setNameKo("item3 ko");
                     shopSalesItem4.setNameEn("item3 en");
                     shopSalesItem4.setPrice(snackPrice);
-                    shopSalesItem4.setCommissionTarget(false);
+                    shopSalesItem4.setCommissionTargetYn(false);
                     shopSalesItem4.setShopCommissionPrice(0);
                     shopSalesItem4.setMamaCommissionPrice(0);
                     shopSalesItem4.setModelCommissionPrice(0);
-                    shopSalesItem4.setSnack(true);
+                    shopSalesItem4.setSnackYn(true);
                     shopSalesItemRepository.saveAndFlush(shopSalesItem4);
 
                     salesItemIds.add(shopSalesItem4.getId());
@@ -381,7 +375,7 @@ class ShopOrderResourceIT {
                     );
                     assertThat(allOrderDetailResponse.size()).isEqualTo(4);
                     final ShopOrderDetailResponse shopOrderDetailResponse3 = allOrderDetailResponse.get(3);
-                    assertThat(shopOrderDetailResponse3.isSnack()).isEqualTo(true);
+                    assertThat(shopOrderDetailResponse3.isSnackYn()).isEqualTo(true);
                     assertThat(shopOrderDetailResponse3.getPrice()).isEqualTo(snackPrice);
                     final ShopOrderDetailResponse shopOrderDetailResponse0 = allOrderDetailResponse.get(0);
                     assertThat(shopOrderDetailResponse0.getModelId()).isEqualTo(userId3);

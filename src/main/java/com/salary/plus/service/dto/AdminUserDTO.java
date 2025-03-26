@@ -42,6 +42,12 @@ public class AdminUserDTO implements Serializable {
 
     private boolean activated = false;
 
+    private String modelNo;
+
+    private boolean commissionTargetYn = false;
+
+    private boolean discountAcceptYn = false;
+
     @Size(min = 2, max = 10)
     private String langKey;
 
@@ -50,10 +56,6 @@ public class AdminUserDTO implements Serializable {
     private Instant createdDate;
 
     private String lastModifiedBy;
-
-    private String modelNo;
-
-    private boolean isCommissionTarget = false;
 
     private Instant lastModifiedDate;
 
@@ -73,7 +75,8 @@ public class AdminUserDTO implements Serializable {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.modelNo = user.getModelNo();
-        this.isCommissionTarget = user.isCommissionTarget();
+        this.commissionTargetYn = user.isCommissionTargetYn();
+        this.discountAcceptYn = user.isDiscountAcceptYn();
         this.email = user.getEmail();
         this.activated = user.isActivated();
         this.imageUrl = user.getImageUrl();
@@ -141,6 +144,30 @@ public class AdminUserDTO implements Serializable {
         this.activated = activated;
     }
 
+    public String getModelNo() {
+        return modelNo;
+    }
+
+    public void setModelNo(String modelNo) {
+        this.modelNo = modelNo;
+    }
+
+    public boolean isCommissionTargetYn() {
+        return commissionTargetYn;
+    }
+
+    public void setCommissionTargetYn(boolean commissionTargetYn) {
+        this.commissionTargetYn = commissionTargetYn;
+    }
+
+    public boolean isDiscountAcceptYn() {
+        return discountAcceptYn;
+    }
+
+    public void setDiscountAcceptYn(boolean discountAcceptYn) {
+        this.discountAcceptYn = discountAcceptYn;
+    }
+
     public String getLangKey() {
         return langKey;
     }
@@ -205,22 +232,6 @@ public class AdminUserDTO implements Serializable {
         this.shops = shops;
     }
 
-    public String getModelNo() {
-        return modelNo;
-    }
-
-    public void setModelNo(String modelNo) {
-        this.modelNo = modelNo;
-    }
-
-    public boolean isCommissionTarget() {
-        return isCommissionTarget;
-    }
-
-    public void setCommissionTarget(boolean commissionTarget) {
-        isCommissionTarget = commissionTarget;
-    }
-
     // prettier-ignore
     @Override
     public String toString() {
@@ -230,7 +241,8 @@ public class AdminUserDTO implements Serializable {
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
             ", modelNo='" + modelNo + '\'' +
-            ", isCommissionTarget=" + isCommissionTarget +
+            ", commissionTargetYn=" + commissionTargetYn +
+            ", discountAcceptYn=" + discountAcceptYn +
             ", imageUrl='" + imageUrl + '\'' +
             ", activated=" + activated +
             ", langKey='" + langKey + '\'' +

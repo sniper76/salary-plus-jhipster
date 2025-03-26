@@ -3,8 +3,8 @@ export interface IShopSalesItem {
   shopId?: any;
   nameKo?: string;
   nameEn?: string;
-  isCommissionTarget?: boolean;
-  isSnack?: boolean;
+  commissionTargetYn?: boolean;
+  snackYn?: boolean;
   activated?: boolean;
   price?: number;
   shopCommissionPrice?: number;
@@ -21,8 +21,8 @@ export const defaultValue: Readonly<IShopSalesItem> = {
   shopId: '',
   nameKo: '',
   nameEn: '',
-  isCommissionTarget: false,
-  isSnack: false,
+  commissionTargetYn: false,
+  snackYn: false,
   activated: true,
   price: 0,
   shopCommissionPrice: 0,

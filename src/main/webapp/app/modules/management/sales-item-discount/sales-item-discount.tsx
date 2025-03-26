@@ -177,7 +177,7 @@ export const SalesItemDiscount = () => {
         <tbody>
           {salesItemDiscountsForPage.length <= 0 && (
             <tr>
-              <td colSpan={9} className="text-align-center">
+              <td colSpan={12} className="text-align-center">
                 <Translate contentKey="global.messages.info.noDataList">조회된 데이터가 없습니다.</Translate>
               </td>
             </tr>

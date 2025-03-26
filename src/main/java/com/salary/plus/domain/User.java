@@ -70,11 +70,11 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
     @Column(nullable = false)
     private boolean activated = false;
 
-    @Column(name = "is_commission_target", nullable = false)
-    private boolean isCommissionTarget = false;
+    @Column(name = "commission_target_yn", nullable = false)
+    private boolean commissionTargetYn = false;
 
-    @Column(name = "is_discount_accept", nullable = false)
-    private boolean isDiscountAccept = true;
+    @Column(name = "discount_accept_yn", nullable = false)
+    private boolean discountAcceptYn = true;
 
     @Size(max = 60)
     @Column(name = "model_no", length = 60)
@@ -209,20 +209,20 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
         this.langKey = langKey;
     }
 
-    public boolean isCommissionTarget() {
-        return isCommissionTarget;
+    public boolean isCommissionTargetYn() {
+        return commissionTargetYn;
     }
 
-    public void setCommissionTarget(boolean commissionTarget) {
-        isCommissionTarget = commissionTarget;
+    public void setCommissionTargetYn(boolean commissionTargetYn) {
+        this.commissionTargetYn = commissionTargetYn;
     }
 
-    public boolean isDiscountAccept() {
-        return isDiscountAccept;
+    public boolean isDiscountAcceptYn() {
+        return discountAcceptYn;
     }
 
-    public void setDiscountAccept(boolean discountAccept) {
-        isDiscountAccept = discountAccept;
+    public void setDiscountAcceptYn(boolean discountAcceptYn) {
+        this.discountAcceptYn = discountAcceptYn;
     }
 
     public String getModelNo() {
@@ -268,8 +268,8 @@ public class User extends AbstractAuditingEntity<Long> implements Serializable {
             ", email='" + email + '\'' +
             ", imageUrl='" + imageUrl + '\'' +
             ", activated='" + activated + '\'' +
-            ", isCommissionTarget='" + isCommissionTarget + '\'' +
-            ", isDiscountAccept='" + isDiscountAccept + '\'' +
+            ", commissionTargetYn='" + commissionTargetYn + '\'' +
+            ", discountAcceptYn='" + discountAcceptYn + '\'' +
             ", modelNo='" + modelNo + '\'' +
             ", langKey='" + langKey + '\'' +
             ", activationKey='" + activationKey + '\'' +

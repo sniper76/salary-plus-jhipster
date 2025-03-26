@@ -29,8 +29,8 @@ public class ShopSalesItemDTO implements Serializable {
     private String nameEn;
 
     private boolean activated = false;
-    private boolean isCommissionTarget = false;
-    private boolean isSnack = false;
+    private boolean commissionTargetYn = false;
+    private boolean snackYn = false;
 
     @PositiveOrZero
     private Integer price;

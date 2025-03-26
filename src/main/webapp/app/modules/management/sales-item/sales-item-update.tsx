@@ -46,14 +46,13 @@ export const SalesItemUpdate = () => {
   const salesItem = useAppSelector(state => state.salesItems.salesItem);
   const loading = useAppSelector(state => state.salesItems.loading);
   const updating = useAppSelector(state => state.salesItems.updating);
-  console.warn('salesItem', salesItem);
 
   return (
     <div>
       <Row className="justify-content-center">
         <Col md="8">
           <h1>
-            <Translate contentKey="userManagement.home.createOrEditLabel">Create or edit a User</Translate>
+            <Translate contentKey="salesItem.home.createOrEditLabel">Create or edit a User</Translate>
           </h1>
         </Col>
       </Row>
@@ -113,12 +112,12 @@ export const SalesItemUpdate = () => {
               />
               <ValidatedField
                 type="checkbox"
-                name="isCommissionTarget"
+                name="commissionTargetYn"
                 check
-                value={salesItem.commissionTarget}
-                label={translate('salesItem.isCommissionTarget')}
+                value={salesItem.isCommissionTargetYn}
+                label={translate('userManagement.commissionTargetYn')}
               />
-              <ValidatedField type="checkbox" name="isSnack" check value={salesItem.snack} label={translate('salesItem.isSnack')} />
+              <ValidatedField type="checkbox" name="snackYn" check value={salesItem.isSnackYn} label={translate('salesItem.snackYn')} />
               <ValidatedField
                 type="number"
                 name="price"

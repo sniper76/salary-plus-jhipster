@@ -43,6 +43,7 @@ export const UserManagementUpdate = () => {
     if (isNew) {
       dispatch(createUser(entity));
     } else {
+      console.warn('entity', entity);
       dispatch(updateUser(entity));
     }
     handleClose();
@@ -54,6 +55,10 @@ export const UserManagementUpdate = () => {
   const updating = useAppSelector(state => state.userManagement.updating);
   const authorities = useAppSelector(state => state.userManagement.authorities);
   const selectBoxShops = useAppSelector(state => state.userManagement.selectBoxShops);
+
+  useEffect(() => {
+    console.warn('user', user);
+  }, [user]);
 
   return (
     <div>
@@ -125,6 +130,17 @@ export const UserManagementUpdate = () => {
                   },
                 }}
               />
+              <ValidatedField
+                type="text"
+                name="modelNo"
+                label={translate('userManagement.modelNo')}
+                validate={{
+                  maxLength: {
+                    value: 50,
+                    message: translate('entity.validation.maxlength', { max: 50 }),
+                  },
+                }}
+              />
               <FormText>This field cannot be longer than 50 characters.</FormText>
               <ValidatedField
                 name="email"
@@ -151,9 +167,23 @@ export const UserManagementUpdate = () => {
                 type="checkbox"
                 name="activated"
                 check
-                value={true}
+                value={user.activated}
                 disabled={!user.id}
                 label={translate('userManagement.activated')}
+              />
+              <ValidatedField
+                type="checkbox"
+                name="commissionTargetYn"
+                check
+                value={user.isCommissionTargetYn}
+                label={translate('userManagement.commissionTargetYn')}
+              />
+              <ValidatedField
+                type="checkbox"
+                name="discountAcceptYn"
+                check
+                value={user.isDiscountAcceptYn}
+                label={translate('userManagement.discountAcceptYn')}
               />
               <ValidatedField type="select" name="langKey" label={translate('userManagement.langKey')}>
                 {locales.map(locale => (

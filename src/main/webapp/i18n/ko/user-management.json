@@ -21,6 +21,8 @@
     "modelNo": "모델번호",
     "email": "이메일",
     "activated": "활성",
+    "commissionTargetYn": "커미션 대상 여부",
+    "discountAcceptYn": "할인 대상 여부",
     "deactivated": "비활성",
     "profiles": "Profiles",
     "langKey": "언어",

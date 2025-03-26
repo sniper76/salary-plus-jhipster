@@ -22,8 +22,6 @@
     "type": "할인방식",
     "activated": "활성",
     "deactivated": "비활성",
-    "isCommissionTarget": "커미션 대상 여부",
-    "isSnack": "안주 여부",
     "profiles": "Profiles",
     "langKey": "언어",
     "createdBy": "생성자",

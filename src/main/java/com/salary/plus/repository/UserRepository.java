@@ -56,10 +56,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
             inner join User u on sump.userId = u.id
             where s.id = :shopId
             and u.activated = :activated
-            and u.isCommissionTarget = :isCommissionTarget
+            and u.commissionTargetYn = :commissionTargetYn
         """
     )
-    List<ShopModelResponse> findAllByShopId(Long shopId, boolean activated, boolean isCommissionTarget);
+    List<ShopModelResponse> findAllByShopId(Long shopId, boolean activated, boolean commissionTargetYn);
 
     @Query(
         """
@@ -70,9 +70,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             left outer join ShopUserDailySalary suds on u.id = suds.userId and suds.date = :date
             where s.id = :shopId
             and u.activated = :activated
-            and u.isCommissionTarget = :isCommissionTarget
+            and u.commissionTargetYn = :commissionTargetYn
             order by u.modelNo
         """
     )
-    List<ShopUserResponse> findAllByShopIdAndDate(Long shopId, String date, boolean activated, boolean isCommissionTarget);
+    List<ShopUserResponse> findAllByShopIdAndDate(Long shopId, String date, boolean activated, boolean commissionTargetYn);
 }

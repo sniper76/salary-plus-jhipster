@@ -23,8 +23,8 @@ public class ShopOrderDetailResponse implements Serializable {
     private Long modelId;
     private String nameKo;
     private String nameEn;
-    private boolean isCommissionTarget;
-    private boolean isSnack;
+    private boolean commissionTargetYn;
+    private boolean snackYn;
     private Integer price;
     private String createdBy;
     private Instant createdDate;
@@ -47,8 +47,8 @@ public class ShopOrderDetailResponse implements Serializable {
         this.nameKo = shopSalesItem.getNameKo();
         this.nameEn = shopSalesItem.getNameEn();
         this.price = shopOrderDetail.getPrice();
-        this.isCommissionTarget = shopSalesItem.isCommissionTarget();
-        this.isSnack = shopSalesItem.isSnack();
+        this.commissionTargetYn = shopSalesItem.isCommissionTargetYn();
+        this.snackYn = shopSalesItem.isSnackYn();
         this.createdBy = shopOrderDetail.getCreatedBy();
         this.createdDate = shopOrderDetail.getCreatedDate();
         this.lastModifiedBy = shopOrderDetail.getLastModifiedBy();
@@ -78,10 +78,10 @@ public class ShopOrderDetailResponse implements Serializable {
             ", nameEn='" +
             nameEn +
             '\'' +
-            ", isCommissionTarget=" +
-            isCommissionTarget +
-            ", isSnack=" +
-            isSnack +
+            ", commissionTargetYn=" +
+            commissionTargetYn +
+            ", snackYn=" +
+            snackYn +
             ", price=" +
             price +
             ", createdBy='" +

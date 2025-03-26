@@ -1,5 +1,6 @@
 export interface IModelUser {
   id?: any;
+  userId?: any;
   login?: string;
   firstName?: string;
   lastName?: string;
@@ -13,6 +14,7 @@ export interface IModelUser {
 
 export const defaultValue: Readonly<IModelUser> = {
   id: '',
+  userId: '',
   login: '',
   firstName: '',
   lastName: '',

@@ -51,9 +51,9 @@ public class ShopSalesItem extends AbstractAuditingEntity<Long> implements Seria
     @Column(name = "activated", nullable = false)
     private boolean activated = true;
 
-    @Column(name = "is_commission_target", nullable = false)
-    private boolean isCommissionTarget = true;
+    @Column(name = "commission_target_yn", nullable = false)
+    private boolean commissionTargetYn = true;
 
-    @Column(name = "is_snack", nullable = false)
-    private boolean isSnack = true;
+    @Column(name = "snack_yn", nullable = false)
+    private boolean snackYn = true;
 }

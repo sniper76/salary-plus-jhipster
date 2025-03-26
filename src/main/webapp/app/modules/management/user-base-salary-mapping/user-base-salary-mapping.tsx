@@ -86,7 +86,6 @@ export const UserBaseSalaryMapping = () => {
     getUsersFromProps();
   };
 
-  const account = useAppSelector(state => state.authentication.account);
   const users = useAppSelector(state => state.userBaseSalaryMappings.users);
   const totalItems = useAppSelector(state => state.userBaseSalaryMappings.totalItems);
   const loading = useAppSelector(state => state.userBaseSalaryMappings.loading);
@@ -188,7 +187,7 @@ export const UserBaseSalaryMapping = () => {
               </td>
               <td className="text-end">
                 <div className="btn-group flex-btn-group-container">
-                  <Link to={`${selectedValue}/${user.id}/create`} className="btn btn-primary jh-create-entity">
+                  <Link to={`${selectedValue}/${user.userId}/create`} className="btn btn-primary jh-create-entity">
                     <FontAwesomeIcon icon="pencil-alt" />{' '}
                     <span className="d-none d-md-inline">
                       <Translate contentKey="userBaseSalaryMapping.home.mappingLabel">사용자 일당 연결하기</Translate>

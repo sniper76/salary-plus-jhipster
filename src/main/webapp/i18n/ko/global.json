@@ -8,7 +8,7 @@
       "order": "주문",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
-        "main": "Entities",
+        "main": "관리",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
@@ -28,7 +28,7 @@
         "salesItemDiscount": "할인관리"
       },
       "admin": {
-        "main": "관리자",
+        "main": "어드민",
         "tracker": "사용자 트랙커",
         "metrics": "메트릭스",
         "health": "상태 확인",

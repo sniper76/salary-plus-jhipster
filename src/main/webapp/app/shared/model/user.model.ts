@@ -5,7 +5,10 @@ export interface IUser {
   lastName?: string;
   email?: string;
   activated?: boolean;
+  commissionTargetYn?: boolean;
+  discountAcceptYn?: boolean;
   langKey?: string;
+  modelNo?: string;
   authorities?: any[];
   shops?: any[];
   createdBy?: string;
@@ -22,7 +25,10 @@ export const defaultValue: Readonly<IUser> = {
   lastName: '',
   email: '',
   activated: true,
+  commissionTargetYn: true,
+  discountAcceptYn: true,
   langKey: '',
+  modelNo: '',
   authorities: [],
   shops: [],
   createdBy: '',

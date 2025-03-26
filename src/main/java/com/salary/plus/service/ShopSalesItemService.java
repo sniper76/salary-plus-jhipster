@@ -30,8 +30,8 @@ public class ShopSalesItemService {
         shopSalesItem.setShopId(shopId);
         shopSalesItem.setNameKo(shopSalesItemDTO.getNameKo());
         shopSalesItem.setNameEn(shopSalesItemDTO.getNameEn());
-        shopSalesItem.setCommissionTarget(shopSalesItemDTO.isCommissionTarget());
-        shopSalesItem.setSnack(shopSalesItemDTO.isSnack());
+        shopSalesItem.setCommissionTargetYn(shopSalesItemDTO.isCommissionTargetYn());
+        shopSalesItem.setSnackYn(shopSalesItemDTO.isSnackYn());
         shopSalesItem.setPrice(shopSalesItemDTO.getPrice());
         shopSalesItem.setShopCommissionPrice(shopSalesItemDTO.getShopCommissionPrice());
         shopSalesItem.setMamaCommissionPrice(shopSalesItemDTO.getMamaCommissionPrice());
@@ -50,8 +50,8 @@ public class ShopSalesItemService {
                 it.setNameEn(shopSalesItemDTO.getNameEn());
                 it.setPrice(shopSalesItemDTO.getPrice());
                 it.setActivated(shopSalesItemDTO.isActivated());
-                it.setCommissionTarget(shopSalesItemDTO.isCommissionTarget());
-                it.setSnack(shopSalesItemDTO.isSnack());
+                it.setCommissionTargetYn(shopSalesItemDTO.isCommissionTargetYn());
+                it.setSnackYn(shopSalesItemDTO.isSnackYn());
                 it.setShopCommissionPrice(shopSalesItemDTO.getShopCommissionPrice());
                 it.setMamaCommissionPrice(shopSalesItemDTO.getMamaCommissionPrice());
                 it.setModelCommissionPrice(shopSalesItemDTO.getModelCommissionPrice());

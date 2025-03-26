@@ -3,6 +3,7 @@ package com.salary.plus.service;
 import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
+import com.salary.plus.repository.ShopBaseSalaryRepository;
 import com.salary.plus.repository.ShopUserMappingRepository;
 import com.salary.plus.service.dto.ShopUserSalaryBaseMappingResponse;
 import java.util.List;
@@ -26,6 +27,7 @@ public class ShopUserMappingService {
     private static final Logger LOG = LoggerFactory.getLogger(ShopUserMappingService.class);
 
     private final ShopUserMappingRepository shopUserMappingRepository;
+    private final ShopBaseSalaryRepository shopBaseSalaryRepository;
 
     public Optional<ShopUserMapping> getShopUserMappingByLogin(Long shopId, String login) {
         return shopUserMappingRepository.findByShopIdAndLogin(shopId, login);
@@ -61,6 +63,22 @@ public class ShopUserMappingService {
 
     @Transactional(readOnly = true)
     public Page<ShopUserSalaryBaseMappingResponse> getAllUserSalaryMapping(Long shopId, Pageable pageable) {
-        return shopUserMappingRepository.findAllByShopIdAndCommissionTargetAndActivated(shopId, true, true, pageable);
+        final Page<ShopUserSalaryBaseMappingResponse> pages = shopUserMappingRepository.findAllByShopIdAndCommissionTargetAndActivated(
+            shopId,
+            true,
+            true,
+            pageable
+        );
+        pages
+            .getContent()
+            .forEach(it -> {
+                shopBaseSalaryRepository
+                    .findBaseMappingResponseByShopIdAndUserId(shopId, it.getUserId(), true)
+                    .ifPresent(elem -> {
+                        it.setId(elem.getId());
+                        it.setPrice(elem.getPrice());
+                    });
+            });
+        return pages;
     }
 }
