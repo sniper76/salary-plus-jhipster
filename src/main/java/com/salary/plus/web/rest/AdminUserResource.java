@@ -1,9 +1,10 @@
 package com.salary.plus.web.rest;
 
+import com.salary.plus.config.Constants;
+import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.User;
-import com.salary.plus.guard.ShopGuard;
-import com.salary.plus.guard.UseGuards;
 import com.salary.plus.repository.UserRepository;
+import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.service.MailService;
 import com.salary.plus.service.ShopUserMappingService;
 import com.salary.plus.service.UserService;
@@ -12,6 +13,7 @@ import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import com.salary.plus.web.rest.errors.EmailAlreadyUsedException;
 import com.salary.plus.web.rest.errors.LoginAlreadyUsedException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -19,6 +21,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +33,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tech.jhipster.security.RandomUtil;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -44,7 +51,7 @@ import tech.jhipster.web.util.ResponseUtil;
 /**
  * REST controller for managing users.
  * <p>
- * This class accesses the {@link com.salary.plus.domain.User} entity, and needs to fetch its collection of authorities.
+ * This class accesses the {@link User} entity, and needs to fetch its collection of authorities.
  * <p>
  * For a normal use-case, it would be better to have an eager relationship between User and Authority,
  * and send everything to the client side: there would be no View Model and DTO, a lot less code, and an outer-join
@@ -67,9 +74,8 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequiredArgsConstructor
-@UseGuards({ ShopGuard.class })
-@RequestMapping("/api/shops")
-public class UserResource {
+@RequestMapping("/api/admin")
+public class AdminUserResource {
 
     private static final List<String> ALLOWED_ORDERED_PROPERTIES = Collections.unmodifiableList(
         Arrays.asList(
@@ -87,7 +93,7 @@ public class UserResource {
         )
     );
 
-    private static final Logger LOG = LoggerFactory.getLogger(UserResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AdminUserResource.class);
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -98,7 +104,7 @@ public class UserResource {
     private final ShopUserMappingService shopUserMappingService;
 
     /**
-     * {@code POST  /users}  : Creates a new user.
+     * {@code POST  /admin/users}  : Creates a new user.
      * <p>
      * Creates a new user if the login and email are not already used, and sends a
      * mail with an activation link.
@@ -109,10 +115,10 @@ public class UserResource {
      * @throws URISyntaxException       if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
-    @PostMapping("/{shopId}/users")
-    public ResponseEntity<User> create(@PathVariable("shopId") Long shopId, @Valid @RequestBody AdminUserDTO userDTO)
-        throws URISyntaxException {
-        LOG.debug("REST create userDTO : {}", userDTO);
+    @PostMapping("/users")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<User> createUser(@Valid @RequestBody AdminUserDTO userDTO) throws URISyntaxException {
+        LOG.debug("REST request to save User : {}", userDTO);
 
         if (userDTO.getId() != null) {
             throw new BadRequestAlertException("A new user cannot already have an ID", "userManagement", "idexists");
@@ -122,27 +128,26 @@ public class UserResource {
         } else if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
             throw new EmailAlreadyUsedException();
         } else {
-            userDTO.setShopStrings(new HashSet<>(List.of(String.valueOf(shopId))));
-            User newUser = userService.createUser(userDTO, userDTO.getLogin(), userDTO.getLogin());
-            //            mailService.sendCreationEmail(newUser);
-            return ResponseEntity.created(new URI("/api/shops/" + shopId + "/users/" + newUser.getId()))
+            User newUser = userService.createUser(userDTO, RandomUtil.generatePassword(), RandomUtil.generateResetKey());
+            mailService.sendCreationEmail(newUser);
+            return ResponseEntity.created(new URI("/api/admin/users/" + newUser.getLogin()))
                 .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", newUser.getLogin()))
                 .body(newUser);
         }
     }
 
     /**
-     * {@code PUT /users} : Updates an existing User.
+     * {@code PUT /admin/users} : Updates an existing User.
      *
      * @param userDTO the user to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated user.
      * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already in use.
      * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already in use.
      */
-    @PutMapping({ "/{shopId}/users/{userId}" })
-    public ResponseEntity<AdminUserDTO> update(
-        @PathVariable("shopId") Long shopId,
-        @PathVariable("userId") Long userId,
+    @PutMapping({ "/users", "/users/{login}" })
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<AdminUserDTO> updateUser(
+        @PathVariable(name = "login", required = false) @Pattern(regexp = Constants.LOGIN_REGEX) String login,
         @Valid @RequestBody AdminUserDTO userDTO
     ) {
         LOG.debug("REST request to update User : {}", userDTO);
@@ -162,12 +167,33 @@ public class UserResource {
         );
     }
 
-    @GetMapping("/{shopId}/users")
+    /**
+     * {@code GET /admin/users} : get all users with all the details - calling this are only allowed for the administrators.
+     *
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
+     */
+    @Deprecated
+    @GetMapping("/users")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<List<AdminUserDTO>> getAllUsers(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
+        LOG.debug("REST request to get all User for an admin");
+        if (!onlyContainsAllowedProperties(pageable)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        final Page<AdminUserDTO> page = userService.getAllManagedUsers(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/users/shops/{shopId}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<List<AdminUserDTO>> getAllUsersByShopId(
         @PathVariable("shopId") Long shopId,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
-        LOG.debug("REST getAllUsersByShopId : {}", shopId);
+        LOG.debug("REST request to get all User for an admin");
         if (!onlyContainsAllowedProperties(pageable)) {
             return ResponseEntity.badRequest().build();
         }
@@ -182,15 +208,34 @@ public class UserResource {
     }
 
     /**
-     * {@code GET /users/:userId} : get the "userId" user.
+     * {@code GET /admin/users/:login} : get the "login" user.
      *
-     * @param userId the userId of the user to find.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "userId" user, or with status {@code 404 (Not Found)}.
+     * @param login the login of the user to find.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the "login" user, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/{shopId}/users/{userId}")
-    public ResponseEntity<AdminUserDTO> getUser(@PathVariable("shopId") Long shopId, @PathVariable("userId") Long userId) {
-        LOG.debug("REST request to get User : {}", userId);
-        final Optional<AdminUserDTO> adminUserDTO = userService.getUserWithAuthoritiesById(userId).map(AdminUserDTO::new);
+    @GetMapping("/users/{login}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<AdminUserDTO> getUser(@PathVariable("login") @Pattern(regexp = Constants.LOGIN_REGEX) String login) {
+        LOG.debug("REST request to get User : {}", login);
+        final Optional<AdminUserDTO> adminUserDTO = userService.getUserWithAuthoritiesByLogin(login).map(AdminUserDTO::new);
+        final List<Shop> shops = shopUserMappingService.getMappingShops(adminUserDTO.get().getLogin());
+        final Set<String> shopStrings = shops.stream().map(Shop::getId).map(String::valueOf).collect(Collectors.toSet());
+        adminUserDTO.get().setShopStrings(shopStrings);
+        adminUserDTO.get().setShops(new HashSet<>(shops));
         return ResponseUtil.wrapOrNotFound(adminUserDTO);
+    }
+
+    /**
+     * {@code DELETE /admin/users/:login} : delete the "login" User.
+     *
+     * @param login the login of the user to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/users/{login}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<Void> deleteUser(@PathVariable("login") @Pattern(regexp = Constants.LOGIN_REGEX) String login) {
+        LOG.debug("REST request to delete User: {}", login);
+        userService.deleteUser(login);
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "userManagement.deleted", login)).build();
     }
 }

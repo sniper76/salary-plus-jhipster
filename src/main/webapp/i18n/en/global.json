@@ -25,7 +25,8 @@
         "penalty": "Penalty",
         "baseSalary": "Salary",
         "userBaseSalaryMapping": "User Base Salary",
-        "salesItemDiscount": "Sales Item Discount"
+        "salesItemDiscount": "Sales Item Discount",
+        "model": "User"
       },
       "admin": {
         "main": "Administration",
@@ -73,6 +74,8 @@
       "validate": {
         "nameKo.required": "Korean is required.",
         "nameEn.required": "English is required.",
+        "langKey.required": "Language is required.",
+        "profiles.required": "Profile is required.",
         "salesItem.required": "Sales item is required.",
         "discountType.required": "Discount type is required.",
         "price": {

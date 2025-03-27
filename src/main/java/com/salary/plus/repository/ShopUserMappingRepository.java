@@ -75,21 +75,31 @@ public interface ShopUserMappingRepository extends JpaRepository<ShopUserMapping
 
     @Query(
         """
-            select new com.salary.plus.service.dto.ShopUserSalaryBaseMappingResponse(u)
-            from User u
-            inner join ShopUserMapping suma on u.id = suma.userId
-            inner join Shop s on suma.shopId = s.id
+        select new com.salary.plus.service.dto.ShopUserSalaryBaseMappingResponse(u)
+        from User u
+        where exists (
+            select 1
+            from Shop s
+            inner join ShopUserMapping sump on s.id = sump.shopId
             where s.id = :shopId
-            and u.commissionTargetYn = :commissionTargetYn
-            and u.activated = :activated
-            and suma.activated = :activated
             and s.activated = :activated
+            and sump.activated = :activated
+            and sump.userId = u.id
+        )
+        and not exists (
+            select 1
+            from u.authorities a
+            where a.name = :roleName
+        )
+        and u.commissionTargetYn = :commissionTargetYn
+        and u.activated = :activated
         """
     )
     Page<ShopUserSalaryBaseMappingResponse> findAllByShopIdAndCommissionTargetAndActivated(
         Long shopId,
         boolean commissionTargetYn,
         boolean activated,
+        String roleName,
         Pageable pageable
     );
 }

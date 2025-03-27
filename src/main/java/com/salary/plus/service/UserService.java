@@ -5,6 +5,7 @@ import com.salary.plus.domain.Authority;
 import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
+import com.salary.plus.enums.RoleType;
 import com.salary.plus.repository.AuthorityRepository;
 import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.AuthoritiesConstants;
@@ -332,7 +333,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Page<AdminUserDTO> getAllManagedUsersByShopId(Long shopId, Pageable pageable) {
-        return userRepository.findAllByShopId(shopId, pageable).map(AdminUserDTO::new);
+        return userRepository.findAllByShopIdExcludingRole(shopId, RoleType.ROLE_ADMIN.name(), pageable).map(AdminUserDTO::new);
     }
 
     @Transactional(readOnly = true)
@@ -343,6 +344,11 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
         return userRepository.findOneWithAuthoritiesByLogin(login);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<User> getUserWithAuthoritiesById(Long id) {
+        return userRepository.findOneWithAuthoritiesById(id);
     }
 
     @Transactional(readOnly = true)

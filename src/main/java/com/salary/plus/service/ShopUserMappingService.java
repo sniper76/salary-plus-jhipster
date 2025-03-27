@@ -3,6 +3,7 @@ package com.salary.plus.service;
 import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
+import com.salary.plus.enums.RoleType;
 import com.salary.plus.repository.ShopBaseSalaryRepository;
 import com.salary.plus.repository.ShopUserMappingRepository;
 import com.salary.plus.service.dto.ShopUserSalaryBaseMappingResponse;
@@ -67,6 +68,7 @@ public class ShopUserMappingService {
             shopId,
             true,
             true,
+            RoleType.ROLE_ADMIN.name(),
             pageable
         );
         pages

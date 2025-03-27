@@ -6,6 +6,7 @@ import com.salary.plus.service.dto.ShopUserResponse;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +32,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = "authorities")
     @Cacheable(cacheNames = USERS_BY_LOGIN_CACHE, unless = "#result == null")
     Optional<User> findOneWithAuthoritiesByLogin(String login);
+
+    @EntityGraph(attributePaths = "authorities")
+    Optional<User> findOneWithAuthoritiesById(Long id);
 
     @EntityGraph(attributePaths = "authorities")
     @Cacheable(cacheNames = USERS_BY_EMAIL_CACHE, unless = "#result == null")
@@ -63,14 +67,23 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(
         """
-            select u
+        select u
+        from User u
+        where exists (
+            select 1
             from Shop s
             inner join ShopUserMapping sump on s.id = sump.shopId
-            inner join User u on sump.userId = u.id
             where s.id = :shopId
+            and sump.userId = u.id
+        )
+        and not exists (
+            select 1
+            from u.authorities a
+            where a.name = :roleName
+        )
         """
     )
-    Page<User> findAllByShopId(Long shopId, Pageable pageable);
+    Page<User> findAllByShopIdExcludingRole(Long shopId, String roleName, Pageable pageable);
 
     @Query(
         """

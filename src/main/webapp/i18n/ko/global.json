@@ -25,7 +25,8 @@
         "penalty": "벌금관리",
         "baseSalary": "일당관리",
         "userBaseSalaryMapping": "사용자기본일당관리",
-        "salesItemDiscount": "할인관리"
+        "salesItemDiscount": "할인관리",
+        "model": "사용자관리"
       },
       "admin": {
         "main": "어드민",
@@ -73,6 +74,8 @@
       "validate": {
         "nameKo.required": "한글명 입력이 필요합니다.",
         "nameEn.required": "영문명 입력이 필요합니다.",
+        "langKey.required": "언어 선택이 필요합니다.",
+        "profiles.required": "권한 선택이 필요합니다.",
         "salesItem.required": "상품 선택이 필요합니다.",
         "discountType.required": "할인타입 선택이 필요합니다.",
         "price": {

@@ -16,6 +16,7 @@ import penalties from 'app/modules/management/penalty/penalty.reducer';
 import baseSalaries from 'app/modules/management/base-salary/base-salary.reducer';
 import userBaseSalaryMappings from 'app/modules/management/user-base-salary-mapping/user-base-salary-mapping.reducer';
 import salesItemDiscounts from 'app/modules/management/sales-item-discount/sales-item-discount.reducer';
+import modelManagement from 'app/modules/management/model-management/model-management.reducer';
 import entitiesReducers from 'app/entities/reducers';
 import applicationProfile from './application-profile';
 import authentication from './authentication';
@@ -41,6 +42,7 @@ const rootReducer: ReducersMapObject = {
   baseSalaries,
   userBaseSalaryMappings,
   salesItemDiscounts,
+  modelManagement,
   loadingBar,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   ...entitiesReducers,
