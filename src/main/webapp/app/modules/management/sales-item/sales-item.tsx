@@ -163,6 +163,13 @@ export const SalesItem = () => {
           </tr>
         </thead>
         <tbody>
+          {salesItemsForPage.length <= 0 && (
+            <tr>
+              <td colSpan={9} className="text-align-center">
+                <Translate contentKey="global.messages.info.noDataList">조회된 데이터가 없습니다.</Translate>
+              </td>
+            </tr>
+          )}
           {salesItemsForPage.map((user, i) => (
             <tr id={user.id} key={`user-${i}`}>
               <td>

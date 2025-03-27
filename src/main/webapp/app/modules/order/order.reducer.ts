@@ -43,7 +43,7 @@ export const getShopOrderDetailWithDiscounts = createAsyncThunk(
   async ({ shopId, date, orderId }: any) => {
     const requestUrl = `api/shops/${shopId}/dates/${date}/orders/${orderId}/discounts`;
     // console.warn('requestUrl', requestUrl);
-    return axios.get<any[]>(requestUrl);
+    return axios.get<IOrderDetail[]>(requestUrl);
   },
 );
 
@@ -72,6 +72,19 @@ export const createOrder = createAsyncThunk(
     const shopId = user.shopId;
     const date = user.date;
     const requestUrl = `api/shops/${shopId}/dates/${date}`;
+    const result = await axios.post<IOrderCreate>(requestUrl, user);
+    thunkAPI.dispatch(getShopOrders({ shopId, date }));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
+
+export const createOrderWithDiscounts = createAsyncThunk(
+  'order/create_order',
+  async (user: IOrderCreate, thunkAPI) => {
+    const shopId = user.shopId;
+    const date = user.date;
+    const requestUrl = `api/shops/${shopId}/dates/${date}/discounts`;
     const result = await axios.post<IOrderCreate>(requestUrl, user);
     thunkAPI.dispatch(getShopOrders({ shopId, date }));
     return result;

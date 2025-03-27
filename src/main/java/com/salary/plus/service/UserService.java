@@ -331,6 +331,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public Page<AdminUserDTO> getAllManagedUsersByShopId(Long shopId, Pageable pageable) {
+        return userRepository.findAllByShopId(shopId, pageable).map(AdminUserDTO::new);
+    }
+
+    @Transactional(readOnly = true)
     public Page<UserDTO> getAllPublicUsers(Pageable pageable) {
         return userRepository.findAllByIdNotNullAndActivatedIsTrue(pageable).map(UserDTO::new);
     }

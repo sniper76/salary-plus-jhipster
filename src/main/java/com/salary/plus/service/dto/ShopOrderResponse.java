@@ -4,6 +4,7 @@ import com.salary.plus.domain.ShopOrder;
 import com.salary.plus.domain.ShopTable;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +26,7 @@ public class ShopOrderResponse implements Serializable {
     private Instant createdDate;
     private String lastModifiedBy;
     private Instant lastModifiedDate;
+    private List<ShopOrderDiscountResponse> discountResponseList;
 
     public ShopOrderResponse() {
         // Empty constructor needed for Jackson.

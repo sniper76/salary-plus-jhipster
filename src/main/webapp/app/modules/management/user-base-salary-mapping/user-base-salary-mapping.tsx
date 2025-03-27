@@ -164,6 +164,13 @@ export const UserBaseSalaryMapping = () => {
           </tr>
         </thead>
         <tbody>
+          {users.length <= 0 && (
+            <tr>
+              <td colSpan={10} className="text-align-center">
+                <Translate contentKey="global.messages.info.noDataList">조회된 데이터가 없습니다.</Translate>
+              </td>
+            </tr>
+          )}
           {users.map((user, i) => (
             <tr id={user.login} key={`user-${i}`}>
               <td>

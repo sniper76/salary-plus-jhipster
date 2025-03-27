@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import {
   clearOrderDetails,
   createOrder,
+  createOrderWithDiscounts,
   getShopModels,
   getShopOrderDetails,
   getShopOrderDetailWithDiscounts,
@@ -70,7 +71,12 @@ export const Order = () => {
     }
   };
 
-  const handlePayOrder = obj => {};
+  const handlePayOrder = e => {
+    e.shopId = selectedValue;
+    e.date = currentDate;
+    console.warn('e', e);
+    dispatch(createOrderWithDiscounts(e));
+  };
 
   const handleSelect = e => {
     setSelectedValue(e.target.value);
@@ -166,6 +172,14 @@ export const Order = () => {
               <p>{item.totalPrice}</p>
               {item.paid ? (
                 <p>
+                  <b>
+                    {item.discountResponseList.map((elem, index) => (
+                      <b key={index}>
+                        {elem.discountNameKo}
+                        {elem.discountPrice}
+                      </b>
+                    ))}
+                  </b>
                   <b>
                     <Translate contentKey="order.button.paid">Payment Processed</Translate>
                   </b>

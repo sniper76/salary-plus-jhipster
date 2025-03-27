@@ -117,8 +117,21 @@ public class ShopOrderResource {
         @PathVariable("date") String date,
         @Valid @RequestBody ShopOrderCreateDTO shopOrderCreateDTO
     ) {
+        shopOrderCreateDTO.setLogin(SecurityUtils.getLoginNoneNull());
         LOG.debug("REST shopId : {}, date : {}, shopOrderCreateDTO : {}", shopId, date, shopOrderCreateDTO);
         shopOrderService.createOrder(shopId, date, shopOrderCreateDTO);
+    }
+
+    @PostMapping("/{shopId}/dates/{date}/discounts")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createOrderWithDiscounts(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("date") String date,
+        @Valid @RequestBody ShopOrderCreateDTO shopOrderCreateDTO
+    ) {
+        shopOrderCreateDTO.setLogin(SecurityUtils.getLoginNoneNull());
+        LOG.debug("REST shopId : {}, date : {}, shopOrderCreateDTO : {}", shopId, date, shopOrderCreateDTO);
+        shopOrderService.createOrderWithDiscounts(shopId, date, shopOrderCreateDTO);
     }
 
     @PatchMapping("/{shopId}/dates/{date}")
@@ -128,10 +141,12 @@ public class ShopOrderResource {
         @PathVariable("date") String date,
         @Valid @RequestBody ShopOrderCreateDTO shopOrderCreateDTO
     ) {
+        shopOrderCreateDTO.setLogin(SecurityUtils.getLoginNoneNull());
         LOG.debug("REST shopId : {}, date : {}, shopOrderCreateDTO : {}", shopId, date, shopOrderCreateDTO);
         shopOrderService.updateOrder(shopId, date, shopOrderCreateDTO);
     }
 
+    @Deprecated
     @PutMapping("/{shopId}/dates/{date}/orders/{orderId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void updateOrderPaid(

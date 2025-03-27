@@ -1,6 +1,7 @@
 export interface IOrderDetail {
   id?: any;
   orderDetailId?: any;
+  shopSalesItemId?: any;
   modelId?: any;
   nameKo?: string;
   nameEn?: string;
@@ -17,6 +18,7 @@ export interface IOrderDetail {
 export const defaultValue: Readonly<IOrderDetail> = {
   id: '',
   orderDetailId: '',
+  shopSalesItemId: '',
   modelId: '',
   nameKo: '',
   nameEn: '',

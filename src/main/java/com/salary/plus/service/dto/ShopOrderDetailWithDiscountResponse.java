@@ -36,8 +36,8 @@ public class ShopOrderDetailWithDiscountResponse implements Serializable {
     public ShopOrderDetailWithDiscountResponse(ShopSalesItem shopSalesItem, ShopSalesItemDiscount shopSalesItemDiscount) {
         this.id = shopSalesItemDiscount.getId();
         this.shopSalesItemId = shopSalesItem.getId();
-        this.nameKo = shopSalesItem.getNameKo();
-        this.nameEn = shopSalesItem.getNameEn();
+        this.nameKo = shopSalesItemDiscount.getNameKo();
+        this.nameEn = shopSalesItemDiscount.getNameEn();
         this.price = shopSalesItemDiscount.getPrice();
         this.createdBy = shopSalesItemDiscount.getCreatedBy();
         this.createdDate = shopSalesItemDiscount.getCreatedDate();

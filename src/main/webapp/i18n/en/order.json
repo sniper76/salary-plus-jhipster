@@ -22,6 +22,10 @@
     },
     "password": {
       "forgot": "Did you forget your password?"
+    },
+    "label": {
+      "discountApplicable": "Discounts applicable",
+      "details": "Order details"
     }
   }
 }

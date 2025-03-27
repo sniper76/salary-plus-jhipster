@@ -11,13 +11,18 @@ import com.salary.plus.IntegrationTest;
 import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopOrder;
 import com.salary.plus.domain.ShopOrderDetail;
+import com.salary.plus.domain.ShopOrderDetailDiscount;
 import com.salary.plus.domain.ShopSalesItem;
+import com.salary.plus.domain.ShopSalesItemDiscount;
 import com.salary.plus.domain.ShopTable;
 import com.salary.plus.domain.ShopUserSalesSalary;
+import com.salary.plus.enums.DiscountType;
 import com.salary.plus.enums.ShopType;
+import com.salary.plus.repository.ShopOrderDetailDiscountRepository;
 import com.salary.plus.repository.ShopOrderDetailRepository;
 import com.salary.plus.repository.ShopOrderRepository;
 import com.salary.plus.repository.ShopRepository;
+import com.salary.plus.repository.ShopSalesItemDiscountRepository;
 import com.salary.plus.repository.ShopSalesItemRepository;
 import com.salary.plus.repository.ShopTableRepository;
 import com.salary.plus.repository.ShopUserMappingRepository;
@@ -31,6 +36,7 @@ import com.salary.plus.utils.DateTimeFormatUtil;
 import com.salary.plus.utils.DateUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -50,7 +56,8 @@ import org.springframework.transaction.annotation.Transactional;
 @IntegrationTest
 class ShopOrderResourceIT {
 
-    private static final String TARGET_URL = "/api/shops/{shopId}/orders/{date}";
+    private static final String TARGET_URL = "/api/shops/{shopId}/dates/{date}";
+    private static final String TARGET_DISCOUNT_URL = "/api/shops/{shopId}/dates/{date}/discounts";
 
     @Autowired
     private ObjectMapper om;
@@ -72,6 +79,12 @@ class ShopOrderResourceIT {
 
     @Autowired
     private ShopUserSalesSalaryRepository shopUserSalesSalaryRepository;
+
+    @Autowired
+    private ShopSalesItemDiscountRepository shopSalesItemDiscountRepository;
+
+    @Autowired
+    private ShopOrderDetailDiscountRepository shopOrderDetailDiscountRepository;
 
     @Autowired
     private MockMvc restUserMockMvc;
@@ -102,6 +115,7 @@ class ShopOrderResourceIT {
             shop.setType(ShopType.BAR);
             shop.setNameKo("shop1");
             shop.setNameEn("shop1");
+            shop.setWorkStartTime("09:00:00");
             shopRepository.saveAndFlush(shop);
 
             shopId = shop.getId();
@@ -419,6 +433,68 @@ class ShopOrderResourceIT {
                     true
                 );
                 assertThat(allOrderDetailResponse.size()).isEqualTo(3);
+            }
+        }
+
+        @DisplayName("할인이 적용된 경우")
+        @Nested
+        class WhenUpdateWithDiscounts {
+
+            @DisplayName("변경된 정보가 없는 경우")
+            @Nested
+            class WhenNotChangeData {
+
+                private Long longTimeBarFineSalesItem;
+                private Long longTimeBarFineOrderDetail;
+                private Long longTimeBarFineSalesItemDiscount;
+
+                @BeforeEach
+                void setUp() {
+                    mockData();
+                    mockOrderData();
+
+                    longTimeBarFineSalesItem = salesItemIds.get(0);
+                    longTimeBarFineOrderDetail = orderDetailIds.get(0);
+
+                    ShopSalesItemDiscount shopSalesItemDiscount = new ShopSalesItemDiscount();
+                    shopSalesItemDiscount.setShopSalesItemId(longTimeBarFineSalesItem);
+                    shopSalesItemDiscount.setType(DiscountType.PRICE);
+                    shopSalesItemDiscount.setNameKo("바파인 500");
+                    shopSalesItemDiscount.setNameEn("bar fine discount 500");
+                    shopSalesItemDiscount.setPrice(500);
+                    shopSalesItemDiscount.setShopCommissionPrice(300);
+                    shopSalesItemDiscount.setModelCommissionPrice(200);
+                    shopSalesItemDiscount.setMamaCommissionPrice(0);
+                    shopSalesItemDiscountRepository.save(shopSalesItemDiscount);
+
+                    longTimeBarFineSalesItemDiscount = shopSalesItemDiscount.getId();
+                }
+
+                @DisplayName("정상 등록된다.")
+                @Test
+                @Transactional
+                void create() throws Exception {
+                    // Create the User
+                    ShopOrderCreateDTO createDTO = new ShopOrderCreateDTO();
+                    createDTO.setOrderId(orderId);
+                    createDTO.setSalesItemIds(List.of(longTimeBarFineSalesItem));
+                    createDTO.setSalesItemDiscountIds(List.of(longTimeBarFineSalesItemDiscount));
+
+                    restUserMockMvc
+                        .perform(
+                            post(TARGET_DISCOUNT_URL, shopId, date)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(om.writeValueAsBytes(createDTO))
+                        )
+                        .andExpect(status().isCreated());
+
+                    final Optional<ShopOrderDetailDiscount> databaseShopOrderDetailDiscount =
+                        shopOrderDetailDiscountRepository.findByShopOrderDetailIdAndShopSalesItemDiscountId(
+                            longTimeBarFineOrderDetail,
+                            longTimeBarFineSalesItemDiscount
+                        );
+                    assertThat(databaseShopOrderDetailDiscount.isPresent()).isEqualTo(true);
+                }
             }
         }
     }

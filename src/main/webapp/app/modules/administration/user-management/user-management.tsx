@@ -10,20 +10,24 @@ import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.cons
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUsersAsAdmin, updateUser } from './user-management.reducer';
+import { getShopsAsAdmin } from 'app/modules/administration/shop-management/shop-management.reducer';
 
 export const UserManagement = () => {
   const dispatch = useAppDispatch();
 
   const pageLocation = useLocation();
   const navigate = useNavigate();
+  const shops = useAppSelector(state => state.shopManagement.shops);
 
   const [pagination, setPagination] = useState(
     overridePaginationStateWithQueryParams(getPaginationState(pageLocation, ITEMS_PER_PAGE, 'id'), pageLocation.search),
   );
+  const [selectedValue, setSelectedValue] = useState(-1);
 
   const getUsersFromProps = () => {
     dispatch(
       getUsersAsAdmin({
+        id: selectedValue,
         page: pagination.activePage - 1,
         size: pagination.itemsPerPage,
         sort: `${pagination.sort},${pagination.order}`,
@@ -35,9 +39,29 @@ export const UserManagement = () => {
     }
   };
 
+  const handleSelect = e => {
+    setSelectedValue(e.target.value);
+  };
+
+  useEffect(() => {
+    dispatch(
+      getShopsAsAdmin({
+        page: 0,
+        size: 100,
+        sort: `${pagination.sort},${pagination.order}`,
+      }),
+    );
+  }, []);
+
+  useEffect(() => {
+    if (shops.length > 0) {
+      setSelectedValue(shops[0].id);
+    }
+  }, [shops]);
+
   useEffect(() => {
     getUsersFromProps();
-  }, [pagination.activePage, pagination.order, pagination.sort]);
+  }, [pagination.activePage, pagination.order, pagination.sort, selectedValue]);
 
   useEffect(() => {
     const params = new URLSearchParams(pageLocation.search);
@@ -98,6 +122,13 @@ export const UserManagement = () => {
       <h2 id="user-management-page-heading" data-cy="userManagementPageHeading">
         <Translate contentKey="userManagement.home.title">Users</Translate>
         <div className="d-flex justify-content-end">
+          <select onChange={handleSelect} value={selectedValue} className="custom-number-input">
+            {shops.map(shop => (
+              <option value={shop.id} key={shop.id}>
+                {shop.nameKo}
+              </option>
+            ))}
+          </select>
           <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
             <Translate contentKey="userManagement.home.refreshListLabel">Refresh List</Translate>
@@ -143,6 +174,13 @@ export const UserManagement = () => {
           </tr>
         </thead>
         <tbody>
+          {users.length <= 0 && (
+            <tr>
+              <td colSpan={10} className="text-align-center">
+                <Translate contentKey="global.messages.info.noDataList">조회된 데이터가 없습니다.</Translate>
+              </td>
+            </tr>
+          )}
           {users.map((user, i) => (
             <tr id={user.login} key={`user-${i}`}>
               <td>

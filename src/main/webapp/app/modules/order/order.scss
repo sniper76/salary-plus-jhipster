@@ -68,7 +68,7 @@ input[type='number']::-webkit-outer-spin-button {
   display: flex;
   justify-content: space-between;
   width: 650px;
-  margin: 50px auto;
+  //margin: 50px auto;
 }
 
 .custom-discount-modal .modal-dialog {
@@ -161,4 +161,24 @@ input[type='number']::-webkit-outer-spin-button {
   width: 100%;
   text-align: center;
   //margin-top: 5px;
+}
+
+.title_div_left {
+  display: flex;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  margin-left: 65px;
+  margin-bottom: 10px;
+}
+
+.title_div_right {
+  display: flex;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  margin-right: 20px;
+  margin-bottom: 10px;
 }

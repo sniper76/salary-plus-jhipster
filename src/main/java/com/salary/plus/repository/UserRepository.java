@@ -63,6 +63,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(
         """
+            select u
+            from Shop s
+            inner join ShopUserMapping sump on s.id = sump.shopId
+            inner join User u on sump.userId = u.id
+            where s.id = :shopId
+        """
+    )
+    Page<User> findAllByShopId(Long shopId, Pageable pageable);
+
+    @Query(
+        """
             select new com.salary.plus.service.dto.ShopUserResponse(u, suds)
             from Shop s
             inner join ShopUserMapping sump on s.id = sump.shopId

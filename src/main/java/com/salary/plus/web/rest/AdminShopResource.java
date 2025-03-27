@@ -70,13 +70,13 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequiredArgsConstructor
 @UseGuards({ UserGuard.class })
 @RequestMapping("/api/admin")
-public class ShopResource {
+public class AdminShopResource {
 
     private static final List<String> ALLOWED_ORDERED_PROPERTIES = Collections.unmodifiableList(
         Arrays.asList("id", "nameKo", "nameEn", "type", "activated", "createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate")
     );
 
-    private static final Logger LOG = LoggerFactory.getLogger(ShopResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AdminShopResource.class);
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -149,15 +149,27 @@ public class ShopResource {
      */
     @GetMapping("/shops")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<List<AdminShopDTO>> getAllShopsForPage(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
+        LOG.debug("REST request to get all User for an admin");
+        if (!onlyContainsAllowedProperties(pageable)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        final Page<AdminShopDTO> page = shopService.getAllManagedShopsForPage(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/shops/all")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<List<AdminShopDTO>> getAllShops(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         LOG.debug("REST request to get all User for an admin");
         if (!onlyContainsAllowedProperties(pageable)) {
             return ResponseEntity.badRequest().build();
         }
 
-        final Page<AdminShopDTO> page = shopService.getAllManagedShops(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        final List<AdminShopDTO> page = shopService.getAllManagedShops();
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
 
     /**

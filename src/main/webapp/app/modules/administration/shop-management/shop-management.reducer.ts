@@ -9,6 +9,7 @@ import { getShopModels } from 'app/modules/order/order.reducer';
 const initialState = {
   loading: false,
   errorMessage: null,
+  shopsForPage: [] as ReadonlyArray<IShop>,
   shops: [] as ReadonlyArray<IShop>,
   authorities: [] as any[],
   shop: defaultValue,
@@ -21,9 +22,16 @@ const adminUrl = 'api/admin/shops';
 
 // Async Actions
 
+export const getShopsAsAdminForPage = createAsyncThunk(
+  'shopManagement/fetch_shops_as_admin_for_admin',
+  async ({ page, size, sort }: IQueryParams) => {
+    const requestUrl = `${adminUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
+    return axios.get<IShop[]>(requestUrl);
+  },
+);
+
 export const getShopsAsAdmin = createAsyncThunk('shopManagement/fetch_shops_as_admin', async ({ page, size, sort }: IQueryParams) => {
-  const requestUrl = `${adminUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
-  console.warn('requestUrl', requestUrl);
+  const requestUrl = `${adminUrl}/all${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
   return axios.get<IShop[]>(requestUrl);
 });
 
@@ -40,7 +48,7 @@ export const createShop = createAsyncThunk(
   'shopManagement/create_shop',
   async (shop: IShop, thunkAPI) => {
     const result = await axios.post<IShop>(adminUrl, shop);
-    thunkAPI.dispatch(getShopsAsAdmin({}));
+    thunkAPI.dispatch(getShopsAsAdminForPage({}));
     return result;
   },
   { serializeError: serializeAxiosError },
@@ -61,7 +69,7 @@ export const updateShop = createAsyncThunk(
   'shopManagement/update_shop',
   async (shop: IShop, thunkAPI) => {
     const result = await axios.put<IShop>(adminUrl, shop);
-    thunkAPI.dispatch(getShopsAsAdmin({}));
+    thunkAPI.dispatch(getShopsAsAdminForPage({}));
     return result;
   },
   { serializeError: serializeAxiosError },
@@ -72,7 +80,7 @@ export const deleteShop = createAsyncThunk(
   async (id: string, thunkAPI) => {
     const requestUrl = `${adminUrl}/${id}`;
     const result = await axios.delete<IShop>(requestUrl);
-    thunkAPI.dispatch(getShopsAsAdmin({}));
+    thunkAPI.dispatch(getShopsAsAdminForPage({}));
     return result;
   },
   { serializeError: serializeAxiosError },
@@ -99,6 +107,11 @@ export const ShopManagementSlice = createSlice({
         state.updateSuccess = true;
         state.shop = defaultValue;
       })
+      .addMatcher(isFulfilled(getShopsAsAdminForPage), (state, action) => {
+        state.loading = false;
+        state.shopsForPage = action.payload.data;
+        state.totalItems = parseInt(action.payload.headers['x-total-count'], 10);
+      })
       .addMatcher(isFulfilled(getShopsAsAdmin), (state, action) => {
         state.loading = false;
         state.shops = action.payload.data;
@@ -110,7 +123,7 @@ export const ShopManagementSlice = createSlice({
         state.updateSuccess = true;
         state.shop = action.payload.data;
       })
-      .addMatcher(isPending(getShopsAsAdmin, getShop), state => {
+      .addMatcher(isPending(getShopsAsAdminForPage, getShopsAsAdmin, getShop), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
@@ -120,12 +133,15 @@ export const ShopManagementSlice = createSlice({
         state.updateSuccess = false;
         state.updating = true;
       })
-      .addMatcher(isRejected(getShopsAsAdmin, getShop, createShop, updateShop, deleteShop, createShopModels), (state, action) => {
-        state.loading = false;
-        state.updating = false;
-        state.updateSuccess = false;
-        state.errorMessage = action.error.message;
-      });
+      .addMatcher(
+        isRejected(getShopsAsAdminForPage, getShopsAsAdmin, getShop, createShop, updateShop, deleteShop, createShopModels),
+        (state, action) => {
+          state.loading = false;
+          state.updating = false;
+          state.updateSuccess = false;
+          state.errorMessage = action.error.message;
+        },
+      );
   },
 });
 

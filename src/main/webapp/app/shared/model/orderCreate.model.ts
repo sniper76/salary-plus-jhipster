@@ -4,6 +4,7 @@ export interface IOrderCreate {
   date?: string;
   modelIds?: any[];
   salesItemIds?: any[];
+  salesItemDiscountIds?: any[];
   prices?: any[];
   createdBy?: string;
   createdDate?: Date | null;
@@ -17,6 +18,7 @@ export const defaultValue: Readonly<IOrderCreate> = {
   date: '',
   modelIds: [],
   salesItemIds: [],
+  salesItemDiscountIds: [],
   prices: [],
   createdBy: '',
   createdDate: null,

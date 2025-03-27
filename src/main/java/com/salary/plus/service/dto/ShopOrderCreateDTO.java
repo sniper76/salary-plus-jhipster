@@ -14,11 +14,13 @@ public class ShopOrderCreateDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private String login;
     private Long orderId;
     private Long tableId;
     private List<Long> orderDetailIds;
     private List<Long> modelIds;
     private List<Long> salesItemIds;
+    private List<Long> salesItemDiscountIds;
     private List<Integer> prices;
 
     @Override
@@ -35,6 +37,8 @@ public class ShopOrderCreateDTO implements Serializable {
             modelIds +
             ", salesItemIds=" +
             salesItemIds +
+            ", salesItemDiscountIds=" +
+            salesItemDiscountIds +
             ", prices=" +
             prices +
             '}'

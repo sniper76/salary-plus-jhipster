@@ -16,7 +16,7 @@ export interface IOrderModalDiscountProps {
   handlePayOrder: (obj: any) => void;
   handlePayClose: () => void;
   orderDetails: IOrderDetail[];
-  orderDetailWithDiscounts: [];
+  orderDetailWithDiscounts: IOrderDetail[];
   orderId: null;
 }
 
@@ -45,6 +45,11 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
     handlePayClose();
   });
 
+  const handleOrderPayClose = () => {
+    setLeftItems([]);
+    handlePayClose();
+  };
+
   const handleDragStart = item => {
     // console.warn('handleDragStart', item);
     setDraggedItem(item); // 드래그 시작 시 아이템 저장
@@ -71,19 +76,7 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
 
   useEffect(() => {
     reset(); // react-hook-form 의 상태도 초기화
-    if (props.orderId && props.orderDetailWithDiscounts && props.orderDetailWithDiscounts.length > 0) {
-      // console.warn('OrderModalDiscount: 기존 주문 불러오기', props.orderDetailWithDiscounts);
-      setLeftItems([...props.orderDetailWithDiscounts]); // 기존 주문 정보로 leftItems 설정
-    } else if (!props.orderId) {
-      // console.warn('OrderModalDiscount: 새로운 주문 초기화');
-      setLeftItems([]); // 새로운 주문일 경우 leftItems 초기화
-    }
   }, [props.orderDetailWithDiscounts, props.orderId, reset]);
-
-  // leftItems 값이 실제로 업데이트된 이후 확인
-  useEffect(() => {
-    // console.warn('OrderModalDiscount leftItems Updated', leftItems);
-  }, [props]);
 
   // watch() 는 폼의 모든 값을 실시간으로 관찰합니다.
   const allValues = watch();
@@ -95,7 +88,7 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
   return (
     <Modal
       isOpen={props.showPayModal}
-      toggle={handlePayClose}
+      toggle={handleOrderPayClose}
       backdrop="static"
       id="order-discount-page"
       autoFocus={false}
@@ -108,7 +101,16 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
         <ModalBody>
           <Row>
             <Col md="12">
-              <div className="container-discount">{props.orderId}</div>
+              <div className="container-discount">
+                <div className="title_div_left">
+                  <Translate contentKey="order.label.details">주문 내역</Translate>
+                </div>
+                <div></div>
+                <div className="title_div_right">
+                  <Translate contentKey="order.label.discountApplicable">적용 가능한 할인 항목</Translate>
+                  <ValidatedField type="hidden" register={register} id="orderId" name="orderId" data-cy="orderId" value={props.orderId} />
+                </div>
+              </div>
               <div className="container-discount">
                 <div className="box">
                   {props.orderDetails &&
@@ -139,51 +141,27 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
                               id={`salesItemIds[${index}]`}
                               name={`salesItemIds[${index}]`}
                               data-cy={`salesItemIds[${index}]`}
+                              value={item.shopSalesItemId}
+                            />
+                            <ValidatedField
+                              type="hidden"
+                              register={register}
+                              id={`salesItemDiscountIds[${index}]`}
+                              name={`salesItemDiscountIds[${index}]`}
+                              data-cy={`salesItemDiscountIds[${index}]`}
                               value={item.id}
                             />
                             <ValidatedField
                               type="hidden"
                               register={register}
-                              id={`orderDetailIds[${index}]`}
-                              name={`orderDetailIds[${index}]`}
-                              data-cy={`orderDetailIds[${index}]`}
-                              value={item.orderDetailId}
+                              id={`prices[${index}]`}
+                              name={`prices[${index}]`}
+                              data-cy={`prices[${index}]`}
+                              value={item.price}
                             />
                             <button className="close-btn" onClick={() => handlePayRemove(index, item)}>
                               ✖
                             </button>
-                          </div>
-                          <div className="bottom">
-                            {errors?.prices && (
-                              <div>
-                                <Alert color="warning" fade={false}>
-                                  <Translate contentKey="error.order.empty.price">Price cannot be empty.</Translate>
-                                </Alert>
-                              </div>
-                            )}
-                            {item.snackYn ? (
-                              <ValidatedField
-                                register={register}
-                                type="number"
-                                id={`prices[${index}]`}
-                                name={`prices[${index}]`}
-                                validate={{
-                                  required: { value: true, message: 'Price is required.' },
-                                  min: { value: 1, message: 'Price must be a positive number.' },
-                                }}
-                                data-cy={`prices[${index}]`}
-                                defaultValue={item.price || 0}
-                              />
-                            ) : (
-                              <ValidatedField
-                                register={register}
-                                type="hidden"
-                                id={`prices[${index}]`}
-                                name={`prices[${index}]`}
-                                data-cy={`prices[${index}]`}
-                                value={item.price || 0}
-                              />
-                            )}
                           </div>
                         </div>
                       </div>
@@ -195,7 +173,7 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
                 <div id="right" className="box">
                   {props.orderDetailWithDiscounts.map((item, index) => (
                     <div key={index} className="item" draggable onDragStart={() => handleDragStart(item)}>
-                      {item}
+                      {item.nameKo}
                     </div>
                   ))}
                 </div>
@@ -204,7 +182,7 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
           </Row>
         </ModalBody>
         <ModalFooter>
-          <Button color="secondary" onClick={handlePayClose} tabIndex={1}>
+          <Button color="secondary" onClick={handleOrderPayClose} tabIndex={1}>
             <Translate contentKey="entity.action.cancel">Cancel</Translate>
           </Button>{' '}
           <Button color="primary" type="submit" data-cy="submit">

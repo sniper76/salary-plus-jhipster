@@ -20,8 +20,9 @@
         "authentication": "<strong>인증 실패!</strong> credential을 확인하고 다시 시도해 주세요."
       }
     },
-    "password": {
-      "forgot": "비밀번호를 잊으셨나요?"
+    "label": {
+      "discountApplicable": "적용 가능한 할인 항목",
+      "details": "주문 내역"
     }
   }
 }

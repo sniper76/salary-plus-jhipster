@@ -3,7 +3,7 @@ import axios from 'axios';
 import sinon from 'sinon';
 
 import { defaultValue } from 'app/shared/model/shop.model';
-import shopManagement, { createShop, deleteShop, getShop, getShopsAsAdmin, reset, updateShop } from './shop-management.reducer';
+import shopManagement, { createShop, deleteShop, getShop, getShopsAsAdminForPage, reset, updateShop } from './shop-management.reducer';
 
 describe('User management reducer tests', () => {
   const id = process.env.E2E_USERNAME ?? 1;
@@ -42,7 +42,7 @@ describe('User management reducer tests', () => {
 
   describe('Requests', () => {
     it('should set state to loading', () => {
-      testMultipleTypes([getShopsAsAdmin.pending.type, getShop.pending.type], {}, state => {
+      testMultipleTypes([getShopsAsAdminForPage.pending.type, getShop.pending.type], {}, state => {
         expect(state).toMatchObject({
           errorMessage: null,
           updateSuccess: false,
@@ -66,7 +66,7 @@ describe('User management reducer tests', () => {
     it('should set state to failed and put an error message in errorMessage', () => {
       testMultipleTypes(
         [
-          getShopsAsAdmin.rejected.type,
+          getShopsAsAdminForPage.rejected.type,
           getShop.rejected.type,
           createShop.rejected.type,
           updateShop.rejected.type,
@@ -158,21 +158,21 @@ describe('User management reducer tests', () => {
     it('dispatches FETCH_USERS_AS_ADMIN_PENDING and FETCH_USERS_AS_ADMIN_FULFILLED actions', async () => {
       const arg = {};
 
-      const result = await getShopsAsAdmin(arg)(dispatch, getState, extra);
+      const result = await getShopsAsAdminForPage(arg)(dispatch, getState, extra);
 
       const pendingAction = dispatch.mock.calls[0][0];
       expect(pendingAction.meta.requestStatus).toBe('pending');
-      expect(getShopsAsAdmin.fulfilled.match(result)).toBe(true);
+      expect(getShopsAsAdminForPage.fulfilled.match(result)).toBe(true);
     });
 
     it('dispatches FETCH_USERS_AS_ADMIN_PENDING and FETCH_USERS_AS_ADMIN_FULFILLED actions with pagination options', async () => {
       const arg = { page: 1, size: 20, sort: 'id,desc' };
 
-      const result = await getShopsAsAdmin(arg)(dispatch, getState, extra);
+      const result = await getShopsAsAdminForPage(arg)(dispatch, getState, extra);
 
       const pendingAction = dispatch.mock.calls[0][0];
       expect(pendingAction.meta.requestStatus).toBe('pending');
-      expect(getShopsAsAdmin.fulfilled.match(result)).toBe(true);
+      expect(getShopsAsAdminForPage.fulfilled.match(result)).toBe(true);
     });
 
     it('dispatches FETCH_USER_PENDING and FETCH_USER_FULFILLED actions', async () => {

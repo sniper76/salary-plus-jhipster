@@ -9,7 +9,7 @@ import { APP_LOCAL_TIMESTAMP_FORMAT } from 'app/config/constants';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getShopsAsAdmin, updateShop } from './shop-management.reducer';
+import { getShopsAsAdminForPage, updateShop } from './shop-management.reducer';
 
 export const ShopManagement = () => {
   const dispatch = useAppDispatch();
@@ -23,7 +23,7 @@ export const ShopManagement = () => {
 
   const getUsersFromProps = () => {
     dispatch(
-      getShopsAsAdmin({
+      getShopsAsAdminForPage({
         page: pagination.activePage - 1,
         size: pagination.itemsPerPage,
         sort: `${pagination.sort},${pagination.order}`,
@@ -81,7 +81,7 @@ export const ShopManagement = () => {
     );
   };
 
-  const shops = useAppSelector(state => state.shopManagement.shops);
+  const shopsForPage = useAppSelector(state => state.shopManagement.shopsForPage);
   const totalItems = useAppSelector(state => state.shopManagement.totalItems);
   const loading = useAppSelector(state => state.shopManagement.loading);
   const getSortIconByFieldName = (fieldName: string) => {
@@ -151,7 +151,7 @@ export const ShopManagement = () => {
           </tr>
         </thead>
         <tbody>
-          {shops.map((shop, i) => (
+          {shopsForPage.map((shop, i) => (
             <tr id={shop.id} key={`shop-${i}`}>
               <td>
                 <Button tag={Link} to={`${shop.id}`} color="link" size="sm">
@@ -212,7 +212,7 @@ export const ShopManagement = () => {
         </tbody>
       </Table>
       {totalItems ? (
-        <div className={shops?.length > 0 ? '' : 'd-none'}>
+        <div className={shopsForPage?.length > 0 ? '' : 'd-none'}>
           <div className="justify-content-center d-flex">
             <JhiItemCount page={pagination.activePage} total={totalItems} itemsPerPage={pagination.itemsPerPage} i18nEnabled />
           </div>

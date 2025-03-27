@@ -37,8 +37,13 @@ public class ShopService {
     }
 
     @Transactional(readOnly = true)
-    public Page<AdminShopDTO> getAllManagedShops(Pageable pageable) {
+    public Page<AdminShopDTO> getAllManagedShopsForPage(Pageable pageable) {
         return shopRepository.findAll(pageable).map(AdminShopDTO::new);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AdminShopDTO> getAllManagedShops() {
+        return shopRepository.findAll().stream().map(AdminShopDTO::new).toList();
     }
 
     @Transactional(readOnly = true)
