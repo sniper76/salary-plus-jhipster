@@ -5,6 +5,7 @@ import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import SalesItem from './sales-item';
 import Penalty from './penalty';
 import BaseSalary from './base-salary';
+import BonusSalary from './bonus-salary';
 import UserSalaryMapping from './user-base-salary-mapping';
 import SalesItemDiscount from './sales-item-discount';
 import ModelManagement from './model-management';
@@ -15,6 +16,7 @@ const ManagementRoutes = () => (
       <Route path="shop/sales-item/*" element={<SalesItem />} />
       <Route path="shop/penalty/*" element={<Penalty />} />
       <Route path="shop/base-salary/*" element={<BaseSalary />} />
+      <Route path="shop/bonus-salary/*" element={<BonusSalary />} />
       <Route path="shop/user-base-salary-mapping/*" element={<UserSalaryMapping />} />
       <Route path="shop/sales-item-discount/*" element={<SalesItemDiscount />} />
       <Route path="shop/model-management/*" element={<ModelManagement />} />

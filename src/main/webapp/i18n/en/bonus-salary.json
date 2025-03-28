@@ -1,0 +1,30 @@
+{
+  "bonusSalary": {
+    "home": {
+      "title": "Bonus Salary",
+      "refreshListLabel": "Refresh list",
+      "createLabel": "Create a new Bonus Salary",
+      "createOrEditLabel": "Create or edit a Bonus Salary"
+    },
+    "created": "A new bonus is created with identifier {{ param }}",
+    "updated": "A bonus is updated with identifier {{ param }}",
+    "deleted": "A bonus is deleted with identifier {{ param }}",
+    "delete": {
+      "question": "Are you sure you want to delete bonus {{ name }}?"
+    },
+    "detail": {
+      "title": "Bonus Salary"
+    },
+    "login": "Login",
+    "type": "Bonus Salary type",
+    "email": "Email",
+    "activated": "Activated",
+    "deactivated": "Deactivated",
+    "profiles": "Profiles",
+    "langKey": "Language",
+    "createdBy": "Created by",
+    "createdDate": "Created date",
+    "lastModifiedBy": "Modified by",
+    "lastModifiedDate": "Modified date"
+  }
+}

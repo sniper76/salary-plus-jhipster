@@ -3,6 +3,7 @@ export interface IShopBaseSalary {
   shopId?: any;
   nameKo?: string;
   nameEn?: string;
+  type?: string;
   activated?: boolean;
   price?: number;
   createdBy?: string;
@@ -16,6 +17,7 @@ export const defaultValue: Readonly<IShopBaseSalary> = {
   shopId: '',
   nameKo: '',
   nameEn: '',
+  type: '',
   activated: true,
   price: 0,
   createdBy: '',

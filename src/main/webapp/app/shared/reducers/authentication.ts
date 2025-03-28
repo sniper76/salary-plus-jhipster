@@ -28,10 +28,9 @@ export type AuthenticationState = Readonly<typeof initialState>;
 
 export const getSession = (): AppThunk => async (dispatch, getState) => {
   await dispatch(getAccount());
-  await dispatch(getShops());
 
-  const { account, shops } = getState().authentication;
-  // console.warn('account, shops', account, shops);
+  const { account } = getState().authentication;
+  // console.warn('account', account);
   if (account && account.langKey) {
     const langKey = Storage.session.get('locale', account.langKey);
     await dispatch(setLocale(langKey));
@@ -39,10 +38,6 @@ export const getSession = (): AppThunk => async (dispatch, getState) => {
 };
 
 export const getAccount = createAsyncThunk('authentication/get_account', async () => axios.get<any>('api/account'), {
-  serializeError: serializeAxiosError,
-});
-
-export const getShops = createAsyncThunk('authentication/get_shops', async () => axios.get<any>('api/shops'), {
   serializeError: serializeAxiosError,
 });
 

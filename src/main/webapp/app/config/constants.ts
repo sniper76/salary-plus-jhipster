@@ -22,3 +22,11 @@ export const APP_LOCAL_TIMESTAMP_FORMAT = 'DD/MM/YYYY HH:mm';
 export const APP_LOCAL_DATETIME_FORMAT = 'YYYY-MM-DDTHH:mm';
 export const APP_WHOLE_NUMBER_FORMAT = '0,0';
 export const APP_TWO_DIGITS_AFTER_POINT_NUMBER_FORMAT = '0,0.[00]';
+
+export const bonusTypes: any = [
+  { key: 'PLUS_SALARY', name: '일당추가' },
+  { key: 'SALARY_BONUS', name: '일단보너스' },
+  { key: 'COMMISSION', name: '커미션보너스' },
+];
+
+export const getBonusTypeName = (e: string) => bonusTypes.filter((id: any) => id.key === e).map((id: any) => id.name);

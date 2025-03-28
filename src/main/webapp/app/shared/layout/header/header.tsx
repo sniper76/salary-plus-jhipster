@@ -12,6 +12,7 @@ import { Brand, Home, Order, Work } from './header-components';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
+  isManager: boolean;
   isAdmin: boolean;
   ribbonEnv: string;
   isInProduction: boolean;
@@ -55,7 +56,7 @@ const Header = (props: IHeaderProps) => {
             <Home />
             {props.isAuthenticated && <Work />}
             {props.isAuthenticated && <Order />}
-            {props.isAuthenticated && <EntitiesMenu />}
+            {props.isAuthenticated && props.isManager && <EntitiesMenu />}
             {props.isAuthenticated && props.isAdmin && <AdminMenu showOpenAPI={props.isOpenAPIEnabled} />}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
             <AccountMenu isAuthenticated={props.isAuthenticated} />

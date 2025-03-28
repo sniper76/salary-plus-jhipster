@@ -24,6 +24,7 @@
         "salesItem": "Sales Item",
         "penalty": "Penalty",
         "baseSalary": "Salary",
+        "bonusSalary": "Bonus",
         "userBaseSalaryMapping": "User Base Salary",
         "salesItemDiscount": "Sales Item Discount",
         "model": "User"
@@ -78,6 +79,7 @@
         "profiles.required": "Profile is required.",
         "salesItem.required": "Sales item is required.",
         "discountType.required": "Discount type is required.",
+        "bonusType.required": "Bonus type is required.",
         "price": {
           "required": "Price is required.",
           "size": "Price must be a positive number."

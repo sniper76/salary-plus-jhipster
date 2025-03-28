@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="create jhi_shop_bonus_salary" author="sniper">
+    <createTable tableName="jhi_shop_bonus_salary" remarks="상점 보너스 일당 정보">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="shop_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name_ko" type="varchar(100)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name_en" type="varchar(60)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="type" type="varchar(60)" remarks="보너스 타입 PLUS_SALARY, SALARY_BONUS, COMMISSION">
+        <constraints nullable="false"/>
+      </column>
+      <column name="price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="activated" type="boolean" valueBoolean="true">
+        <constraints nullable="false" />
+      </column>
+      <column name="created_by" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_by" type="varchar(50)"/>
+      <column name="last_modified_date" type="timestamp"/>
+    </createTable>
+  </changeSet>
+</databaseChangeLog>
