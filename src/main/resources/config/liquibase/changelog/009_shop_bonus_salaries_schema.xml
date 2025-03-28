@@ -37,4 +37,51 @@
       <column name="last_modified_date" type="timestamp"/>
     </createTable>
   </changeSet>
+
+  <changeSet id="create jhi_shop_sales_refund" author="sniper">
+    <createTable tableName="jhi_shop_sales_refund" remarks="상점 보너스 일당 정보">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="shop_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="date" type="varchar(10)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="order_id" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="shop_price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="model_price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="mama_price" type="int">
+        <constraints nullable="false"/>
+      </column>
+      <column name="activated" type="boolean" valueBoolean="true">
+        <constraints nullable="false" />
+      </column>
+      <column name="created_by" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_date" type="timestamp">
+        <constraints nullable="false"/>
+      </column>
+      <column name="last_modified_by" type="varchar(50)"/>
+      <column name="last_modified_date" type="timestamp"/>
+    </createTable>
+
+    <createIndex unique="true" tableName="jhi_shop_sales_refund" indexName="unique_index_jhi_shop_sales_refund">
+      <column name="shop_id"/>
+      <column name="date"/>
+      <column name="order_id"/>
+    </createIndex>
+
+    <rollback>
+      <dropIndex tableName="jhi_shop_sales_refund" indexName="unique_index_jhi_shop_sales_refund"/>
+    </rollback>
+  </changeSet>
 </databaseChangeLog>

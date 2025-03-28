@@ -17,9 +17,11 @@ import {
   getUserShops,
   updateOrder,
   updateOrderPaid,
+  updateOrderRefund,
 } from 'app/modules/order/order.reducer';
 import OrderModal from 'app/modules/order/order-modal';
 import OrderModalDiscount from 'app/modules/order/order-discount-modal';
+import OrderModalRefund from 'app/modules/order/order-refund-modal';
 
 export const Order = () => {
   const orders = useAppSelector(state => state.orders.orders);
@@ -39,6 +41,7 @@ export const Order = () => {
   const [currentTableId, setCurrentTableId] = useState(null);
   const [selectedValue, setSelectedValue] = useState(-1);
   const [showPayModal, setShowPayModal] = useState(false);
+  const [showRefundModal, setShowRefundModal] = useState(false);
 
   const handleClose = () => {
     setShowModal(false);
@@ -46,6 +49,10 @@ export const Order = () => {
 
   const handlePayClose = () => {
     setShowPayModal(false);
+  };
+
+  const handleRefundClose = () => {
+    setShowRefundModal(false);
   };
 
   const handleOpen = () => {
@@ -78,6 +85,13 @@ export const Order = () => {
     dispatch(createOrderWithDiscounts(e));
   };
 
+  const handleRefundOrder = e => {
+    e.shopId = selectedValue;
+    e.date = currentDate;
+    console.warn('e', e);
+    dispatch(updateOrderRefund(e));
+  };
+
   const handleSelect = e => {
     setSelectedValue(e.target.value);
   };
@@ -89,6 +103,15 @@ export const Order = () => {
     dispatch(getShopOrderDetailWithDiscounts({ shopId: selectedValue, date: currentDate, orderId: e.orderId }));
     dispatch(getShopOrderDetails({ shopId: selectedValue, date: currentDate, orderId: e.orderId })).then(() => {
       setShowPayModal(true);
+    });
+  };
+
+  const handleRefundClick = e => () => {
+    // dispatch(updateOrderPaid({ shopId: selectedValue, date: currentDate, orderId: e.orderId }));
+    setCurrentOrderId(e.orderId);
+    setCurrentTableId(e.shopTableId);
+    dispatch(getShopOrderDetails({ shopId: selectedValue, date: currentDate, orderId: e.orderId })).then(() => {
+      setShowRefundModal(true);
     });
   };
 
@@ -164,6 +187,14 @@ export const Order = () => {
             handlePayClose={handlePayClose}
             orderError={orderError}
           />
+          <OrderModalRefund
+            orderId={currentOrderId}
+            orderDetails={orderDetails}
+            showRefundModal={showRefundModal}
+            handleRefundOrder={handleRefundOrder}
+            handleRefundClose={handleRefundClose}
+            orderError={orderError}
+          />
         </Row>
         <Row>
           {orders.map((item, idx) => (
@@ -181,16 +212,36 @@ export const Order = () => {
                     ))}
                   </b>
                   <b>
-                    <Translate contentKey="order.button.paid">Payment Processed</Translate>
+                    <Translate contentKey="order.button.paid">계산완료</Translate>
                   </b>
+                  {item.refundResponse == null ? (
+                    <Button color="secondary" onClick={handleRefundClick(item)}>
+                      <Translate contentKey="order.button.refund">환불하기</Translate>
+                    </Button>
+                  ) : (
+                    <>
+                      <b>
+                        <Translate contentKey="order.label.shopPrice">상점환불금액</Translate>
+                        {item.refundResponse.shopPrice}
+                      </b>
+                      <b>
+                        <Translate contentKey="order.label.modelPrice">모델환불금액</Translate>
+                        {item.refundResponse.modelPrice}
+                      </b>
+                      <b>
+                        <Translate contentKey="order.label.mamaPrice">마마환불금액</Translate>
+                        {item.refundResponse.mamaPrice}
+                      </b>
+                    </>
+                  )}
                 </p>
               ) : (
                 <>
                   <Button color="secondary" onClick={handleChangeClick(item)}>
-                    <Translate contentKey="order.button.order_change">Order Change</Translate>
+                    <Translate contentKey="order.button.order_change">주문변경</Translate>
                   </Button>
                   <Button color="primary" onClick={handlePaidClick(item)}>
-                    <Translate contentKey="order.button.pay_processing">Payment Processing</Translate>
+                    <Translate contentKey="order.button.pay_processing">계산하기</Translate>
                   </Button>
                 </>
               )}

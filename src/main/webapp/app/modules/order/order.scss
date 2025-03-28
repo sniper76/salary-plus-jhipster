@@ -57,6 +57,12 @@ input[type='number']::-webkit-outer-spin-button {
   color: white;
 }
 
+.container_no_margin {
+  display: flex;
+  justify-content: space-between;
+  width: 450px;
+}
+
 .container {
   display: flex;
   justify-content: space-between;

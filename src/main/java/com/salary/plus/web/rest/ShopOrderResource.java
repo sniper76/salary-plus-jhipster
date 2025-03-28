@@ -9,6 +9,7 @@ import com.salary.plus.service.ShopOrderService;
 import com.salary.plus.service.dto.ShopOrderCreateDTO;
 import com.salary.plus.service.dto.ShopOrderDetailResponse;
 import com.salary.plus.service.dto.ShopOrderDetailWithDiscountResponse;
+import com.salary.plus.service.dto.ShopOrderRefundCreateDTO;
 import com.salary.plus.service.dto.ShopOrderResponse;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -174,5 +175,21 @@ public class ShopOrderResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createAlert(applicationName, "order.deleted", shopOrderDetail.getLastModifiedBy()))
             .build();
+    }
+
+    @PostMapping("/{shopId}/dates/{date}/orders/{orderId}/refunds")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createOrderRefund(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("date") String date,
+        @PathVariable("orderId") Long orderId,
+        @Valid @RequestBody ShopOrderRefundCreateDTO shopOrderRefundCreateDTO
+    ) {
+        shopOrderRefundCreateDTO.setLogin(SecurityUtils.getLoginNoneNull());
+        shopOrderRefundCreateDTO.setShopId(shopId);
+        shopOrderRefundCreateDTO.setDate(date);
+        shopOrderRefundCreateDTO.setOrderId(orderId);
+        LOG.debug("REST shopOrderRefundCreateDTO : {}", shopOrderRefundCreateDTO);
+        shopOrderService.createOrderRefund(shopOrderRefundCreateDTO);
     }
 }

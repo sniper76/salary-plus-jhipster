@@ -8,6 +8,7 @@ import { IModelUser } from 'app/shared/model/modelUser.model';
 import { IShopTable } from 'app/shared/model/shopTable.model';
 import { IOrderCreate } from 'app/shared/model/orderCreate.model';
 import { IOrderDetail } from 'app/shared/model/orderDetail.model';
+import { IOrderRefund } from 'app/shared/model/orderRefund.model';
 
 const initialState = {
   loading: false,
@@ -110,6 +111,20 @@ export const updateOrderPaid = createAsyncThunk(
   async ({ shopId, date, orderId }: any, thunkAPI) => {
     const requestUrl = `api/shops/${shopId}/dates/${date}/orders/${orderId}`;
     const result = await axios.put<any>(requestUrl, { shopId, date, orderId });
+    thunkAPI.dispatch(getShopOrders({ shopId, date }));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
+
+export const updateOrderRefund = createAsyncThunk(
+  'order/update_refund_order',
+  async (user: IOrderRefund, thunkAPI) => {
+    const shopId = user.shopId;
+    const date = user.date;
+    const orderId = user.orderId;
+    const requestUrl = `api/shops/${shopId}/dates/${date}/orders/${orderId}/refunds`;
+    const result = await axios.post<IOrderRefund>(requestUrl, user);
     thunkAPI.dispatch(getShopOrders({ shopId, date }));
     return result;
   },

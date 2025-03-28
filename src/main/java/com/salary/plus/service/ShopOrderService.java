@@ -3,14 +3,18 @@ package com.salary.plus.service;
 import com.salary.plus.domain.ShopOrder;
 import com.salary.plus.domain.ShopOrderDetail;
 import com.salary.plus.domain.ShopOrderDetailDiscount;
+import com.salary.plus.domain.ShopSalesRefund;
 import com.salary.plus.domain.ShopUserSalesSalary;
 import com.salary.plus.repository.ShopOrderDetailDiscountRepository;
 import com.salary.plus.repository.ShopOrderDetailRepository;
 import com.salary.plus.repository.ShopOrderRepository;
+import com.salary.plus.repository.ShopSalesRefundRepository;
 import com.salary.plus.repository.ShopUserSalesSalaryRepository;
 import com.salary.plus.service.dto.ShopOrderCreateDTO;
 import com.salary.plus.service.dto.ShopOrderDetailResponse;
 import com.salary.plus.service.dto.ShopOrderDetailWithDiscountResponse;
+import com.salary.plus.service.dto.ShopOrderRefundCreateDTO;
+import com.salary.plus.service.dto.ShopOrderRefundResponse;
 import com.salary.plus.service.dto.ShopOrderResponse;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import java.util.ArrayList;
@@ -38,14 +42,33 @@ public class ShopOrderService {
     private final ShopOrderDetailRepository shopOrderDetailRepository;
     private final ShopUserSalesSalaryRepository shopUserSalesSalaryRepository;
     private final ShopOrderDetailDiscountRepository shopOrderDetailDiscountRepository;
+    private final ShopSalesRefundRepository shopSalesRefundRepository;
 
     @Transactional(readOnly = true)
     public List<ShopOrderResponse> getAllOrdersByDate(Long shopId, String date) {
         final List<ShopOrderResponse> orders = shopOrderRepository.findAllByShopIdAndDateAndActivated(shopId, date, true);
         orders.forEach(it -> {
             it.setDiscountResponseList(shopOrderDetailDiscountRepository.findAllByOrderId(it.getOrderId()));
+            it.setRefundResponse(getShopSalesRefund(shopId, date, it.getOrderId()));
         });
         return orders;
+    }
+
+    private ShopOrderRefundResponse getShopSalesRefund(Long shopId, String date, Long orderId) {
+        final Optional<ShopSalesRefund> optionalShopSalesRefund = shopSalesRefundRepository.findByShopIdAndDateAndOrderId(
+            shopId,
+            date,
+            orderId
+        );
+        if (optionalShopSalesRefund.isEmpty()) {
+            return null;
+        }
+        final ShopSalesRefund shopSalesRefund = optionalShopSalesRefund.get();
+        ShopOrderRefundResponse refundResponse = new ShopOrderRefundResponse();
+        refundResponse.setShopPrice(shopSalesRefund.getShopPrice());
+        refundResponse.setModelPrice(shopSalesRefund.getModelPrice());
+        refundResponse.setMamaPrice(shopSalesRefund.getMamaPrice());
+        return refundResponse;
     }
 
     public void createOrder(Long shopId, String date, ShopOrderCreateDTO shopOrderCreateDTO) {
@@ -204,6 +227,17 @@ public class ShopOrderService {
                 }
             }
         }
+    }
+
+    public void createOrderRefund(ShopOrderRefundCreateDTO shopOrderRefundCreateDTO) {
+        ShopSalesRefund shopSalesRefund = new ShopSalesRefund();
+        shopSalesRefund.setShopId(shopOrderRefundCreateDTO.getShopId());
+        shopSalesRefund.setDate(shopOrderRefundCreateDTO.getDate());
+        shopSalesRefund.setOrderId(shopOrderRefundCreateDTO.getOrderId());
+        shopSalesRefund.setShopPrice(shopOrderRefundCreateDTO.getShopPrice());
+        shopSalesRefund.setModelPrice(shopOrderRefundCreateDTO.getModelPrice());
+        shopSalesRefund.setMamaPrice(shopOrderRefundCreateDTO.getMamaPrice());
+        shopSalesRefundRepository.save(shopSalesRefund);
     }
 
     private record ShopDetailOrderData(Long orderDetailId, Long salesItemId, Long modelId, Integer price) {}

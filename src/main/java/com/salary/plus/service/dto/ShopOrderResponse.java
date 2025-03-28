@@ -27,6 +27,7 @@ public class ShopOrderResponse implements Serializable {
     private String lastModifiedBy;
     private Instant lastModifiedDate;
     private List<ShopOrderDiscountResponse> discountResponseList;
+    private ShopOrderRefundResponse refundResponse;
 
     public ShopOrderResponse() {
         // Empty constructor needed for Jackson.

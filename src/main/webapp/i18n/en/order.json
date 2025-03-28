@@ -7,7 +7,8 @@
     "button": {
       "paid": "Payment Processed",
       "pay_processing": "Payment Processing",
-      "order_change": "Change Order"
+      "order_change": "Change Order",
+      "refund": "Refund"
     },
     "created": "A order is created with identifier {{ param }}",
     "updated": "A order is updated with identifier {{ param }}",
@@ -18,6 +19,14 @@
     "messages": {
       "error": {
         "authentication": "<strong>Failed to sign in!</strong> Please check your credentials and try again."
+      },
+      "validate": {
+        "shopPrice.required": "Shop Refund Price is required.",
+        "shopPrice.size": "Shop Price must be a positive number.",
+        "modelPrice.required": "Model Refund Price is required.",
+        "modelPrice.size": "Model Price must be a positive number.",
+        "mamaPrice.required": "Mama Refund Price is required.",
+        "mamaPrice.size": "Mama Price must be a positive number."
       }
     },
     "password": {
@@ -25,7 +34,10 @@
     },
     "label": {
       "discountApplicable": "Discounts applicable",
-      "details": "Order details"
+      "details": "Order details",
+      "shopPrice": "Shop Refund Price",
+      "modelPrice": "Model Refund Price",
+      "mamaPrice": "Mama Refund Price"
     }
   }
 }

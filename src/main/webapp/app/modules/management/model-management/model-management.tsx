@@ -5,7 +5,7 @@ import { getPaginationState, JhiItemCount, JhiPagination, TextFormat, Translate 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 
-import { APP_DATE_FORMAT } from 'app/config/constants';
+import { APP_DATE_FORMAT, getAuthorityName } from 'app/config/constants';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
@@ -138,9 +138,8 @@ export const ModelManagement = () => {
               <Translate contentKey="userManagement.langKey">Lang Key</Translate>{' '}
               <FontAwesomeIcon icon={getSortIconByFieldName('langKey')} />
             </th>
-            <th className="hand" onClick={sort('langKey')}>
-              <Translate contentKey="userManagement.langKey">Lang Key</Translate>{' '}
-              <FontAwesomeIcon icon={getSortIconByFieldName('langKey')} />
+            <th>
+              <Translate contentKey="global.label.role">권한</Translate>
             </th>
             <th className="hand" onClick={sort('createdDate')}>
               <Translate contentKey="userManagement.createdDate">Created Date</Translate>{' '}
@@ -179,7 +178,7 @@ export const ModelManagement = () => {
                 {user.authorities
                   ? user.authorities.map((authority, j) => (
                       <div key={`user-auth-${i}-${j}`}>
-                        <Badge color="info">{authority}</Badge>
+                        <Badge color="info">{getAuthorityName(authority)}</Badge>
                       </div>
                     ))
                   : null}

@@ -114,6 +114,8 @@
       "nameKo": "한글명",
       "nameEn": "영문명",
       "price": "금액",
+      "role": "권한",
+      "refund": "환불",
       "shopCommissionPrice": "상점 커미션 금액",
       "mamaCommissionPrice": "마마상 커미션 금액",
       "modelCommissionPrice": "모델 커미션 금액"

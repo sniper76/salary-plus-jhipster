@@ -114,6 +114,8 @@
       "nameKo": "Korean",
       "nameEn": "English",
       "price": "Price",
+      "role": "Role",
+      "refund": "Refund",
       "shopCommissionPrice": "Shop Commission Price",
       "mamaCommissionPrice": "Mama Commission Price",
       "modelCommissionPrice": "Model Commission Price"
