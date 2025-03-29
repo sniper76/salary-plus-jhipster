@@ -53,3 +53,14 @@ export const Order = () => (
     </NavLink>
   </NavItem>
 );
+
+export const Sales = () => (
+  <NavItem>
+    <NavLink tag={Link} to="/sales" className="d-flex align-items-center">
+      <FontAwesomeIcon icon="bell" />
+      <span>
+        <Translate contentKey="global.menu.sales">매출</Translate>
+      </span>
+    </NavLink>
+  </NavItem>
+);

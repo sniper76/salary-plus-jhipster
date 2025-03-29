@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router';
+import { Outlet } from 'react-router-dom';
 
 import Loadable from 'react-loadable';
 
@@ -12,6 +13,8 @@ import Logout from 'app/modules/login/logout';
 import Home from 'app/modules/home/home';
 import Work from 'app/modules/work/work';
 import Order from 'app/modules/order/order';
+import Sales from 'app/modules/sales/sales';
+import SalesDetail from 'app/modules/sales/sales-detail';
 import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
@@ -54,6 +57,17 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         />
+        <Route
+          path="sales"
+          element={
+            <PrivateRoute hasAnyAuthorities={[AUTHORITIES.MANAGER]}>
+              <Outlet /> {/* 중첩된 라우트의 렌더링 위치 */}
+            </PrivateRoute>
+          }
+        >
+          <Route index element={<Sales />} />
+          <Route path=":shopId/:date" element={<SalesDetail />} />
+        </Route>
         <Route path="login" element={<Login />} />
         <Route path="logout" element={<Logout />} />
         <Route path="account">

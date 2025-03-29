@@ -6,6 +6,7 @@
       "home": "홈",
       "work": "근무",
       "order": "주문",
+      "sales": "매출",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "관리",
