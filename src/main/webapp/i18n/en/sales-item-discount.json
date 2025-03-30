@@ -12,9 +12,6 @@
     "delete": {
       "question": "Are you sure you want to delete sales item discount {{ name }}?"
     },
-    "detail": {
-      "title": "Sales Item Discount"
-    },
     "login": "Login",
     "firstName": "First name",
     "lastName": "Last name",

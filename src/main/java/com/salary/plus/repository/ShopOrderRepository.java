@@ -6,6 +6,8 @@ import com.salary.plus.service.dto.ShopOrderDetailResponse;
 import com.salary.plus.service.dto.ShopOrderResponse;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -45,4 +47,6 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrder, Long> {
         """
     )
     List<ShopOrderDetailResponse> findAllByIdAndShopIdAndDate(Long orderId, Long shopId, String date, boolean activated);
+
+    Page<ShopOrder> findAllByShopIdAndDate(Long shopId, String date, Pageable pageable);
 }

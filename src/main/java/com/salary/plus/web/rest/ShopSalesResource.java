@@ -1,21 +1,32 @@
 package com.salary.plus.web.rest;
 
+import com.salary.plus.domain.ShopOrder;
 import com.salary.plus.domain.ShopSalesItem;
 import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
 import com.salary.plus.service.ShopSalesService;
-import com.salary.plus.service.dto.record.ShopSalesDTO;
+import com.salary.plus.service.dto.ShopOrderDetailDTO;
+import com.salary.plus.service.dto.ShopOrderDetailResponse;
+import com.salary.plus.service.dto.ShopSalesDTO;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -48,6 +59,10 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/shops")
 public class ShopSalesResource {
 
+    private static final List<String> ALLOWED_ORDERED_PROPERTIES = Collections.unmodifiableList(
+        Arrays.asList("id", "shopTableId", "totalPrice", "createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate")
+    );
+
     private static final Logger LOG = LoggerFactory.getLogger(ShopSalesResource.class);
 
     private final ShopSalesService shopSalesService;
@@ -69,8 +84,31 @@ public class ShopSalesResource {
     }
 
     @GetMapping("/{shopId}/sales/dates/{date}")
-    public ResponseEntity<ShopSalesDTO> getSales(@PathVariable("shopId") Long shopId, @PathVariable("date") String date) {
-        LOG.debug("REST request to get ShopId : {}, date : {}", shopId, date);
-        return ResponseUtil.wrapOrNotFound(shopSalesService.get(shopId, date));
+    public ResponseEntity<List<ShopOrder>> getSalesForPage(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("date") String date,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        LOG.debug("REST shopId: {}, pageable: {}", shopId, pageable);
+        if (!onlyContainsAllowedProperties(pageable)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        final Page<ShopOrder> page = shopSalesService.getSalesForPage(shopId, date, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    private boolean onlyContainsAllowedProperties(Pageable pageable) {
+        return pageable.getSort().stream().map(Sort.Order::getProperty).allMatch(ALLOWED_ORDERED_PROPERTIES::contains);
+    }
+
+    @GetMapping("/{shopId}/sales/orders/{orderId}")
+    public ResponseEntity<List<ShopOrderDetailDTO>> getOrderDetails(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("orderId") Long orderId
+    ) {
+        final List<ShopOrderDetailDTO> responses = shopSalesService.getSalesDetails(shopId, orderId);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 }

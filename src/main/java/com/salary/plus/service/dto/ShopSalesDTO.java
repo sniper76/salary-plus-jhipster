@@ -1,4 +1,4 @@
-package com.salary.plus.service.dto.record;
+package com.salary.plus.service.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;

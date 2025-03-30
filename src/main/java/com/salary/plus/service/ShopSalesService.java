@@ -1,10 +1,11 @@
 package com.salary.plus.service;
 
-import com.salary.plus.domain.ShopSalesItem;
+import com.salary.plus.domain.ShopOrder;
 import com.salary.plus.repository.ShopOrderDetailRepository;
-import com.salary.plus.repository.ShopSalesItemRepository;
-import com.salary.plus.service.dto.ShopSalesItemDTO;
-import com.salary.plus.service.dto.record.ShopSalesDTO;
+import com.salary.plus.repository.ShopOrderRepository;
+import com.salary.plus.service.dto.ShopOrderDetailDTO;
+import com.salary.plus.service.dto.ShopOrderDetailResponse;
+import com.salary.plus.service.dto.ShopSalesDTO;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +27,19 @@ public class ShopSalesService {
     private static final Logger LOG = LoggerFactory.getLogger(ShopSalesService.class);
 
     private final ShopOrderDetailRepository shopOrderDetailRepository;
+    private final ShopOrderRepository shopOrderRepository;
 
     @Transactional(readOnly = true)
     public List<ShopSalesDTO> getAllSales(Long shopId, String startDate, String endDate) {
         return shopOrderDetailRepository.findAllByShopIdAndSearchDate(shopId, startDate, endDate);
     }
 
-    public Optional<ShopSalesDTO> get(Long shopId, String date) {
-        return Optional.empty();
+    @Transactional(readOnly = true)
+    public Page<ShopOrder> getSalesForPage(Long shopId, String date, Pageable pageable) {
+        return shopOrderRepository.findAllByShopIdAndDate(shopId, date, pageable);
+    }
+
+    public List<ShopOrderDetailDTO> getSalesDetails(Long shopId, Long orderId) {
+        return shopOrderDetailRepository.findAllByShopIdAndOrderId(shopId, orderId);
     }
 }

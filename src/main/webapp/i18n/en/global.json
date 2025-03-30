@@ -117,9 +117,14 @@
       "price": "Price",
       "role": "Role",
       "refund": "Refund",
+      "model": "Model",
       "shopCommissionPrice": "Shop Commission Price",
       "mamaCommissionPrice": "Mama Commission Price",
-      "modelCommissionPrice": "Model Commission Price"
+      "modelCommissionPrice": "Model Commission Price",
+      "commissionDiscountPrice": "Commission Discount Price",
+      "commissionPrice": "Commission Price",
+      "shop": "Shop",
+      "mama": "Mama"
     }
   },
   "entity": {

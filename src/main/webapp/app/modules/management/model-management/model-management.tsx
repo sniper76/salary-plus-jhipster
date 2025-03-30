@@ -104,7 +104,7 @@ export const ModelManagement = () => {
   return (
     <div>
       <h2 id="user-management-page-heading" data-cy="userManagementPageHeading">
-        <Translate contentKey="userManagement.home.title">모델</Translate>
+        <Translate contentKey="userManagement.home.title">사용자</Translate>
         <div className="d-flex justify-content-end">
           <select onChange={handleSelect} value={selectedValue} className="custom-number-input">
             {shops.map(shop => (

@@ -1,10 +1,11 @@
 package com.salary.plus.repository;
 
 import com.salary.plus.domain.ShopOrderDetail;
-import com.salary.plus.domain.ShopSalesItem;
 import com.salary.plus.domain.User;
+import com.salary.plus.service.dto.ShopOrderDetailDTO;
+import com.salary.plus.service.dto.ShopOrderDetailResponse;
 import com.salary.plus.service.dto.ShopOrderDetailWithDiscountResponse;
-import com.salary.plus.service.dto.record.ShopSalesDTO;
+import com.salary.plus.service.dto.ShopSalesDTO;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -73,4 +74,41 @@ public interface ShopOrderDetailRepository extends JpaRepository<ShopOrderDetail
         nativeQuery = true
     )
     List<ShopSalesDTO> findAllByShopIdAndSearchDate(Long shopId, String startDate, String endDate);
+
+    @Query(
+        value = """
+            select jssi.id,
+                   jssi.name_ko, jssi.name_en,
+                   jsod.price as order_detail_price,
+                   jsodd.price as order_detail_discount_price,
+                   ju.model_no,
+                   jssi.shop_commission_price,
+                   jssi.model_commission_price,
+                   jssi.mama_commission_price,
+                   jssid.shop_commission_price as discount_shop_commission_price,
+                   jssid.model_commission_price as discount_model_commission_price,
+                   jssid.mama_commission_price as discount_mama_commission_price,
+                   jssi.commission_target_yn, jssi.snack_yn
+            from jhi_shop_order jso
+            inner join jhi_shop_order_detail jsod on jso.id = jsod.shop_order_id
+            inner join jhi_shop_sales_item jssi on jso.shop_id = jssi.shop_id and jsod.shop_sales_item_id = jssi.id
+            left outer join jhi_shop_sales_item_discount jssid on jssi.id = jssid.shop_sales_item_id
+            left outer join jhi_shop_order_detail_discount jsodd on jsod.id = jsodd.shop_order_detail_id and jssid.id = jsodd.shop_sales_item_discount_id
+            left outer join jhi_shop_user_sales_salary jsuss on jsod.id = jsuss.shop_order_detail_id
+            left outer join jhi_user ju on jsuss.user_id = ju.id
+            where jso.shop_id = :shopId
+            and jso.id = :orderId
+            union all
+            select null, '환불', 'refund', null, null, null,
+                   jssr.shop_price, jssr.model_price, jssr.mama_price, null, null, null,
+                   false, false
+            from jhi_shop_order jso
+            left outer join jhi_shop_sales_refund jssr on jso.id = jssr.order_id and jso.shop_id = jssr.shop_id and jso.date = jssr.date
+            where jso.shop_id = :shopId
+              and jso.id = :orderId
+            order by 1
+        """,
+        nativeQuery = true
+    )
+    List<ShopOrderDetailDTO> findAllByShopIdAndOrderId(Long shopId, Long orderId);
 }

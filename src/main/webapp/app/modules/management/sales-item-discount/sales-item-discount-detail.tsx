@@ -22,7 +22,7 @@ export const SalesItemDiscountDetail = () => {
   return (
     <div>
       <h2>
-        <Translate contentKey="salesItemDiscount.detail.title">할인</Translate>
+        <Translate contentKey="salesItemDiscount.home.title">할인</Translate>
       </h2>
       <Row size="md">
         <dl className="jh-entity-details">

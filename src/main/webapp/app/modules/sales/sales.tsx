@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button, Col, Row } from 'reactstrap';
+import { Translate } from 'react-jhipster';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUserShops } from 'app/modules/order/order.reducer';
-import { getPageShopSales } from './sales.reducer';
+import { getShopSaleList } from './sales.reducer';
 
 import './sales.scss';
 
@@ -41,7 +42,7 @@ export const Sales = () => {
   useEffect(() => {
     if (shops.length > 0) {
       setSelectedValue(shops[0].id);
-      dispatch(getPageShopSales({ shopId: shops[0].id, startDate, endDate }));
+      dispatch(getShopSaleList({ shopId: shops[0].id, startDate, endDate }));
     }
   }, [shops]);
 
@@ -65,11 +66,19 @@ export const Sales = () => {
           {salesList?.map((item, idx) => (
             <Col key={idx} xs="auto" className="border text-center p-3">
               <p>{item.date}</p>
-              <p>총 매출: {item.orderDetailPrice}</p>
-              <p>총 할인: {item.orderDetailDiscountPrice || 0}</p>
-              <p>환불: {item.shopRefundPrice || 0}</p>
-              <Link to={`/sales/${item.shopId}/${item.date}`}>
-                <button>상세</button>
+              <p>
+                <Translate contentKey="global.menu.sales">매출</Translate>: {item.orderDetailPrice}
+              </p>
+              <p>
+                <Translate contentKey="salesItemDiscount.home.title">할인</Translate>: {item.orderDetailDiscountPrice || 0}
+              </p>
+              <p>
+                <Translate contentKey="global.label.refund">환불</Translate>: {item.shopRefundPrice || 0}
+              </p>
+              <Link to={`/sales/${item.shopId}/${item.date}`} className="btn btn-primary jh-create-entity">
+                <span className="d-md-inline">
+                  <Translate contentKey="order.label.details">상세</Translate>
+                </span>
               </Link>
             </Col>
           ))}

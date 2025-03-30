@@ -117,9 +117,14 @@
       "price": "금액",
       "role": "권한",
       "refund": "환불",
+      "model": "모델",
       "shopCommissionPrice": "상점 커미션 금액",
       "mamaCommissionPrice": "마마상 커미션 금액",
-      "modelCommissionPrice": "모델 커미션 금액"
+      "modelCommissionPrice": "모델 커미션 금액",
+      "commissionDiscountPrice": "커미션 할인 금액",
+      "commissionPrice": "커미션 금액",
+      "shop": "상점",
+      "mama": "마마상"
     }
   },
   "entity": {

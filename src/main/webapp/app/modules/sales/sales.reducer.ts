@@ -7,7 +7,8 @@ const initialState = {
   loading: false,
   errorMessage: null,
   salesList: [],
-  sales: null,
+  salesForPage: [],
+  salesDetailList: [],
   updating: false,
   updateSuccess: false,
   totalItems: 0,
@@ -17,16 +18,22 @@ const apiUrl = 'api/shops';
 
 // Async Actions
 
-export const getPageShopSales = createAsyncThunk('management/sales_page', async ({ shopId, startDate, endDate }: any) => {
+export const getShopSaleList = createAsyncThunk('management/sales_list', async ({ shopId, startDate, endDate }: any) => {
   const requestUrl = `${apiUrl}/${shopId}/sales/${startDate}/${endDate}`;
   console.warn('requestUrl', requestUrl);
   return axios.get<any[]>(requestUrl);
 });
 
-export const getShopSales = createAsyncThunk('management/sales_item', async ({ shopId, date }: any) => {
-  const requestUrl = `${apiUrl}/${shopId}/sales/dates/${date}`;
+export const getShopSaleDetailList = createAsyncThunk('management/sales_detail_list', async ({ shopId, orderId }: any) => {
+  const requestUrl = `${apiUrl}/${shopId}/sales/orders/${orderId}`;
   console.warn('requestUrl', requestUrl);
-  return axios.get<any>(requestUrl);
+  return axios.get<any[]>(requestUrl);
+});
+
+export const getShopSalesForPage = createAsyncThunk('management/sales_list_page', async ({ id, query, page, size, sort }: IQueryParams) => {
+  const requestUrl = `${apiUrl}/${id}/sales/dates/${query}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
+  console.warn('requestUrl', requestUrl);
+  return axios.get<any[]>(requestUrl);
 });
 
 export type SalesState = Readonly<typeof initialState>;
@@ -38,24 +45,31 @@ export const SalesSlice = createSlice({
     reset() {
       return initialState;
     },
+    resetSalesDetailList(state) {
+      state.salesDetailList = []; // 상세 데이터 초기화
+    },
   },
   extraReducers(builder) {
     builder
-      .addCase(getShopSales.fulfilled, (state, action) => {
-        state.loading = false;
-        state.sales = action.payload.data;
-      })
-      .addMatcher(isFulfilled(getPageShopSales), (state, action) => {
+      .addCase(getShopSaleList.fulfilled, (state, action) => {
         state.loading = false;
         state.salesList = action.payload.data;
-        console.warn('action.payload.data', action.payload.data);
       })
-      .addMatcher(isPending(getPageShopSales, getShopSales), state => {
+      .addCase(getShopSaleDetailList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.salesDetailList = action.payload.data;
+      })
+      .addMatcher(isFulfilled(getShopSalesForPage), (state, action) => {
+        state.loading = false;
+        state.salesForPage = action.payload.data;
+        state.totalItems = parseInt(action.payload.headers['x-total-count'], 10);
+      })
+      .addMatcher(isPending(getShopSaleList, getShopSalesForPage, getShopSaleDetailList), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
       })
-      .addMatcher(isRejected(getPageShopSales, getShopSales), (state, action) => {
+      .addMatcher(isRejected(getShopSaleList, getShopSalesForPage, getShopSaleDetailList), (state, action) => {
         state.loading = false;
         state.updating = false;
         state.updateSuccess = false;
@@ -65,6 +79,8 @@ export const SalesSlice = createSlice({
 });
 
 export const { reset } = SalesSlice.actions;
+
+export const { resetSalesDetailList } = SalesSlice.actions;
 
 // Reducer
 export default SalesSlice.reducer;
