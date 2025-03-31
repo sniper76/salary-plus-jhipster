@@ -12,8 +12,6 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUserShops } from 'app/modules/order/order.reducer';
 import { getPageShopSalesItemDiscounts } from './sales-item-discount.reducer';
 
-import './sales-item-discount.scss';
-
 export const SalesItemDiscount = () => {
   const dispatch = useAppDispatch();
 
@@ -177,7 +175,7 @@ export const SalesItemDiscount = () => {
         <tbody>
           {salesItemDiscountsForPage.length <= 0 && (
             <tr>
-              <td colSpan={12} className="text-align-center">
+              <td colSpan={12} className="no-data-text-align-center">
                 <Translate contentKey="global.messages.info.noDataList">조회된 데이터가 없습니다.</Translate>
               </td>
             </tr>

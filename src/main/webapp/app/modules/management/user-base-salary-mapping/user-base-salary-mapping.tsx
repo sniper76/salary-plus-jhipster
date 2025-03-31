@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getBaseSalaryMappingUsers } from './user-base-salary-mapping.reducer';
 import { getUserShops } from 'app/modules/order/order.reducer';
 
+import '../management.scss';
+
 export const UserBaseSalaryMapping = () => {
   const dispatch = useAppDispatch();
 
@@ -166,7 +168,7 @@ export const UserBaseSalaryMapping = () => {
         <tbody>
           {users.length <= 0 && (
             <tr>
-              <td colSpan={10} className="text-align-center">
+              <td colSpan={10} className="no-data-text-align-center">
                 <Translate contentKey="global.messages.info.noDataList">조회된 데이터가 없습니다.</Translate>
               </td>
             </tr>

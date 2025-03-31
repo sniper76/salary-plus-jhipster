@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUserShops } from 'app/modules/order/order.reducer';
 import { getPageShopBaseSalaries } from './base-salary.reducer';
 
-import './base-salary.scss';
+import '../management.scss';
 
 export const BaseSalary = () => {
   const dispatch = useAppDispatch();

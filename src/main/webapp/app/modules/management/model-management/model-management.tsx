@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUsersAsAdmin, updateUser } from './model-management.reducer';
 import { getUserShops } from 'app/modules/order/order.reducer';
 
+import '../management.scss';
+
 export const ModelManagement = () => {
   const dispatch = useAppDispatch();
 
@@ -159,7 +161,7 @@ export const ModelManagement = () => {
         <tbody>
           {users.length <= 0 && (
             <tr>
-              <td colSpan={9} className="text-align-center">
+              <td colSpan={9} className="no-data-text-align-center">
                 <Translate contentKey="global.messages.info.noDataList">조회된 데이터가 없습니다.</Translate>
               </td>
             </tr>

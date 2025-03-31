@@ -57,7 +57,7 @@ export const Work = () => {
     <Row>
       <Col md="12">
         <Row>
-          <div className="custom-date-input">
+          <div className="custom-date-input-select">
             <select onChange={handleSelect} value={selectedValue}>
               {shops.map(shop => (
                 <option value={shop.id} key={shop.id}>

@@ -6,8 +6,6 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUserShops } from 'app/modules/order/order.reducer';
 import { getShopSaleList } from './sales.reducer';
 
-import './sales.scss';
-
 export const Sales = () => {
   const dispatch = useAppDispatch();
   const shops = useAppSelector(state => state.orders.shops);
@@ -50,7 +48,7 @@ export const Sales = () => {
     <Row>
       <Col md="12">
         <Row>
-          <div className="custom-date-input">
+          <div className="custom-date-input-select">
             <select onChange={handleSelect} value={selectedValue}>
               {shops.map(shop => (
                 <option value={shop.id} key={shop.id}>

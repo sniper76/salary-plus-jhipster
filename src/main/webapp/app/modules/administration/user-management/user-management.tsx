@@ -176,7 +176,7 @@ export const UserManagement = () => {
         <tbody>
           {users.length <= 0 && (
             <tr>
-              <td colSpan={10} className="text-align-center">
+              <td colSpan={10} className="no-data-text-align-center">
                 <Translate contentKey="global.messages.info.noDataList">조회된 데이터가 없습니다.</Translate>
               </td>
             </tr>

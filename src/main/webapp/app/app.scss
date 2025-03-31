@@ -314,3 +314,29 @@ http://stackoverflow.com/questions/23436430/bootstrap-3-input-group-100-width */
 }
 
 /* jhipster-needle-scss-add-main JHipster will add new css style */
+
+/* search condition */
+.custom-date-input-select input {
+  text-align: center;
+  font-size: 20px;
+  margin: 0 5px;
+  border: 1px solid #222;
+  border-radius: 0.5em;
+  background-color: #444;
+  color: white;
+  height: 50px;
+}
+.custom-date-input-select select {
+  text-align: center;
+  font-size: 20px;
+  margin: 0 5px;
+  border: 1px solid #222;
+  border-radius: 0.5em;
+  background-color: #444;
+  color: white;
+  height: 50px;
+}
+
+.no-data-text-align-center {
+  text-align: center;
+}

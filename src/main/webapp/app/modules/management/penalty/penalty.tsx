@@ -12,7 +12,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUserShops } from 'app/modules/order/order.reducer';
 import { getPageShopPenalties } from './penalty.reducer';
 
-import './penalty.scss';
+import '../management.scss';
 
 export const Penalty = () => {
   const dispatch = useAppDispatch();
