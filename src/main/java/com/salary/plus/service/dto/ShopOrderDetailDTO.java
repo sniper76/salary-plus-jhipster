@@ -16,7 +16,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ShopOrderDetailDTO {
+public class ShopOrderDetailDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id; //salesItemId;
     private String nameKo;

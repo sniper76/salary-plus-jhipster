@@ -12,6 +12,7 @@ import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.dto.AdminModelDTO;
 import com.salary.plus.service.dto.AdminUserDTO;
+import com.salary.plus.service.dto.ModelMappingDTO;
 import com.salary.plus.service.dto.ShopModelResponse;
 import com.salary.plus.service.dto.ShopUserResponse;
 import com.salary.plus.service.dto.UserDTO;
@@ -397,7 +398,18 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<ShopModelResponse> getAllModels(Long shopId) {
-        return userRepository.findAllByShopId(shopId, true, true);
+        return userRepository.findAllByShopId(shopId, true, true, RoleType.getCommissionTargetRole().stream().map(RoleType::name).toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShopModelResponse> getAllOnlyModels(Long shopId, Long userId) {
+        return userRepository.findAllModelsByShopIdAndMamaId(
+            shopId,
+            userId,
+            true,
+            true,
+            RoleType.getOnlyModelRole().stream().map(RoleType::name).toList()
+        );
     }
 
     @Transactional(readOnly = true)

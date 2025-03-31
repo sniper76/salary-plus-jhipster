@@ -1,5 +1,6 @@
 package com.salary.plus.service.dto;
 
+import com.salary.plus.domain.ShopUserToUserMapping;
 import com.salary.plus.domain.User;
 import java.io.Serializable;
 import java.time.Instant;
@@ -20,6 +21,7 @@ public class ShopModelResponse implements Serializable {
     private String firstName;
     private String lastName;
     private String modelNo;
+    private Long targetUserId;
     private String createdBy;
     private Instant createdDate;
     private String lastModifiedBy;
@@ -39,5 +41,25 @@ public class ShopModelResponse implements Serializable {
         this.createdDate = user.getCreatedDate();
         this.lastModifiedBy = user.getLastModifiedBy();
         this.lastModifiedDate = user.getLastModifiedDate();
+    }
+
+    public ShopModelResponse(User user, ShopUserToUserMapping mapping) {
+        this.id = user.getId();
+        this.login = user.getLogin();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.modelNo = user.getModelNo();
+        this.createdBy = user.getCreatedBy();
+        this.createdDate = user.getCreatedDate();
+        this.lastModifiedBy = user.getLastModifiedBy();
+        this.lastModifiedDate = user.getLastModifiedDate();
+        this.targetUserId = getTargetUserId(mapping);
+    }
+
+    private Long getTargetUserId(ShopUserToUserMapping mapping) {
+        if (mapping == null) {
+            return null;
+        }
+        return mapping.getTargetUserId();
     }
 }

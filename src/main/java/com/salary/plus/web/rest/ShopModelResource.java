@@ -5,8 +5,10 @@ import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
+import com.salary.plus.service.ShopModelService;
 import com.salary.plus.service.UserService;
 import com.salary.plus.service.dto.AdminModelDTO;
+import com.salary.plus.service.dto.ModelMappingDTO;
 import com.salary.plus.service.dto.ShopModelResponse;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -22,6 +24,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,11 +66,20 @@ public class ShopModelResource {
     private String applicationName;
 
     private final UserService userService;
+    private final ShopModelService shopModelService;
 
     @GetMapping("/{shopId}/models")
     public ResponseEntity<List<ShopModelResponse>> getAllModels(@PathVariable("shopId") Long shopId) {
         final List<ShopModelResponse> responses = userService.getAllModels(shopId);
-        LOG.debug("REST response : {}", responses);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
+    }
+
+    @GetMapping("/{shopId}/only-models/{userId}")
+    public ResponseEntity<List<ShopModelResponse>> getAllOnlyModels(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("userId") Long userId
+    ) {
+        final List<ShopModelResponse> responses = userService.getAllOnlyModels(shopId, userId);
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
@@ -79,6 +91,22 @@ public class ShopModelResource {
         modelDTO.setShopId(shopId);
         userService.createModels(login, modelDTO);
         return ResponseEntity.created(new URI("/api/shops/" + shopId + "/models"))
+            .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", login))
+            .build();
+    }
+
+    @PutMapping("/{shopId}/models/{userId}/mama-mappings")
+    public ResponseEntity<Void> updateMamaMappings(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("userId") Long userId,
+        @Valid @RequestBody ModelMappingDTO mappingDTO
+    ) throws URISyntaxException {
+        final String login = SecurityUtils.getLoginNoneNull();
+        mappingDTO.setShopId(shopId);
+        mappingDTO.setUserId(userId);
+        LOG.debug("REST request to updateMamaMappings mappingDTO : {}", mappingDTO);
+        shopModelService.updateMamaMappings(login, mappingDTO);
+        return ResponseEntity.created(new URI("/api/shops/" + shopId + "/only-models/" + userId))
             .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", login))
             .build();
     }

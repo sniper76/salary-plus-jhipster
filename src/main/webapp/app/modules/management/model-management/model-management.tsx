@@ -5,7 +5,7 @@ import { getPaginationState, JhiItemCount, JhiPagination, TextFormat, Translate 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons';
 
-import { APP_DATE_FORMAT, getAuthorityName } from 'app/config/constants';
+import { APP_DATE_FORMAT, APP_LOCAL_TIMESTAMP_FORMAT, getAuthorityName } from 'app/config/constants';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
@@ -186,28 +186,48 @@ export const ModelManagement = () => {
                   : null}
               </td>
               <td>
-                {user.createdDate ? <TextFormat value={user.createdDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid /> : null}
+                {user.createdDate ? (
+                  <TextFormat value={user.createdDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
+                ) : null}
               </td>
               <td>{user.lastModifiedBy}</td>
               <td>
                 {user.lastModifiedDate ? (
-                  <TextFormat value={user.lastModifiedDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid />
+                  <TextFormat value={user.lastModifiedDate} type="date" format={APP_LOCAL_TIMESTAMP_FORMAT} blankOnInvalid />
                 ) : null}
               </td>
               <td className="text-end">
                 <div className="btn-group flex-btn-group-container">
-                  <Button tag={Link} to={`${user.id}/${selectedValue}`} color="info" size="sm">
+                  <Button tag={Link} to={`${selectedValue}/${user.id}`} color="info" size="sm">
                     <FontAwesomeIcon icon="eye" />{' '}
                     <span className="d-none d-md-inline">
                       <Translate contentKey="entity.action.view">View</Translate>
                     </span>
                   </Button>
-                  <Button tag={Link} to={`${user.id}/${selectedValue}/edit`} color="primary" size="sm">
+                  <Button tag={Link} to={`${selectedValue}/${user.id}/edit`} color="primary" size="sm">
                     <FontAwesomeIcon icon="pencil-alt" />{' '}
                     <span className="d-none d-md-inline">
                       <Translate contentKey="entity.action.edit">Edit</Translate>
                     </span>
                   </Button>
+                  {user.authorities
+                    ? user.authorities.map((authority, j) =>
+                        authority === 'ROLE_MAMA' ? (
+                          <Button
+                            key={`user-auth-${i}-${j}`}
+                            tag={Link}
+                            to={`${selectedValue}/${user.id}/mapping`}
+                            color="warning"
+                            size="sm"
+                          >
+                            <FontAwesomeIcon icon="trash" />{' '}
+                            <span className="d-none d-md-inline">
+                              <Translate contentKey="entity.action.edit">Edit</Translate>
+                            </span>
+                          </Button>
+                        ) : null,
+                      )
+                    : null}
                 </div>
               </td>
             </tr>

@@ -1,5 +1,6 @@
 package com.salary.plus.repository;
 
+import com.salary.plus.domain.Authority;
 import com.salary.plus.domain.User;
 import com.salary.plus.service.dto.ShopModelResponse;
 import com.salary.plus.service.dto.ShopUserResponse;
@@ -58,12 +59,36 @@ public interface UserRepository extends JpaRepository<User, Long> {
             from Shop s
             inner join ShopUserMapping sump on s.id = sump.shopId
             inner join User u on sump.userId = u.id
+            inner join u.authorities ua
             where s.id = :shopId
             and u.activated = :activated
             and u.commissionTargetYn = :commissionTargetYn
+            and ua.name in :authorities
         """
     )
-    List<ShopModelResponse> findAllByShopId(Long shopId, boolean activated, boolean commissionTargetYn);
+    List<ShopModelResponse> findAllByShopId(Long shopId, boolean activated, boolean commissionTargetYn, List<String> authorities);
+
+    @Query(
+        """
+            select new com.salary.plus.service.dto.ShopModelResponse(u, sutum)
+            from User u
+            inner join ShopUserMapping sump on u.id = sump.userId
+            inner join Shop s on s.id = sump.shopId
+            inner join u.authorities ua
+            left outer join ShopUserToUserMapping sutum on s.id = sutum.shopId and u.id = sutum.targetUserId and sutum.userId = :userId
+            where s.id = :shopId
+            and u.activated = :activated
+            and u.commissionTargetYn = :commissionTargetYn
+            and ua.name in :authorities
+        """
+    )
+    List<ShopModelResponse> findAllModelsByShopIdAndMamaId(
+        Long shopId,
+        Long userId,
+        boolean activated,
+        boolean commissionTargetYn,
+        List<String> authorities
+    );
 
     @Query(
         """

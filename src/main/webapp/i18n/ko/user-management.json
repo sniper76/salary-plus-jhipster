@@ -26,6 +26,7 @@
     "deactivated": "비활성",
     "profiles": "권한",
     "langKey": "언어",
+    "mapping": "연결",
     "createdBy": "생성자",
     "createdDate": "생성일",
     "lastModifiedBy": "수정자",
