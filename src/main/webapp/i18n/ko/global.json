@@ -7,6 +7,7 @@
       "work": "근무",
       "order": "주문",
       "sales": "매출",
+      "salary": "주급",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "관리",
@@ -26,7 +27,7 @@
         "penalty": "벌금관리",
         "baseSalary": "일당관리",
         "bonusSalary": "보너스관리",
-        "userBaseSalaryMapping": "사용자기본일당관리",
+        "userBaseSalaryMapping": "사용자기본일당연결",
         "salesItemDiscount": "할인관리",
         "model": "사용자관리"
       },

@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TestShopSalaryHandler implements SalaryHandler {
 
-    private static final Set<Long> SUPPORT_VERSIONS = SetUtils.immutableSet(1L);
-
     @Override
     public boolean supports(Long shopId) {
-        return SUPPORT_VERSIONS.contains(shopId);
+        return !getSupportVersions().contains(shopId);
     }
 
     @Override

@@ -51,11 +51,14 @@ export const Work = () => {
       setSelectedValue(shops[0].id);
       dispatch(getShopUsers({ shopId: shops[0].id, date: currentDate }));
     }
-  }, [shops]);
+  }, [shops, currentDate]);
 
   return (
     <Row>
       <Col md="12">
+        <h2>
+          <Translate contentKey="global.menu.work">근무</Translate>
+        </h2>
         <Row>
           <div className="custom-date-input-select">
             <select onChange={handleSelect} value={selectedValue}>

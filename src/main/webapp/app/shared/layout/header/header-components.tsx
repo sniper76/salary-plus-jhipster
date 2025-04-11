@@ -64,3 +64,14 @@ export const Sales = () => (
     </NavLink>
   </NavItem>
 );
+
+export const Salary = () => (
+  <NavItem>
+    <NavLink tag={Link} to="/salary" className="d-flex align-items-center">
+      <FontAwesomeIcon icon="bell" />
+      <span>
+        <Translate contentKey="global.menu.salary">주급</Translate>
+      </span>
+    </NavLink>
+  </NavItem>
+);

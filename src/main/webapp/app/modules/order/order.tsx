@@ -152,6 +152,9 @@ export const Order = () => {
   return (
     <Row>
       <Col md="12">
+        <h2>
+          <Translate contentKey="global.menu.order">주문</Translate>
+        </h2>
         <Row>
           <div className="custom-date-input-select">
             <select onChange={handleSelect} value={selectedValue}>

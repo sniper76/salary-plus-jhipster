@@ -6,6 +6,7 @@ import com.salary.plus.domain.User;
 import com.salary.plus.repository.ShopBaseSalaryRepository;
 import com.salary.plus.repository.ShopUserDailySalaryRepository;
 import com.salary.plus.service.dto.ShopDailySalaryDTO;
+import com.salary.plus.service.dto.ShopSalaryDTO;
 import com.salary.plus.service.dto.ShopUserSalaryBaseMappingResponse;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import java.util.List;
@@ -103,5 +104,10 @@ public class ShopUserDailySalaryService {
     public void updateHalfSalary(Long shopId, String date, Long userId) {
         final List<ShopUserDailySalary> dailySalaries = shopUserDailySalaryRepository.findAllByShopIdAndDateAndUserId(shopId, date, userId);
         updateHalfSalaryByList(shopId, date, dailySalaries);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShopSalaryDTO> getAllDailySalaries(Long shopId, String startDate, String endDate) {
+        return shopUserDailySalaryRepository.findAllByShopIdAndSearchDate(shopId, startDate, endDate);
     }
 }

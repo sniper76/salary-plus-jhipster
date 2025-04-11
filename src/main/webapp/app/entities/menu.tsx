@@ -38,7 +38,7 @@ const EntitiesMenu = () => {
         <Translate contentKey="global.menu.management.salesItemDiscount">할인관리</Translate>
       </MenuItem>
       <MenuItem icon={faStamp} to="/shop/user-base-salary-mapping">
-        <Translate contentKey="global.menu.management.userBaseSalaryMapping">모델기본일당관리</Translate>
+        <Translate contentKey="global.menu.management.userBaseSalaryMapping">사용자기본일당연결</Translate>
       </MenuItem>
       <MenuItem icon="users" to="/shop/model-management">
         <Translate contentKey="global.menu.management.model">모델관리</Translate>

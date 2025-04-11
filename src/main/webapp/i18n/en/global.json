@@ -7,6 +7,7 @@
       "work": "Work",
       "order": "Order",
       "sales": "Sales",
+      "salary": "Salary",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Management",
@@ -26,7 +27,7 @@
         "penalty": "Penalty",
         "baseSalary": "Salary",
         "bonusSalary": "Bonus",
-        "userBaseSalaryMapping": "User Base Salary",
+        "userBaseSalaryMapping": "User Base Salary Mapping",
         "salesItemDiscount": "Sales Item Discount",
         "model": "User"
       },

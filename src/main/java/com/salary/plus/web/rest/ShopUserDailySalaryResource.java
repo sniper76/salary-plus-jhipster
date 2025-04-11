@@ -7,6 +7,8 @@ import com.salary.plus.guard.UseGuards;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.ShopUserDailySalaryService;
 import com.salary.plus.service.dto.ShopDailySalaryDTO;
+import com.salary.plus.service.dto.ShopSalaryDTO;
+import com.salary.plus.service.dto.ShopSalesDTO;
 import com.salary.plus.service.dto.UserDTO;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -17,7 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -75,15 +79,27 @@ public class ShopUserDailySalaryResource {
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
     @PostMapping("/{shopId}/daily-salaries")
-    public ResponseEntity<UserDTO> createUser(@PathVariable("shopId") Long shopId, @Valid @RequestBody ShopDailySalaryDTO shopSalesItemDTO)
-        throws URISyntaxException {
+    public ResponseEntity<UserDTO> createDailySalaries(
+        @PathVariable("shopId") Long shopId,
+        @Valid @RequestBody ShopDailySalaryDTO shopSalesItemDTO
+    ) throws URISyntaxException {
         LOG.debug("REST request to save User : {}", shopSalesItemDTO);
         List<ShopUserDailySalary> newUser = shopDailySalaryService.create(shopSalesItemDTO);
         final UserDTO userDTO = new UserDTO();
         userDTO.setLogin(SecurityUtils.getLoginNoneNull());
         userDTO.setSalaries(newUser);
-        return ResponseEntity.created(new URI("/api/shops/" + shopId + "/sales-items"))
+        return ResponseEntity.created(new URI("/api/shops/" + shopId + "/daily-salaries"))
             .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", userDTO.getLogin()))
             .body(userDTO);
+    }
+
+    @GetMapping("/{shopId}/daily-salaries/{startDate}/{endDate}")
+    public ResponseEntity<List<ShopSalaryDTO>> getAllDailySalaries(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("startDate") String startDate,
+        @PathVariable("endDate") String endDate
+    ) {
+        final List<ShopSalaryDTO> items = shopDailySalaryService.getAllDailySalaries(shopId, startDate, endDate);
+        return new ResponseEntity<>(items, HttpStatus.OK);
     }
 }

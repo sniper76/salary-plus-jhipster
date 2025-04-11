@@ -5,12 +5,12 @@ import { getPaginationState, JhiItemCount, JhiPagination, Translate } from 'reac
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getShopSaleDetailList, getShopSalesForPage, reset, resetSalesDetailList } from './sales.reducer';
+import { getShopSalaryDetailList, getShopSalaryForPage, reset, resetSalaryDetailList } from './salary.reducer';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
-export const SalesDetail = () => {
+export const SalaryDetail = () => {
   const dispatch = useAppDispatch();
 
   const pageLocation = useLocation();
@@ -22,9 +22,9 @@ export const SalesDetail = () => {
     overridePaginationStateWithQueryParams(getPaginationState(pageLocation, ITEMS_PER_PAGE, 'id'), pageLocation.search),
   );
 
-  const getSalesFromProps = () => {
+  const getSalaryFromProps = () => {
     dispatch(
-      getShopSalesForPage({
+      getShopSalaryForPage({
         id: parseInt(shopId, 10),
         query: date,
         page: pagination.activePage - 1,
@@ -39,7 +39,7 @@ export const SalesDetail = () => {
   };
 
   useEffect(() => {
-    getSalesFromProps();
+    getSalaryFromProps();
   }, [pagination.activePage, pagination.order, pagination.sort]);
 
   useEffect(() => {
@@ -65,24 +65,24 @@ export const SalesDetail = () => {
 
   const handleSearchRight = e => () => {
     // console.warn('handleSearchRight', e);
-    dispatch(getShopSaleDetailList({ shopId, orderId: e.id }));
+    dispatch(getShopSalaryDetailList({ shopId, orderId: e.id }));
   };
 
-  const salesForPage = useAppSelector(state => state.sales.salesForPage);
-  const salesDetailList = useAppSelector(state => state.sales.salesDetailList);
-  const totalItems = useAppSelector(state => state.sales.totalItems);
+  const salaryForPage = useAppSelector(state => state.dailySalaries.salaryForPage);
+  const salaryDetailList = useAppSelector(state => state.dailySalaries.salaryDetailList);
+  const totalItems = useAppSelector(state => state.dailySalaries.totalItems);
 
   useEffect(() => {
-    dispatch(resetSalesDetailList()); // 상세 화면 진입 시 salesDetailList 초기화
+    dispatch(resetSalaryDetailList()); // 상세 화면 진입 시 salaryDetailList 초기화
   }, []);
 
   useEffect(() => {
-    // console.warn('Updated salesDetailList:', salesDetailList);
-  }, [salesDetailList]);
+    // console.warn('Updated salaryDetailList:', salaryDetailList);
+  }, [salaryDetailList]);
 
   const handleBack = () => {
-    navigate('/sales', { replace: true });
-    // resetSalesDetailList();
+    navigate('/salary', { replace: true });
+    // resetSalaryDetailList();
   };
 
   return (
@@ -108,7 +108,7 @@ export const SalesDetail = () => {
               </tr>
             </thead>
             <tbody>
-              {salesForPage.map((user, i) => (
+              {salaryForPage.map((user, i) => (
                 <tr id={user.login} key={`user-${i}`}>
                   <td>{user.id}</td>
                   <td>{user.shopTableId}</td>
@@ -126,7 +126,7 @@ export const SalesDetail = () => {
             </tbody>
           </Table>
           {totalItems ? (
-            <div className={salesForPage?.length > 0 ? '' : 'd-none'}>
+            <div className={salaryForPage?.length > 0 ? '' : 'd-none'}>
               <div className="justify-content-center d-flex">
                 <JhiItemCount page={pagination.activePage} total={totalItems} itemsPerPage={pagination.itemsPerPage} i18nEnabled />
               </div>
@@ -152,7 +152,7 @@ export const SalesDetail = () => {
         </Col>
         <Col md="6">
           <div>
-            {salesDetailList.map((data, i) => (
+            {salaryDetailList.map((data, i) => (
               <div key={i}>
                 <ul>
                   <li>
@@ -205,4 +205,4 @@ export const SalesDetail = () => {
   );
 };
 
-export default SalesDetail;
+export default SalaryDetail;

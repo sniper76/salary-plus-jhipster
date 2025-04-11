@@ -4,17 +4,17 @@ import { Button, Col, Row } from 'reactstrap';
 import { Translate } from 'react-jhipster';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUserShops } from 'app/modules/order/order.reducer';
-import { getShopSaleList } from './sales.reducer';
+import { getShopDailySalaryList } from './salary.reducer';
 
-export const Sales = () => {
+export const Salary = () => {
   const dispatch = useAppDispatch();
   const shops = useAppSelector(state => state.orders.shops);
-  const salesList = useAppSelector(state => state.sales.salesList);
+  const salaryList = useAppSelector(state => state.dailySalaries.salaryList);
 
   const dateNow = new Date();
   const today = dateNow.toISOString().slice(0, 10);
 
-  dateNow.setDate(dateNow.getDate() - 7); // 7일 전으로 설정
+  dateNow.setDate(dateNow.getDate() - 7);
   const sevenDaysAgo = dateNow.toISOString().slice(0, 10);
 
   const [selectedValue, setSelectedValue] = useState(-1);
@@ -40,7 +40,7 @@ export const Sales = () => {
   useEffect(() => {
     if (shops.length > 0) {
       setSelectedValue(shops[0].id);
-      dispatch(getShopSaleList({ shopId: shops[0].id, startDate, endDate }));
+      dispatch(getShopDailySalaryList({ shopId: shops[0].id, startDate, endDate }));
     }
   }, [shops, startDate, endDate]);
 
@@ -48,7 +48,7 @@ export const Sales = () => {
     <Row>
       <Col md="12">
         <h2>
-          <Translate contentKey="global.menu.sales">매출</Translate>
+          <Translate contentKey="global.menu.salary">주급</Translate>
         </h2>
         <Row>
           <div className="custom-date-input-select">
@@ -64,19 +64,16 @@ export const Sales = () => {
           </div>
         </Row>
         <Row>
-          {salesList?.map((item, idx) => (
+          {salaryList?.map((item, idx) => (
             <Col key={idx} xs="auto" className="border text-center p-3">
               <p>{item.date}</p>
               <p>
-                <Translate contentKey="global.menu.sales">매출</Translate>: {item.orderDetailPrice}
+                <Translate contentKey="global.menu.salary">주급</Translate>: {item.price}
               </p>
               <p>
-                <Translate contentKey="salesItemDiscount.home.title">할인</Translate>: {item.orderDetailDiscountPrice || 0}
+                <Translate contentKey="penalty.home.title">벌금</Translate>: {item.penaltyPrice || 0}
               </p>
-              <p>
-                <Translate contentKey="global.label.refund">환불</Translate>: {item.shopRefundPrice || 0}
-              </p>
-              <Link to={`/sales/${item.shopId}/${item.date}`} className="btn btn-primary jh-create-entity">
+              <Link to={`/salary/${item.shopId}/${item.date}`} className="btn btn-primary jh-create-entity">
                 <span className="d-md-inline">
                   <Translate contentKey="order.label.details">상세</Translate>
                 </span>
@@ -89,4 +86,4 @@ export const Sales = () => {
   );
 };
 
-export default Sales;
+export default Salary;
