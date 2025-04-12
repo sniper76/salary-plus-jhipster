@@ -5,6 +5,7 @@ import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
 import com.salary.plus.security.SecurityUtils;
+import com.salary.plus.service.EntityManagerService;
 import com.salary.plus.service.ShopUserDailySalaryService;
 import com.salary.plus.service.dto.ShopDailySalaryDTO;
 import com.salary.plus.service.dto.ShopSalaryDTO;
@@ -65,6 +66,7 @@ public class ShopUserDailySalaryResource {
     private String applicationName;
 
     private final ShopUserDailySalaryService shopDailySalaryService;
+    private final EntityManagerService entityManagerService;
 
     /**
      * {@code POST  /api/shops}  : Creates a new user.
@@ -99,7 +101,7 @@ public class ShopUserDailySalaryResource {
         @PathVariable("startDate") String startDate,
         @PathVariable("endDate") String endDate
     ) {
-        final List<ShopSalaryDTO> items = shopDailySalaryService.getAllDailySalaries(shopId, startDate, endDate);
+        final List<ShopSalaryDTO> items = entityManagerService.findAllByShopIdAndSearchDate(shopId, startDate, endDate);
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 }

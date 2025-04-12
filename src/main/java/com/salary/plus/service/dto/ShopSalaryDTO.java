@@ -15,7 +15,11 @@ public class ShopSalaryDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String date;
-    private Long price;
-    private Long penaltyPrice;
+    private Long userId;
+    private String modelNo;
+    private String firstName;
+    private String lastName;
+    private Long salaryPrice;
+    private Long dayPenaltyPrice;
+    private Long timePenaltyPrice;
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -23,20 +24,45 @@ public interface ShopUserDailySalaryRepository extends JpaRepository<ShopUserDai
 
     @Query(
         value = """
-            select jsuds.date,
-                   sum(jsuds.price),
-                   sum(jsuds.price)
-            from jhi_user ju
-                inner join jhi_shop_user_mapping jsum on ju.id = jsum.user_id
-                inner join jhi_shop js on jsum.shop_id = js.id
-                inner join jhi_shop_user_daily_salary jsuds on ju.id = jsuds.user_id
-                inner join jhi_shop_user_base_salary_mapping jsubsm on jsuds.user_id = jsubsm.user_id
-            where jsuds.date between '2025-03-01' and '2025-04-30'
-              and js.id = 1
-            group by jsuds.date
-            order by jsuds.date
+        SELECT temp.id as user_id,
+               temp.model_no, temp.first_name, temp.last_name,
+               sum(jsuds.price) as salary_price,
+               sum(case when jsuds.price is null then (
+                   select price
+                   from jhi_shop_penalty
+                   where shop_id = 1
+                     and type = 'DAY'
+                     and activated = true
+                   and type_value like '%'||temp.day_of_week||'%'
+                   ) end) as day_penalty_price,
+               sum(case when jsuds.price is not null then (
+                    select case when type_value = '1M' then trunc(EXTRACT(EPOCH FROM (now() - jsuds.created_date)) / 60) * jsuds.price
+                                when type_value = '1H' then trunc(EXTRACT(EPOCH FROM (now() - jsuds.created_date)) / 3600) * jsuds.price end
+                   from jhi_shop_penalty
+                   where shop_id = 1
+                     and type = 'TIME'
+                     and activated = true
+               ) end) as time_penalty_price
+        FROM (
+             SELECT to_char(date, 'YYYY-MM-DD') AS date,
+                    upper(to_char(date, 'Dy')) as day_of_week,
+                    ju.id, ju.model_no, ju.first_name, ju.last_name
+             FROM generate_series(date :startDate, date :endDate, interval '1 day') as temp(date)
+             cross join jhi_user ju
+             where ju.commission_target_yn = true
+         ) AS temp
+         LEFT OUTER JOIN jhi_shop_user_daily_salary jsuds
+                         ON temp.date = jsuds.date and temp.id = jsuds.user_id
+        WHERE temp.date BETWEEN :startDate AND :endDate
+        and jsuds.shop_id = :shopId
+        group by temp.id,
+                 temp.model_no, temp.first_name, temp.last_name
         """,
         nativeQuery = true
     )
-    List<ShopSalaryDTO> findAllByShopIdAndSearchDate(Long shopId, String startDate, String endDate);
+    List<ShopSalaryDTO> findAllByShopIdAndSearchDate(
+        @Param("shopId") Long shopId,
+        @Param("startDate") String startDate,
+        @Param("endDate") String endDate
+    );
 }

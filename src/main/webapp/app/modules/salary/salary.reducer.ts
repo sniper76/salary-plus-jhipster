@@ -40,7 +40,7 @@ export const getShopSalaryForPage = createAsyncThunk(
 export type SalaryState = Readonly<typeof initialState>;
 
 export const SalarySlice = createSlice({
-  name: 'dailySalaries',
+  name: 'salaries',
   initialState: initialState as SalaryState,
   reducers: {
     reset() {

@@ -13,7 +13,7 @@ import works from 'app/modules/work/work.reducer';
 import orders from 'app/modules/order/order.reducer';
 import sales from 'app/modules/sales/sales.reducer';
 import salesItems from 'app/modules/management/sales-item/sales-item.reducer';
-import salary from 'app/modules/salary/salary.reducer';
+import salaries from 'app/modules/salary/salary.reducer';
 import penalties from 'app/modules/management/penalty/penalty.reducer';
 import baseSalaries from 'app/modules/management/base-salary/base-salary.reducer';
 import bonusSalaries from 'app/modules/management/bonus-salary/bonus-salary.reducer';
@@ -42,7 +42,7 @@ const rootReducer: ReducersMapObject = {
   orders,
   sales,
   salesItems,
-  salary,
+  salaries,
   penalties,
   baseSalaries,
   bonusSalaries,

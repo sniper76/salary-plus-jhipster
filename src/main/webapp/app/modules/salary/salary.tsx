@@ -9,7 +9,7 @@ import { getShopDailySalaryList } from './salary.reducer';
 export const Salary = () => {
   const dispatch = useAppDispatch();
   const shops = useAppSelector(state => state.orders.shops);
-  const salaryList = useAppSelector(state => state.dailySalaries.salaryList);
+  const salaryList = useAppSelector(state => state.salaries.salaryList);
 
   const dateNow = new Date();
   const today = dateNow.toISOString().slice(0, 10);
@@ -66,14 +66,20 @@ export const Salary = () => {
         <Row>
           {salaryList?.map((item, idx) => (
             <Col key={idx} xs="auto" className="border text-center p-3">
-              <p>{item.date}</p>
               <p>
-                <Translate contentKey="global.menu.salary">주급</Translate>: {item.price}
+                {item.firstName} {item.lastName}
+              </p>
+              <p>{item.modelNo}</p>
+              <p>
+                <Translate contentKey="global.menu.salary">주급</Translate>: {item.salaryPrice}
               </p>
               <p>
-                <Translate contentKey="penalty.home.title">벌금</Translate>: {item.penaltyPrice || 0}
+                <Translate contentKey="penalty.home.title">벌금</Translate>: {item.dayPenaltyPrice || 0}
               </p>
-              <Link to={`/salary/${item.shopId}/${item.date}`} className="btn btn-primary jh-create-entity">
+              <p>
+                <Translate contentKey="penalty.home.title">벌금</Translate>: {item.timePenaltyPrice || 0}
+              </p>
+              <Link to={`/salary/${item.price}/${item.modelNo}`} className="btn btn-primary jh-create-entity">
                 <span className="d-md-inline">
                   <Translate contentKey="order.label.details">상세</Translate>
                 </span>
