@@ -134,6 +134,15 @@ public class ShopPenaltyResource {
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "penalty.deleted", login)).build();
     }
 
+    @GetMapping("/{shopId}/penalties/{shopPenaltyId}")
+    public ResponseEntity<ShopPenalty> getShopShopPenalty(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("shopPenaltyId") long shopPenaltyId
+    ) {
+        LOG.debug("REST request to get ShopId : {}, ShopPenaltyId : {}", shopId, shopPenaltyId);
+        return ResponseUtil.wrapOrNotFound(shopPenaltyService.get(shopId, shopPenaltyId));
+    }
+
     /**
      * {@code GET /shops/{shopId}/penalties} : get all users with all the details - calling this are only allowed for the administrators.
      *
@@ -144,15 +153,6 @@ public class ShopPenaltyResource {
         LOG.debug("REST request to get all sales item for an admin");
         final List<ShopPenalty> items = shopPenaltyService.getAllPenalties(shopId);
         return new ResponseEntity<>(items, HttpStatus.OK);
-    }
-
-    @GetMapping("/{shopId}/penalties/{shopPenaltyId}")
-    public ResponseEntity<ShopPenalty> getShopShopPenalty(
-        @PathVariable("shopId") Long shopId,
-        @PathVariable("shopPenaltyId") long shopPenaltyId
-    ) {
-        LOG.debug("REST request to get ShopId : {}, ShopPenaltyId : {}", shopId, shopPenaltyId);
-        return ResponseUtil.wrapOrNotFound(shopPenaltyService.get(shopId, shopPenaltyId));
     }
 
     @GetMapping("/{shopId}/penalties")

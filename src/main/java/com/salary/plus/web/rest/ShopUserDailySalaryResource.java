@@ -86,9 +86,10 @@ public class ShopUserDailySalaryResource {
         @Valid @RequestBody ShopDailySalaryDTO shopSalesItemDTO
     ) throws URISyntaxException {
         LOG.debug("REST request to save User : {}", shopSalesItemDTO);
-        List<ShopUserDailySalary> newUser = shopDailySalaryService.create(shopSalesItemDTO);
+        final String login = SecurityUtils.getLoginNoneNull();
+        List<ShopUserDailySalary> newUser = shopDailySalaryService.create(shopSalesItemDTO, login);
         final UserDTO userDTO = new UserDTO();
-        userDTO.setLogin(SecurityUtils.getLoginNoneNull());
+        userDTO.setLogin(login);
         userDTO.setSalaries(newUser);
         return ResponseEntity.created(new URI("/api/shops/" + shopId + "/daily-salaries"))
             .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", userDTO.getLogin()))

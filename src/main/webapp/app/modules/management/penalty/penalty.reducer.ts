@@ -8,6 +8,7 @@ const initialState = {
   loading: false,
   errorMessage: null,
   penalty: defaultValue,
+  penalties: [] as ReadonlyArray<IShopPenalty>,
   penaltiesForPage: [] as ReadonlyArray<IShopPenalty>,
   updating: false,
   updateSuccess: false,
@@ -20,6 +21,12 @@ const apiUrl = 'api/shops/';
 
 export const getPageShopPenalties = createAsyncThunk('management/penalties_page', async ({ id, page, size, sort }: IQueryParams) => {
   const requestUrl = `${apiUrl}${id}/penalties${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
+  console.warn('requestUrl', requestUrl);
+  return axios.get<IShopPenalty[]>(requestUrl);
+});
+
+export const getShopPenalties = createAsyncThunk('management/penalties_list', async ({ id }: IQueryParams) => {
+  const requestUrl = `${apiUrl}${id}/penalties/all`;
   console.warn('requestUrl', requestUrl);
   return axios.get<IShopPenalty[]>(requestUrl);
 });
@@ -88,7 +95,11 @@ export const PenaltySlice = createSlice({
       .addMatcher(isFulfilled(getPageShopPenalties), (state, action) => {
         state.loading = false;
         state.penaltiesForPage = action.payload.data;
-        console.warn('action.payload.data', action.payload.data);
+        state.totalItems = parseInt(action.payload.headers['x-total-count'], 10);
+      })
+      .addMatcher(isFulfilled(getShopPenalties), (state, action) => {
+        state.loading = false;
+        state.penalties = action.payload.data;
         state.totalItems = parseInt(action.payload.headers['x-total-count'], 10);
       })
       .addMatcher(isFulfilled(createPenalty, updatePenalty), (state, action) => {
@@ -97,7 +108,7 @@ export const PenaltySlice = createSlice({
         state.updateSuccess = true;
         state.penalty = action.payload.data;
       })
-      .addMatcher(isPending(getPageShopPenalties, getShopPenalty), state => {
+      .addMatcher(isPending(getPageShopPenalties, getShopPenalties, getShopPenalty), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
@@ -107,7 +118,7 @@ export const PenaltySlice = createSlice({
         state.updateSuccess = false;
         state.updating = true;
       })
-      .addMatcher(isRejected(getPageShopPenalties, getShopPenalty), (state, action) => {
+      .addMatcher(isRejected(getPageShopPenalties, getShopPenalty, getShopPenalties), (state, action) => {
         state.loading = false;
         state.updating = false;
         state.updateSuccess = false;

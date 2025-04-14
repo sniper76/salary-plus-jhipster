@@ -11,7 +11,7 @@ public class DefaultShopSalaryHandler implements SalaryHandler {
 
     @Override
     public boolean supports(Long shopId) {
-        return getSupportVersions().contains(shopId);
+        return getSupportShopIds().contains(shopId);
     }
 
     @Override

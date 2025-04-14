@@ -9,6 +9,9 @@
     },
     "button": {
       "checkIn": "출근하기",
+      "attendance": "근태관리",
+      "absence": "결근",
+      "absent": "결근처리",
       "reset": "초기화",
       "allCheckIn": "전체출근",
       "halfSalary": "Half 일당적용하기",

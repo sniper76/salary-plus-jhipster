@@ -5,6 +5,7 @@ import com.salary.plus.domain.Authority;
 import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.User;
+import com.salary.plus.enums.PenaltyType;
 import com.salary.plus.enums.RoleType;
 import com.salary.plus.repository.AuthorityRepository;
 import com.salary.plus.repository.UserRepository;
@@ -414,7 +415,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<ShopUserResponse> getAllUsersByDate(Long shopId, String date) {
-        return userRepository.findAllByShopIdAndDate(shopId, date, true, true);
+        return userRepository.findAllByShopIdAndDate(shopId, date, true, true, PenaltyType.getDayPenalty());
     }
 
     public void createModels(String login, AdminModelDTO modelDTO) {

@@ -65,6 +65,11 @@ public class ShopPenaltyService {
     }
 
     @Transactional(readOnly = true)
+    public Optional<ShopPenalty> getByType(Long shopId, PenaltyType type) {
+        return shopPenaltyRepository.findByShopIdAndType(shopId, type);
+    }
+
+    @Transactional(readOnly = true)
     public Page<ShopPenalty> getAllPenalties(Long shopId, Pageable pageable) {
         return shopPenaltyRepository.findAllByShopId(shopId, pageable);
     }

@@ -32,6 +32,16 @@ export const createCheckIn = createAsyncThunk(
   { serializeError: serializeAxiosError },
 );
 
+export const createAbsence = createAsyncThunk(
+  'work/create_absence',
+  async ({ shopId, date, userId }: any, thunkAPI) => {
+    const requestUrl = `api/shops/${shopId}/dates/${date}/users/${userId}/absence`;
+    return await axios.post(requestUrl);
+    // thunkAPI.dispatch(getShopUsers({ shopId, date }));
+  },
+  { serializeError: serializeAxiosError },
+);
+
 export const updateHalfSalary = createAsyncThunk(
   'work/update_half_salary',
   async ({ shopId, date, userId }: any, thunkAPI) => {

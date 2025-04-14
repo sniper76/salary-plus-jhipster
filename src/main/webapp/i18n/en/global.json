@@ -119,6 +119,8 @@
       "role": "Role",
       "refund": "Refund",
       "model": "Model",
+      "shopSelect": "Shop Select",
+      "dateSelect": "Date Select",
       "shopCommissionPrice": "Shop Commission Price",
       "mamaCommissionPrice": "Mama Commission Price",
       "modelCommissionPrice": "Model Commission Price",

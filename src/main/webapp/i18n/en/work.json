@@ -9,6 +9,9 @@
     },
     "button": {
       "checkIn": "Check In",
+      "attendance": "Attendance Management",
+      "absence": "Absence",
+      "absent": "Absent",
       "reset": "Reset",
       "allCheckIn": "All Check In",
       "halfSalary": "Half Salary",

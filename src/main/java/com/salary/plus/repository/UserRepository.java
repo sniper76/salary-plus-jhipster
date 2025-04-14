@@ -2,6 +2,7 @@ package com.salary.plus.repository;
 
 import com.salary.plus.domain.Authority;
 import com.salary.plus.domain.User;
+import com.salary.plus.enums.PenaltyType;
 import com.salary.plus.service.dto.ShopModelResponse;
 import com.salary.plus.service.dto.ShopUserResponse;
 import java.time.Instant;
@@ -111,17 +112,36 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAllByShopIdExcludingRole(Long shopId, String roleName, Pageable pageable);
 
     @Query(
-        """
-            select new com.salary.plus.service.dto.ShopUserResponse(u, suds)
-            from Shop s
-            inner join ShopUserMapping sump on s.id = sump.shopId
-            inner join User u on sump.userId = u.id
-            left outer join ShopUserDailySalary suds on u.id = suds.userId and suds.date = :date
-            where s.id = :shopId
+        value = """
+        select u.id as user_id, u.first_name, u.last_name, u.model_no,
+        case when suds.id is null then false else true end as is_check_in,
+        suds.created_date,
+        case when spm.user_id is null then false else true end as is_absence
+        from jhi_shop s
+        inner join jhi_shop_user_mapping sump on s.id = sump.shop_id
+        inner join jhi_user u on sump.user_id = u.id
+        left outer join jhi_shop_user_daily_salary suds on u.id = suds.user_id and suds.date = :date
+        left outer join
+        (
+            select supm.user_id
+                from jhi_shop_penalty sp
+            inner join jhi_shop_user_penalty_mapping supm on sp.id = supm.shop_penalty_id
+            where sp.shop_id = :shopId
+                and sp.type in :types
+                and supm.date = :date
+        ) spm on u.id = spm.user_id
+        where s.id = :shopId
             and u.activated = :activated
-            and u.commissionTargetYn = :commissionTargetYn
-            order by u.modelNo
-        """
+            and u.commission_target_yn = :commissionTargetYn
+        order by u.model_no
+        """,
+        nativeQuery = true
     )
-    List<ShopUserResponse> findAllByShopIdAndDate(Long shopId, String date, boolean activated, boolean commissionTargetYn);
+    List<ShopUserResponse> findAllByShopIdAndDate(
+        Long shopId,
+        String date,
+        boolean activated,
+        boolean commissionTargetYn,
+        List<String> types
+    );
 }

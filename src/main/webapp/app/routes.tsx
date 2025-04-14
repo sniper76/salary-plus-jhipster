@@ -21,6 +21,7 @@ import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
+import WorkAttendanceDialog from 'app/modules/work/work-attendance-dialog';
 
 const loading = <div>loading ...</div>;
 
@@ -47,10 +48,13 @@ const AppRoutes = () => {
           path="work"
           element={
             <PrivateRoute hasAnyAuthorities={[AUTHORITIES.MANAGER]}>
-              <Work />
+              <Outlet /> {/* 중첩된 라우트의 렌더링 위치 */}
             </PrivateRoute>
           }
-        />
+        >
+          <Route index element={<Work />} />
+          <Route path=":shopId/:userId/:date" element={<WorkAttendanceDialog />} />
+        </Route>
         <Route
           path="order"
           element={

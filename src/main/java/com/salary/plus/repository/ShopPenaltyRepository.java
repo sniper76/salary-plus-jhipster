@@ -2,6 +2,7 @@ package com.salary.plus.repository;
 
 import com.salary.plus.domain.ShopPenalty;
 import com.salary.plus.domain.User;
+import com.salary.plus.enums.PenaltyType;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -19,4 +20,6 @@ public interface ShopPenaltyRepository extends JpaRepository<ShopPenalty, Long> 
     Page<ShopPenalty> findAllByShopId(Long shopId, Pageable pageable);
 
     List<ShopPenalty> findAllByShopIdAndActivated(Long shopId, boolean activated);
+
+    Optional<ShopPenalty> findByShopIdAndType(Long shopId, PenaltyType type);
 }

@@ -86,4 +86,11 @@
       insert into jhi_shop_penalty (shop_id, name_ko, name_en, type, type_value, price, activated, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '필수근무일', 'Mandatory day', 'DAY', 'THU,FRI,SAT,SUN', 1000, true, 'admin', now());
     </sql>
   </changeSet>
+
+  <changeSet id="add unique index jhi_shop_penalty" author="sniper">
+    <createIndex unique="true" tableName="jhi_shop_penalty" indexName="unique_index_jhi_shop_penalty">
+      <column name="shop_id"/>
+      <column name="type"/>
+    </createIndex>
+  </changeSet>
 </databaseChangeLog>

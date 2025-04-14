@@ -3,6 +3,7 @@ package com.salary.plus.web.rest;
 import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
+import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.ShopUserDailySalaryService;
 import com.salary.plus.service.UserService;
 import com.salary.plus.service.dto.ShopUserResponse;
@@ -65,14 +66,24 @@ public class ShopUserResource {
     @ResponseStatus(HttpStatus.CREATED)
     public void createCheckIn(@PathVariable("shopId") Long shopId, @PathVariable("date") String date, @PathVariable("userId") Long userId) {
         LOG.debug("REST shopId : {}, date : {}, userId : {}", shopId, date, userId);
-        shopUserDailySalaryService.createCheckIn(shopId, date, userId);
+        final String login = SecurityUtils.getLoginNoneNull();
+        shopUserDailySalaryService.createCheckIn(shopId, date, userId, login);
+    }
+
+    @PostMapping("/{shopId}/dates/{date}/users/{userId}/absence")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createAbsence(@PathVariable("shopId") Long shopId, @PathVariable("date") String date, @PathVariable("userId") Long userId) {
+        LOG.debug("REST shopId : {}, date : {}, userId : {}", shopId, date, userId);
+        final String login = SecurityUtils.getLoginNoneNull();
+        shopUserDailySalaryService.createAbsence(shopId, date, userId, login);
     }
 
     @PostMapping("/{shopId}/dates/{date}/users/all")
     @ResponseStatus(HttpStatus.CREATED)
     public void createAllCheckIn(@PathVariable("shopId") Long shopId, @PathVariable("date") String date) {
         LOG.debug("REST shopId : {}, date : {}", shopId, date);
-        shopUserDailySalaryService.createAllCheckIn(shopId, date);
+        final String login = SecurityUtils.getLoginNoneNull();
+        shopUserDailySalaryService.createAllCheckIn(shopId, date, login);
     }
 
     @PostMapping("/{shopId}/dates/{date}/users/half-salaries/all")
