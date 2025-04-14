@@ -52,12 +52,18 @@ public class ShopUserDailySalaryService {
             .getUserIds()
             .stream()
             .map(item -> {
-                return getShopUserDailySalary(userDTO.getShopId(), userDTO.getDate(), item, salary, login);
+                return saveAndGetShopUserDailySalary(userDTO.getShopId(), userDTO.getDate(), item, salary, login);
             })
             .toList();
     }
 
-    private ShopUserPenaltyMapping getShopUserPenaltyMapping(Long shopPenaltyId, String date, Long userId, Integer price, String login) {
+    private ShopUserPenaltyMapping saveAndGetShopUserPenaltyMapping(
+        Long shopPenaltyId,
+        String date,
+        Long userId,
+        Integer price,
+        String login
+    ) {
         ShopUserPenaltyMapping shopUserDailySalary = new ShopUserPenaltyMapping();
         shopUserDailySalary.setShopPenaltyId(shopPenaltyId);
         shopUserDailySalary.setDate(date);
@@ -67,7 +73,7 @@ public class ShopUserDailySalaryService {
         return shopUserPenaltyMappingRepository.save(shopUserDailySalary);
     }
 
-    private ShopUserDailySalary getShopUserDailySalary(Long shopId, String date, Long userId, Integer salary, String login) {
+    private ShopUserDailySalary saveAndGetShopUserDailySalary(Long shopId, String date, Long userId, Integer salary, String login) {
         ShopUserDailySalary shopUserDailySalary = new ShopUserDailySalary();
         shopUserDailySalary.setShopId(shopId);
         shopUserDailySalary.setDate(date);
@@ -78,6 +84,9 @@ public class ShopUserDailySalaryService {
     }
 
     public void createCheckIn(Long shopId, String date, Long userId, String login) {
+        final List<ShopPenalty> penaltyList = shopPenaltyService.getAllPenalties(shopId);
+        deleteUserDailySalaryWithUserPenaltyMapping(shopId, date, userId, penaltyList);
+
         final ShopBaseSalary mapping = getShopBaseSalaryByUserId(shopId, userId);
         createCheckInLatePenalty(shopId, date, userId, login);
         shopUserDailySalaryRepository
@@ -89,7 +98,7 @@ public class ShopUserDailySalaryService {
                     shopUserDailySalaryRepository.save(it);
                 },
                 () -> {
-                    getShopUserDailySalary(shopId, date, userId, mapping.getPrice(), login);
+                    saveAndGetShopUserDailySalary(shopId, date, userId, mapping.getPrice(), login);
                 }
             );
     }
@@ -109,7 +118,7 @@ public class ShopUserDailySalaryService {
                         shopUserPenaltyMappingRepository.save(it);
                     },
                     () -> {
-                        getShopUserPenaltyMapping(shopId, date, userId, penaltyPrice, login);
+                        saveAndGetShopUserPenaltyMapping(shopPenalty.getId(), date, userId, penaltyPrice, login);
                     }
                 );
         }
@@ -156,19 +165,8 @@ public class ShopUserDailySalaryService {
     }
 
     public void createAbsence(Long shopId, String date, Long userId, String login) {
-        //user daily salary 가 있으면 삭제
-        final List<ShopUserDailySalary> dailySalaries = shopUserDailySalaryRepository.findAllByShopIdAndDateAndUserId(shopId, date, userId);
-        shopUserDailySalaryRepository.deleteAll(dailySalaries);
-        //user penalty mapping 에 지각 패널티가 있으면 삭제
         final List<ShopPenalty> penaltyList = shopPenaltyService.getAllPenalties(shopId);
-        penaltyList
-            .stream()
-            .filter(it -> it.getType() == PenaltyType.TIME)
-            .forEach(it -> {
-                shopUserPenaltyMappingRepository
-                    .findByShopPenaltyIdAndUserIdAndDate(it.getId(), userId, date)
-                    .ifPresent(shopUserPenaltyMappingRepository::delete);
-            });
+        deleteUserDailySalaryWithUserPenaltyMapping(shopId, date, userId, penaltyList);
 
         final String weekday = DateUtils.getWeekdayFormat();
         penaltyList
@@ -184,15 +182,24 @@ public class ShopUserDailySalaryService {
                             shopUserPenaltyMappingRepository.save(it);
                         },
                         () -> {
-                            ShopUserPenaltyMapping mapping = new ShopUserPenaltyMapping();
-                            mapping.setShopPenaltyId(elem.getId());
-                            mapping.setUserId(userId);
-                            mapping.setDate(date);
-                            mapping.setPrice(elem.getPrice());
-                            mapping.created(login);
-                            shopUserPenaltyMappingRepository.save(mapping);
+                            saveAndGetShopUserPenaltyMapping(elem.getId(), date, userId, elem.getPrice(), login);
                         }
                     );
+            });
+    }
+
+    private void deleteUserDailySalaryWithUserPenaltyMapping(Long shopId, String date, Long userId, List<ShopPenalty> penaltyList) {
+        //user daily salary 가 있으면 삭제
+        final List<ShopUserDailySalary> dailySalaries = shopUserDailySalaryRepository.findAllByShopIdAndDateAndUserId(shopId, date, userId);
+        shopUserDailySalaryRepository.deleteAll(dailySalaries);
+        //user penalty mapping 에 지각 패널티가 있으면 삭제
+        penaltyList
+            .stream()
+            .filter(it -> PenaltyType.getDayWithTimePenalty().contains(it.getType()))
+            .forEach(it -> {
+                shopUserPenaltyMappingRepository
+                    .findByShopPenaltyIdAndUserIdAndDate(it.getId(), userId, date)
+                    .ifPresent(shopUserPenaltyMappingRepository::delete);
             });
     }
 }

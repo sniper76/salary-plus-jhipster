@@ -25,9 +25,18 @@ export const createCheckIn = createAsyncThunk(
   'work/create_checkIn',
   async ({ shopId, date, userId }: any, thunkAPI) => {
     const requestUrl = `api/shops/${shopId}/dates/${date}/users/${userId}`;
-    const result = await axios.post(requestUrl);
-    thunkAPI.dispatch(getShopUsers({ shopId, date }));
-    return result;
+    return await axios.post(requestUrl);
+    // thunkAPI.dispatch(getShopUsers({ shopId, date }));
+  },
+  { serializeError: serializeAxiosError },
+);
+
+export const createAllCheckIn = createAsyncThunk(
+  'work/create_checkIn',
+  async ({ shopId, date }: any, thunkAPI) => {
+    const requestUrl = `api/shops/${shopId}/dates/${date}/users/all`;
+    return await axios.post(requestUrl);
+    // thunkAPI.dispatch(getShopUsers({ shopId, date }));
   },
   { serializeError: serializeAxiosError },
 );
@@ -46,20 +55,8 @@ export const updateHalfSalary = createAsyncThunk(
   'work/update_half_salary',
   async ({ shopId, date, userId }: any, thunkAPI) => {
     const requestUrl = `api/shops/${shopId}/dates/${date}/users/half-salaries/${userId}`;
-    const result = await axios.post(requestUrl);
-    thunkAPI.dispatch(getShopUsers({ shopId, date }));
-    return result;
-  },
-  { serializeError: serializeAxiosError },
-);
-
-export const createAllCheckIn = createAsyncThunk(
-  'work/create_checkIn',
-  async ({ shopId, date }: any, thunkAPI) => {
-    const requestUrl = `api/shops/${shopId}/dates/${date}/users/all`;
-    const result = await axios.post(requestUrl);
-    thunkAPI.dispatch(getShopUsers({ shopId, date }));
-    return result;
+    return await axios.post(requestUrl);
+    // thunkAPI.dispatch(getShopUsers({ shopId, date }));
   },
   { serializeError: serializeAxiosError },
 );
@@ -68,9 +65,8 @@ export const updateAllHalfSalary = createAsyncThunk(
   'work/update_all_half_salary',
   async ({ shopId, date }: any, thunkAPI) => {
     const requestUrl = `api/shops/${shopId}/dates/${date}/users/half-salaries/all`;
-    const result = await axios.post(requestUrl);
-    thunkAPI.dispatch(getShopUsers({ shopId, date }));
-    return result;
+    return await axios.post(requestUrl);
+    // thunkAPI.dispatch(getShopUsers({ shopId, date }));
   },
   { serializeError: serializeAxiosError },
 );

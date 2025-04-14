@@ -21,7 +21,13 @@ public enum PenaltyType {
 
     private static List<PenaltyType> DAY_PENALTY = List.of(DAY, MANDATORY);
 
+    private static List<PenaltyType> DAY_WITH_PENALTY = List.of(DAY, MANDATORY, TIME);
+
     public static List<String> getDayPenalty() {
         return DAY_PENALTY.stream().map(PenaltyType::name).toList();
+    }
+
+    public static List<PenaltyType> getDayWithTimePenalty() {
+        return DAY_WITH_PENALTY;
     }
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Button, Col, Row } from 'reactstrap';
+import { Button, Col, Row, Card, CardBody, CardTitle, CardText, Input, Label } from 'reactstrap';
 import { Translate } from 'react-jhipster';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUserShops } from 'app/modules/order/order.reducer';
@@ -17,21 +17,9 @@ export const Salary = () => {
   dateNow.setDate(dateNow.getDate() - 7);
   const sevenDaysAgo = dateNow.toISOString().slice(0, 10);
 
-  const [selectedValue, setSelectedValue] = useState(-1);
+  const [selectedShopId, setSelectedShopId] = useState(-1);
   const [startDate, setStartDate] = useState(sevenDaysAgo);
   const [endDate, setEndDate] = useState(today);
-
-  const handleSelect = e => {
-    setSelectedValue(e.target.value);
-  };
-
-  const handleStartDateChange = e => {
-    setStartDate(e.target.value);
-  };
-
-  const handleEndDateChange = e => {
-    setEndDate(e.target.value);
-  };
 
   useEffect(() => {
     dispatch(getUserShops());
@@ -39,56 +27,76 @@ export const Salary = () => {
 
   useEffect(() => {
     if (shops.length > 0) {
-      setSelectedValue(shops[0].id);
+      setSelectedShopId(shops[0].id);
       dispatch(getShopDailySalaryList({ shopId: shops[0].id, startDate, endDate }));
     }
-  }, [shops, startDate, endDate]);
+  }, [shops, selectedShopId, startDate, endDate]);
 
   return (
-    <Row>
-      <Col md="12">
-        <h2>
-          <Translate contentKey="global.menu.salary">주급</Translate>
-        </h2>
-        <Row>
-          <div className="custom-date-input-select">
-            <select onChange={handleSelect} value={selectedValue}>
-              {shops.map(shop => (
-                <option value={shop.id} key={shop.id}>
-                  {shop.nameKo}
-                </option>
-              ))}
-            </select>
-            <input defaultValue={startDate} type="date" onChange={handleStartDateChange} />
-            <input defaultValue={endDate} type="date" onChange={handleEndDateChange} />
-          </div>
-        </Row>
-        <Row>
-          {salaryList?.map((item, idx) => (
-            <Col key={idx} xs="auto" className="border text-center p-3">
-              <p>
-                {item.firstName} {item.lastName}
-              </p>
-              <p>{item.modelNo}</p>
-              <p>
-                <Translate contentKey="global.menu.salary">주급</Translate>: {item.salaryPrice}
-              </p>
-              <p>
-                <Translate contentKey="penalty.home.title">벌금</Translate>: {item.dayPenaltyPrice || 0}
-              </p>
-              <p>
-                <Translate contentKey="penalty.home.title">벌금</Translate>: {item.timePenaltyPrice || 0}
-              </p>
-              <Link to={`/salary/${item.price}/${item.modelNo}`} className="btn btn-primary jh-create-entity">
-                <span className="d-md-inline">
-                  <Translate contentKey="order.label.details">상세</Translate>
-                </span>
-              </Link>
-            </Col>
-          ))}
-        </Row>
-      </Col>
-    </Row>
+    <div className="p-4">
+      <h2 className="mb-4">
+        <Translate contentKey="global.menu.salary">주급</Translate>
+      </h2>
+
+      <Row className="align-items-end mb-4">
+        <Col md="4">
+          <Label for="shopSelect">
+            <Translate contentKey="global.label.shopSelect">상점 선택</Translate>
+          </Label>
+          <Input type="select" id="shopSelect" value={selectedShopId} onChange={e => setSelectedShopId(Number(e.target.value))}>
+            {shops.map(shop => (
+              <option key={shop.id} value={shop.id}>
+                {shop.nameKo}
+              </option>
+            ))}
+          </Input>
+        </Col>
+        <Col md="3">
+          <Label for="dateSelect">
+            <Translate contentKey="global.label.startDateSelect">날짜 선택</Translate>
+          </Label>
+          <Input id="dateSelect" defaultValue={startDate} type="date" onChange={e => setStartDate(e.target.value)} />
+        </Col>
+        <Col md="3">
+          <Label for="dateSelect">
+            <Translate contentKey="global.label.endDateSelect">날짜 선택</Translate>
+          </Label>
+          <Input defaultValue={endDate} type="date" onChange={e => setEndDate(e.target.value)} />
+        </Col>
+        <Col md="2" className="d-flex justify-content-end gap-2"></Col>
+      </Row>
+
+      <Row>
+        {salaryList.map(item => (
+          <Col key={item.userId} xs="6" sm="4" md="3" lg="2" className="mb-3">
+            <Card className="h-100 text-center border shadow-sm">
+              <CardBody className="p-2">
+                <CardTitle tag="h5">
+                  {item.lastName} {item.firstName}
+                </CardTitle>
+                <CardText className="text-muted">{item.modelNo}</CardText>
+                <CardText className="text-muted">
+                  <Translate contentKey="global.menu.salary">주급</Translate>:{item.salaryPrice}
+                </CardText>
+                <CardText className="text-muted">
+                  <Translate contentKey="global.label.dayPenaltyPrice">결근 벌금</Translate>:{item.dayPenaltyPrice}
+                </CardText>
+                <CardText className="text-muted">
+                  <Translate contentKey="global.label.timePenaltyPrice">지각 벌금</Translate>:{item.timePenaltyPrice}
+                </CardText>
+                <div className="d-flex flex-column gap-2">
+                  <Link to={`/salary/${item.price}/${item.modelNo}`} className="btn btn-primary jh-create-entity">
+                    <span className="d-md-inline">
+                      <Translate contentKey="order.label.details">상세</Translate>
+                    </span>
+                  </Link>
+                </div>
+              </CardBody>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </div>
   );
 };
 

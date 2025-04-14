@@ -115,7 +115,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
         value = """
         select u.id as user_id, u.first_name, u.last_name, u.model_no,
         case when suds.id is null then false else true end as is_check_in,
-        suds.created_date,
         case when spm.user_id is null then false else true end as is_absence
         from jhi_shop s
         inner join jhi_shop_user_mapping sump on s.id = sump.shop_id

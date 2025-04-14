@@ -24,6 +24,5 @@ public class ShopUserResponse implements Serializable {
     private String lastName;
     private String modelNo;
     private boolean isCheckIn;
-    private Instant createdDate;
     private boolean isAbsence;
 }

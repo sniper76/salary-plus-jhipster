@@ -62,20 +62,20 @@ public class ShopUserResource {
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
-    @PostMapping("/{shopId}/dates/{date}/users/{userId}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createCheckIn(@PathVariable("shopId") Long shopId, @PathVariable("date") String date, @PathVariable("userId") Long userId) {
-        LOG.debug("REST shopId : {}, date : {}, userId : {}", shopId, date, userId);
-        final String login = SecurityUtils.getLoginNoneNull();
-        shopUserDailySalaryService.createCheckIn(shopId, date, userId, login);
-    }
-
     @PostMapping("/{shopId}/dates/{date}/users/{userId}/absence")
     @ResponseStatus(HttpStatus.CREATED)
     public void createAbsence(@PathVariable("shopId") Long shopId, @PathVariable("date") String date, @PathVariable("userId") Long userId) {
         LOG.debug("REST shopId : {}, date : {}, userId : {}", shopId, date, userId);
         final String login = SecurityUtils.getLoginNoneNull();
         shopUserDailySalaryService.createAbsence(shopId, date, userId, login);
+    }
+
+    @PostMapping("/{shopId}/dates/{date}/users/{userId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createCheckIn(@PathVariable("shopId") Long shopId, @PathVariable("date") String date, @PathVariable("userId") Long userId) {
+        LOG.debug("REST shopId : {}, date : {}, userId : {}", shopId, date, userId);
+        final String login = SecurityUtils.getLoginNoneNull();
+        shopUserDailySalaryService.createCheckIn(shopId, date, userId, login);
     }
 
     @PostMapping("/{shopId}/dates/{date}/users/all")

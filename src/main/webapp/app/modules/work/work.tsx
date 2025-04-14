@@ -33,7 +33,15 @@ export const Work = () => {
   }, [shops, currentDate]);
 
   const handleCheckInClick = user => () => {
-    dispatch(createCheckIn({ shopId: selectedShopId, date: currentDate, userId: user.userId }));
+    dispatch(createCheckIn({ shopId: selectedShopId, date: currentDate, userId: user.userId })).then(() => {
+      dispatch(getShopUsers({ shopId: selectedShopId, date: currentDate }));
+    });
+  };
+
+  const handleAllCheckInClick = () => {
+    dispatch(createAllCheckIn({ shopId: selectedShopId, date: currentDate })).then(() => {
+      dispatch(getShopUsers({ shopId: selectedShopId, date: currentDate }));
+    });
   };
 
   const handleAbsenceClick = user => () => {
@@ -43,7 +51,15 @@ export const Work = () => {
   };
 
   const handleHalfSalaryClick = user => () => {
-    dispatch(updateHalfSalary({ shopId: selectedShopId, date: currentDate, userId: user.userId }));
+    dispatch(updateHalfSalary({ shopId: selectedShopId, date: currentDate, userId: user.userId })).then(() => {
+      dispatch(getShopUsers({ shopId: selectedShopId, date: currentDate }));
+    });
+  };
+
+  const handleAllHalfSalaryClick = () => {
+    dispatch(updateAllHalfSalary({ shopId: selectedShopId, date: currentDate })).then(() => {
+      dispatch(getShopUsers({ shopId: selectedShopId, date: currentDate }));
+    });
   };
 
   return (
@@ -72,20 +88,20 @@ export const Work = () => {
           <Input type="date" id="dateSelect" value={currentDate} onChange={e => setCurrentDate(e.target.value)} />
         </Col>
         <Col md="5" className="d-flex justify-content-end gap-2">
-          <Button color="primary" onClick={() => dispatch(createAllCheckIn({ shopId: selectedShopId, date: currentDate }))}>
+          <Button color="secondary" onClick={handleAllCheckInClick}>
             <Translate contentKey="work.button.allCheckIn">전체출근</Translate>
           </Button>
-          <Button color="info" onClick={() => dispatch(updateAllHalfSalary({ shopId: selectedShopId, date: currentDate }))}>
+          <Button color="info" onClick={handleAllHalfSalaryClick}>
             <Translate contentKey="work.button.allHalfSalary">전체 Half 일당적용하기</Translate>
           </Button>
         </Col>
       </Row>
 
-      <Row xs="1" sm="2" md="3" lg="4" className="g-4">
+      <Row>
         {users.map(user => (
-          <Col key={user.userId}>
-            <Card className="h-100 text-center shadow-sm">
-              <CardBody>
+          <Col key={user.userId} xs="6" sm="4" md="3" lg="2" className="mb-3">
+            <Card className="h-100 text-center border shadow-sm">
+              <CardBody className="p-2">
                 <CardTitle tag="h5">
                   {user.lastName} {user.firstName}
                 </CardTitle>
@@ -93,24 +109,24 @@ export const Work = () => {
                 <div className="d-flex flex-column gap-2">
                   {user.checkIn ? (
                     <>
-                      <Button color="secondary" disabled>
+                      <Button color="success" size="sm" disabled>
                         <Translate contentKey="work.label.checkInOk">출근완료</Translate>
                       </Button>
-                      <Button color="info" onClick={handleHalfSalaryClick(user)}>
+                      <Button color="info" size="sm" onClick={handleHalfSalaryClick(user)}>
                         <Translate contentKey="work.button.halfSalary">Half 일당적용하기</Translate>
                       </Button>
                     </>
                   ) : (
-                    <Button color="primary" onClick={handleCheckInClick(user)}>
+                    <Button color="secondary" size="sm" onClick={handleCheckInClick(user)}>
                       <Translate contentKey="work.button.checkIn">출근하기</Translate>
                     </Button>
                   )}
                   {user.absence ? (
-                    <Button color="danger" size="sm" disabled>
+                    <Button color="warning" size="sm" disabled>
                       <Translate contentKey="work.button.absence">결근</Translate>
                     </Button>
                   ) : (
-                    <Button color="warning" onClick={handleAbsenceClick(user)} size="sm">
+                    <Button color="danger" size="sm" onClick={handleAbsenceClick(user)}>
                       <Translate contentKey="work.button.absent">결근처리</Translate>
                     </Button>
                   )}
