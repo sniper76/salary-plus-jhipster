@@ -16,7 +16,6 @@ import Order from 'app/modules/order/order';
 import Sales from 'app/modules/sales/sales';
 import SalesDetail from 'app/modules/sales/sales-detail';
 import Salary from 'app/modules/salary/salary';
-import SalaryDetail from 'app/modules/salary/salary-detail';
 import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
@@ -83,7 +82,6 @@ const AppRoutes = () => {
           }
         >
           <Route index element={<Salary />} />
-          <Route path=":shopId/:date" element={<SalaryDetail />} />
         </Route>
         <Route path="login" element={<Login />} />
         <Route path="logout" element={<Logout />} />

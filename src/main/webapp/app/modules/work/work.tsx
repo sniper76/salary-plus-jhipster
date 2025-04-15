@@ -65,7 +65,7 @@ export const Work = () => {
   return (
     <div className="p-4">
       <h2 className="mb-4">
-        <Translate contentKey="global.menu.work">근무 관리</Translate>
+        <Translate contentKey="global.menu.work">근무</Translate>
       </h2>
 
       <Row className="align-items-end mb-4">

@@ -5,7 +5,7 @@ import { getPaginationState, JhiItemCount, JhiPagination, Translate } from 'reac
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getShopSalaryDetailList, getShopSalaryForPage, reset, resetSalaryDetailList } from './salary.reducer';
+import { getShopSalaryDetailList, getShopSalaryForUser, reset, resetSalaryDetailList } from './salary.reducer';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
@@ -16,7 +16,7 @@ export const SalaryDetail = () => {
   const pageLocation = useLocation();
   const navigate = useNavigate();
 
-  const { shopId, date } = useParams();
+  const { shopId, userId, startDate, endDate, modelNo } = useParams();
 
   const [pagination, setPagination] = useState(
     overridePaginationStateWithQueryParams(getPaginationState(pageLocation, ITEMS_PER_PAGE, 'id'), pageLocation.search),
@@ -24,9 +24,9 @@ export const SalaryDetail = () => {
 
   const getSalaryFromProps = () => {
     dispatch(
-      getShopSalaryForPage({
+      getShopSalaryForUser({
         id: parseInt(shopId, 10),
-        query: date,
+        query: userId + '/' + startDate + '/' + endDate,
         page: pagination.activePage - 1,
         size: pagination.itemsPerPage,
         sort: `${pagination.sort},${pagination.order}`,
@@ -68,9 +68,9 @@ export const SalaryDetail = () => {
     dispatch(getShopSalaryDetailList({ shopId, orderId: e.id }));
   };
 
-  const salaryForPage = useAppSelector(state => state.dailySalaries.salaryForPage);
-  const salaryDetailList = useAppSelector(state => state.dailySalaries.salaryDetailList);
-  const totalItems = useAppSelector(state => state.dailySalaries.totalItems);
+  const salaryForPage = useAppSelector(state => state.salaries.salaryForPage);
+  const salaryDetailList = useAppSelector(state => state.salaries.salaryDetailList);
+  const totalItems = useAppSelector(state => state.salaries.totalItems);
 
   useEffect(() => {
     dispatch(resetSalaryDetailList()); // 상세 화면 진입 시 salaryDetailList 초기화
@@ -88,7 +88,7 @@ export const SalaryDetail = () => {
   return (
     <div>
       <h2>
-        {date} <Translate contentKey="order.label.details">주문 상세</Translate>
+        {modelNo} <Translate contentKey="order.label.details">주문 상세</Translate>
       </h2>
       <Row size="md">
         <Col md="6">
@@ -145,7 +145,7 @@ export const SalaryDetail = () => {
           )}
           <Button onClick={handleBack} color="info">
             <FontAwesomeIcon icon="arrow-left" />{' '}
-            <span className="d-none d-md-inline">
+            <span className="d-none d-md-inline btn btn-outline-primary btn-sm w-100">
               <Translate contentKey="entity.action.back">Back</Translate>
             </span>
           </Button>

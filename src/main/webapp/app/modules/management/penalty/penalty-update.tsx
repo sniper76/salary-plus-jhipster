@@ -5,6 +5,7 @@ import { Translate, translate, ValidatedField, ValidatedForm } from 'react-jhips
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { createPenalty, getShopPenalty, reset, updatePenalty } from './penalty.reducer';
+import { penaltyTypes } from 'app/config/constants';
 
 export const PenaltyUpdate = () => {
   const dispatch = useAppDispatch();
@@ -46,11 +47,6 @@ export const PenaltyUpdate = () => {
   const penalty = useAppSelector(state => state.penalties.penalty);
   const loading = useAppSelector(state => state.penalties.loading);
   const updating = useAppSelector(state => state.penalties.updating);
-
-  const types: any = [
-    { key: 'TIME', name: '시간' },
-    { key: 'DAY', name: '요일' },
-  ];
 
   const [selectTypeValue, setSelectTypeValue] = useState(penalty.type);
 
@@ -115,7 +111,7 @@ export const PenaltyUpdate = () => {
                 }}
               />
               <ValidatedField type="select" name="type" label={translate('penalty.type')} onChange={handleOnChangeType}>
-                {types.map(type => (
+                {penaltyTypes.map(type => (
                   <option value={type.key} key={type.key}>
                     {type.name}
                   </option>

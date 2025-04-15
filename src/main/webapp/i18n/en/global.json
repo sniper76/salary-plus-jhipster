@@ -106,7 +106,8 @@
       }
     },
     "field": {
-      "id": "ID"
+      "id": "ID",
+      "no": "No"
     },
     "ribbon": {
       "dev": "Development"
@@ -119,10 +120,15 @@
       "role": "Role",
       "refund": "Refund",
       "model": "Model",
+      "details": "Detail",
       "shopSelect": "Shop Select",
       "dateSelect": "Date Select",
       "startDateSelect": "Start Date Select",
       "endDateSelect": "End Date Select",
+      "duration": "Duration",
+      "oneWeek": "1 Week",
+      "twoWeeks": "2 Weeks",
+      "discount": "Discount",
       "dayPenaltyPrice": "Absence Penalty",
       "timePenaltyPrice": "Tardiness Penalty",
       "shopCommissionPrice": "Shop Commission Price",
@@ -140,9 +146,10 @@
       "addimage": "Add image",
       "back": "Back",
       "cancel": "Cancel",
+      "close": "Close",
       "delete": "Delete",
       "edit": "Edit",
-      "open": "Open",
+      "open": "Order Popup Open",
       "save": "Save",
       "view": "View",
       "show": "Show {{otherEntity}}"

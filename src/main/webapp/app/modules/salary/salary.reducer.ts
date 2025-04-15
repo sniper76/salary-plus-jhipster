@@ -2,16 +2,16 @@ import axios from 'axios';
 import { createAsyncThunk, createSlice, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
 
 import { IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
+import { ISalaryDetail } from 'app/shared/model/salaryDetail.model';
 
 const initialState = {
   loading: false,
   errorMessage: null,
   salaryList: [],
-  salaryForPage: [],
+  salaryForUser: [] as ReadonlyArray<ISalaryDetail>,
   salaryDetailList: [],
   updating: false,
   updateSuccess: false,
-  totalItems: 0,
 };
 
 const apiUrl = 'api/shops';
@@ -28,14 +28,11 @@ export const getShopSalaryDetailList = createAsyncThunk('management/salary_detai
   return axios.get<any[]>(requestUrl);
 });
 
-export const getShopSalaryForPage = createAsyncThunk(
-  'management/salary_list_page',
-  async ({ id, query, page, size, sort }: IQueryParams) => {
-    const requestUrl = `${apiUrl}/${id}/daily-salaries/dates/${query}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
-    console.warn('requestUrl', requestUrl);
-    return axios.get<any[]>(requestUrl);
-  },
-);
+export const getShopSalaryForUser = createAsyncThunk('management/salary_user_list', async ({ id, userId, startDate, endDate }: any) => {
+  const requestUrl = `${apiUrl}/${id}/daily-salaries/users/${userId}/${startDate}/${endDate}`;
+  console.warn('requestUrl', requestUrl);
+  return axios.get<ISalaryDetail[]>(requestUrl);
+});
 
 export type SalaryState = Readonly<typeof initialState>;
 
@@ -60,17 +57,16 @@ export const SalarySlice = createSlice({
         state.loading = false;
         state.salaryDetailList = action.payload.data;
       })
-      .addMatcher(isFulfilled(getShopSalaryForPage), (state, action) => {
+      .addMatcher(isFulfilled(getShopSalaryForUser), (state, action) => {
         state.loading = false;
-        state.salaryForPage = action.payload.data;
-        state.totalItems = parseInt(action.payload.headers['x-total-count'], 10);
+        state.salaryForUser = action.payload.data;
       })
-      .addMatcher(isPending(getShopDailySalaryList, getShopSalaryForPage, getShopSalaryDetailList), state => {
+      .addMatcher(isPending(getShopDailySalaryList, getShopSalaryForUser, getShopSalaryDetailList), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
       })
-      .addMatcher(isRejected(getShopDailySalaryList, getShopSalaryForPage, getShopSalaryDetailList), (state, action) => {
+      .addMatcher(isRejected(getShopDailySalaryList, getShopSalaryForUser, getShopSalaryDetailList), (state, action) => {
         state.loading = false;
         state.updating = false;
         state.updateSuccess = false;

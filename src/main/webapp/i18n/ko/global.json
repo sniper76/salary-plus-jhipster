@@ -106,7 +106,8 @@
       }
     },
     "field": {
-      "id": "ID"
+      "id": "ID",
+      "no": "번호"
     },
     "ribbon": {
       "dev": "Development"
@@ -119,10 +120,15 @@
       "role": "권한",
       "refund": "환불",
       "model": "모델",
+      "details": "상세",
       "shopSelect": "상점 선택",
       "dateSelect": "날짜 선택",
       "startDateSelect": "시작일 선택",
       "endDateSelect": "종료일 선택",
+      "duration": "기간",
+      "oneWeek": "1주",
+      "twoWeeks": "2주",
+      "discount": "할인",
       "dayPenaltyPrice": "결근 벌금",
       "timePenaltyPrice": "지각 벌금",
       "shopCommissionPrice": "상점 커미션 금액",
@@ -140,9 +146,10 @@
       "addimage": "이미지 추가",
       "back": "뒤로",
       "cancel": "취소",
+      "close": "닫기",
       "delete": "삭제",
       "edit": "수정",
-      "open": "Open",
+      "open": "주문창 열기",
       "save": "저장",
       "view": "보기",
       "show": "Show {{otherEntity}}"

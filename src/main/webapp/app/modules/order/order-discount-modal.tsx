@@ -92,90 +92,85 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
       backdrop="static"
       id="order-discount-page"
       autoFocus={false}
-      modalClassName="custom-discount-modal"
+      className="modal-xl"
     >
       <Form onSubmit={handleOrderPaySubmit}>
         <ModalHeader id="order-title" data-cy="orderTitle" toggle={handlePayClose}>
-          <Translate contentKey="global.menu.order">Order</Translate>
+          <Translate contentKey="global.menu.order">주문</Translate>
         </ModalHeader>
         <ModalBody>
           <Row>
             <Col md="12">
-              <div className="container-discount">
-                <div className="title_div_left">
-                  <Translate contentKey="order.label.details">주문 내역</Translate>
-                </div>
-                <div></div>
-                <div className="title_div_right">
-                  <Translate contentKey="order.label.discountApplicable">적용 가능한 할인 항목</Translate>
-                  <ValidatedField type="hidden" register={register} id="orderId" name="orderId" data-cy="orderId" value={props.orderId} />
-                </div>
-              </div>
-              <div className="container-discount">
-                <div className="box">
-                  {props.orderDetails &&
-                    props.orderDetails.map((item, index) => {
-                      return (
-                        <div key={index} className="item">
-                          <div className="item-header">
-                            <p>{item.nameKo}</p>
-                            <p>{item.price}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
+              <div className="mb-3"></div>
 
-                {/* 왼쪽 Div (드롭 가능) */}
-                <div id="left" className="box" onDragOver={handleDragOver} onDrop={handleDrop}>
-                  {leftItems.map((item, index) => {
-                    // console.warn('Rendering item:', item, leftItems); // 콘솔 출력
-                    return (
-                      <div key={index} className="item">
-                        <div className="item-header">
-                          <div className="top">
-                            {item.nameKo}
-                            <ValidatedField
-                              type="hidden"
-                              register={register}
-                              id={`salesItemIds[${index}]`}
-                              name={`salesItemIds[${index}]`}
-                              data-cy={`salesItemIds[${index}]`}
-                              value={item.shopSalesItemId}
-                            />
-                            <ValidatedField
-                              type="hidden"
-                              register={register}
-                              id={`salesItemDiscountIds[${index}]`}
-                              name={`salesItemDiscountIds[${index}]`}
-                              data-cy={`salesItemDiscountIds[${index}]`}
-                              value={item.id}
-                            />
-                            <ValidatedField
-                              type="hidden"
-                              register={register}
-                              id={`prices[${index}]`}
-                              name={`prices[${index}]`}
-                              data-cy={`prices[${index}]`}
-                              value={item.price}
-                            />
-                            <button className="close-btn" onClick={() => handlePayRemove(index, item)}>
-                              ✖
-                            </button>
-                          </div>
-                        </div>
+              <div className="d-flex gap-4">
+                <div className="flex-grow-1 border rounded p-3 shadow-sm">
+                  <h5 className="mb-3">
+                    <Translate contentKey="order.label.details">주문 내역</Translate>
+                  </h5>
+                  <div className="mb-3 border rounded p-2 shadow-sm">
+                    {props.orderDetails?.map((item, index) => (
+                      <div key={index} className="flex justify-between items-center bg-gray-100 px-3 py-2 rounded">
+                        <p>{item.nameKo}</p>
+                        <p className="font-semibold">{item.price}</p>
                       </div>
-                    );
-                  })}
+                    ))}
+                  </div>
                 </div>
 
-                {/* 오른쪽 Div (드래그 가능) */}
-                <div id="right" className="box">
+                <div className="flex-grow-1 border rounded p-3 shadow-sm" onDragOver={handleDragOver} onDrop={handleDrop}>
+                  <h5 className="mb-3">
+                    <Translate contentKey="order.label.selectedDiscounts">선택된 할인</Translate>
+                  </h5>
+                  {leftItems.map((item, index) => (
+                    <div key={index} className="mb-3 border rounded p-2 shadow-sm">
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <p>{item.nameKo}</p>
+                        <button className="text-red-500" onClick={() => handlePayRemove(index, item)}>
+                          ✖
+                        </button>
+                      </div>
+                      <ValidatedField
+                        type="hidden"
+                        register={register}
+                        id={`salesItemIds[${index}]`}
+                        name={`salesItemIds[${index}]`}
+                        value={item.shopSalesItemId}
+                      />
+                      <ValidatedField
+                        type="hidden"
+                        register={register}
+                        id={`salesItemDiscountIds[${index}]`}
+                        name={`salesItemDiscountIds[${index}]`}
+                        value={item.id}
+                      />
+                      <ValidatedField
+                        type="hidden"
+                        register={register}
+                        id={`prices[${index}]`}
+                        name={`prices[${index}]`}
+                        value={item.price}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <div className="border rounded p-3 shadow-sm" style={{ width: '300px' }}>
+                  <h5 className="mb-3">
+                    <Translate contentKey="order.label.discountApplicable">적용 가능한 할인 항목</Translate>
+                  </h5>
                   {props.orderDetailWithDiscounts.map((item, index) => (
-                    <div key={index} className="item" draggable onDragStart={() => handleDragStart(item)}>
+                    <div
+                      key={index}
+                      className="border rounded p-2 mb-2 shadow-sm text-center cursor-pointer"
+                      draggable
+                      onDragStart={() => handleDragStart(item)}
+                      style={{ cursor: 'grab' }}
+                    >
                       {item.nameKo}
                     </div>
                   ))}
+                  <ValidatedField type="hidden" register={register} id="orderId" name="orderId" value={props.orderId} />
                 </div>
               </div>
             </Col>
@@ -184,7 +179,7 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
         <ModalFooter>
           <Button color="secondary" onClick={handleOrderPayClose} tabIndex={1}>
             <Translate contentKey="entity.action.cancel">Cancel</Translate>
-          </Button>{' '}
+          </Button>
           <Button color="primary" type="submit" data-cy="submit">
             <Translate contentKey="order.button.pay_processing">Payment Processing</Translate>
           </Button>

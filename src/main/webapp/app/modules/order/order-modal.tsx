@@ -85,25 +85,6 @@ const OrderModal = (props: IOrderModalProps) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (props.orderDetails) {
-  //     setLeftItems(props.orderDetails);
-  //   }
-  // }, [props]);
-  // useEffect(() => {
-  //   if (props.orderId && props.orderDetails && props.orderDetails.length > 0) {
-  //     // props.orderDetails 가 변경될 때마다 leftItems 를 업데이트
-  //     console.warn('OrderModal useEffect orderDetails', props.orderDetails);
-  //     // setLeftItems(props.orderDetails);
-  //     setLeftItems([...props.orderDetails]); // orderDetails 를 복사하여 설정
-  //     console.warn('OrderModal useEffect leftItems', leftItems);
-  //     // setLeftItems((props.orderDetails as any[]).map(prev => [...prev]));
-  //     // setLeftItems((props.orderDetails as any[]).map(item => ({ ...item })));
-  //   } else {
-  //     // 새로운 주문 생성 시 초기화
-  //     setLeftItems([]);
-  //   }
-  // }, [props.orderDetails, props.orderId]);
   useEffect(() => {
     reset(); // react-hook-form 의 상태도 초기화
     if (props.orderId && props.orderDetails && props.orderDetails.length > 0) {
@@ -128,20 +109,27 @@ const OrderModal = (props: IOrderModalProps) => {
   }, [allValues]);
 
   return (
-    <Modal isOpen={props.showModal} toggle={handleClose} backdrop="static" id="order-page" autoFocus={false}>
+    <Modal
+      isOpen={props.showModal}
+      toggle={handleClose}
+      backdrop="static"
+      id="order-page"
+      autoFocus={false}
+      className="modal-lg" // 모달 너비 키움
+    >
       <Form onSubmit={handleOrderSubmit}>
         <ModalHeader id="order-title" data-cy="orderTitle" toggle={handleClose}>
-          <Translate contentKey="global.menu.order">Order</Translate>
+          <Translate contentKey="global.menu.order">주문</Translate>
         </ModalHeader>
         <ModalBody>
           <Row>
             <Col md="12">
-              <div className="container">
+              <div className="mb-3">
                 {props.orderId && (
                   <ValidatedField type="hidden" register={register} id="orderId" name="orderId" data-cy="orderId" value={props.orderId} />
                 )}
                 <ValidatedField
-                  className="select-box"
+                  className="form-select"
                   type="select"
                   register={register}
                   id="tableId"
@@ -149,102 +137,107 @@ const OrderModal = (props: IOrderModalProps) => {
                   data-cy="tableId"
                   defaultValue={props.tableId}
                 >
-                  {props.tables.map((model, idx) => (
-                    <option value={model.id} key={idx}>
-                      {model.no}
+                  {props.tables.map((data, idx) => (
+                    <option value={data.id} key={idx}>
+                      {data.no}
                     </option>
                   ))}
                 </ValidatedField>
               </div>
-              <div className="container">
-                {/* 왼쪽 Div (드롭 가능) */}
-                <div id="left" className="box" onDragOver={handleDragOver} onDrop={handleDrop}>
-                  {leftItems.map((item, index) => {
-                    // console.warn('Rendering item:', item, leftItems); // 콘솔 출력
-                    return (
-                      <div key={index} className="item">
-                        <div className="item-header">
-                          <div className="top">
-                            {item.nameKo}
-                            <ValidatedField
-                              type="hidden"
-                              register={register}
-                              id={`salesItemIds[${index}]`}
-                              name={`salesItemIds[${index}]`}
-                              data-cy={`salesItemIds[${index}]`}
-                              value={item.id}
-                            />
-                            <ValidatedField
-                              type="hidden"
-                              register={register}
-                              id={`orderDetailIds[${index}]`}
-                              name={`orderDetailIds[${index}]`}
-                              data-cy={`orderDetailIds[${index}]`}
-                              value={item.orderDetailId}
-                            />
-                            <button className="close-btn" onClick={() => handleRemove(index, item)}>
-                              ✖
-                            </button>
-                          </div>
-                          <div className="bottom">
-                            {item.commissionTargetYn && (
-                              <ValidatedField
-                                className="select-box"
-                                register={register}
-                                type="select"
-                                id={`modelIds[${index}]`}
-                                name={`modelIds[${index}]`}
-                                data-cy={`modelIds[${index}]`}
-                                defaultValue={item.modelId}
-                              >
-                                {props.models.map((model, idx) => (
-                                  <option value={model.id} key={idx}>
-                                    {model.modelNo}
-                                  </option>
-                                ))}
-                              </ValidatedField>
-                            )}
-                            {errors?.prices && (
-                              <div>
-                                <Alert color="warning" fade={false}>
-                                  <Translate contentKey="error.order.empty.price">Price cannot be empty.</Translate>
-                                </Alert>
-                              </div>
-                            )}
-                            {item.snackYn ? (
-                              <ValidatedField
-                                register={register}
-                                type="number"
-                                id={`prices[${index}]`}
-                                name={`prices[${index}]`}
-                                validate={{
-                                  required: { value: true, message: 'Price is required.' },
-                                  min: { value: 1, message: 'Price must be a positive number.' },
-                                }}
-                                data-cy={`prices[${index}]`}
-                                defaultValue={item.price || 0}
-                              />
-                            ) : (
-                              <ValidatedField
-                                register={register}
-                                type="hidden"
-                                id={`prices[${index}]`}
-                                name={`prices[${index}]`}
-                                data-cy={`prices[${index}]`}
-                                value={item.price || 0}
-                              />
-                            )}
-                          </div>
-                        </div>
+
+              <div className="d-flex gap-4">
+                {/* 왼쪽: 선택된 아이템들 */}
+                <div className="flex-grow-1 border rounded p-3 shadow-sm" onDragOver={handleDragOver} onDrop={handleDrop}>
+                  <h5 className="mb-3">
+                    <Translate contentKey="order.label.selectedDiscounts">선택된 할인</Translate>
+                  </h5>
+                  {leftItems.map((item, index) => (
+                    <div key={index} className="mb-3 border rounded p-2 shadow-sm">
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <strong>{item.nameKo}</strong>
+                        <Button size="sm" color="danger" onClick={() => handleRemove(index, item)}>
+                          ✖
+                        </Button>
                       </div>
-                    );
-                  })}
+                      {item.commissionTargetYn && (
+                        <ValidatedField
+                          className="form-select mb-2"
+                          register={register}
+                          type="select"
+                          id={`modelIds[${index}]`}
+                          name={`modelIds[${index}]`}
+                          data-cy={`modelIds[${index}]`}
+                          defaultValue={item.modelId}
+                        >
+                          {props.models.map((model, idx) => (
+                            <option value={model.id} key={idx}>
+                              {model.modelNo}
+                            </option>
+                          ))}
+                        </ValidatedField>
+                      )}
+                      {errors?.prices && (
+                        <div>
+                          <Alert color="warning" fade={false}>
+                            <Translate contentKey="error.order.empty.price">Price cannot be empty.</Translate>
+                          </Alert>
+                        </div>
+                      )}
+                      {item.snackYn ? (
+                        <ValidatedField
+                          register={register}
+                          type="number"
+                          id={`prices[${index}]`}
+                          name={`prices[${index}]`}
+                          data-cy={`prices[${index}]`}
+                          validate={{
+                            required: { value: true, message: 'Price is required.' },
+                            min: { value: 1, message: 'Price must be a positive number.' },
+                          }}
+                          defaultValue={item.price || 0}
+                        />
+                      ) : (
+                        <ValidatedField
+                          register={register}
+                          type="hidden"
+                          id={`prices[${index}]`}
+                          name={`prices[${index}]`}
+                          data-cy={`prices[${index}]`}
+                          value={item.price || 0}
+                        />
+                      )}
+                      <ValidatedField
+                        type="hidden"
+                        register={register}
+                        id={`salesItemIds[${index}]`}
+                        name={`salesItemIds[${index}]`}
+                        data-cy={`salesItemIds[${index}]`}
+                        value={item.id}
+                      />
+                      <ValidatedField
+                        type="hidden"
+                        register={register}
+                        id={`orderDetailIds[${index}]`}
+                        name={`orderDetailIds[${index}]`}
+                        data-cy={`orderDetailIds[${index}]`}
+                        value={item.orderDetailId}
+                      />
+                    </div>
+                  ))}
                 </div>
 
-                {/* 오른쪽 Div (드래그 가능) */}
-                <div id="right" className="box">
+                <div className="flex-grow-1 border rounded p-3 shadow-sm">
+                  <h5 className="mb-3">
+                    <Translate contentKey="order.label.discountApplicable">적용 가능한 할인 항목</Translate>
+                  </h5>
                   {props.salesItems.map((item, index) => (
-                    <div key={index} className="item" draggable onDragStart={() => handleDragStart(item)}>
+                    <div
+                      key={index}
+                      className="border rounded p-2 mb-2 shadow-sm text-center cursor-pointer"
+                      draggable
+                      onDragStart={() => handleDragStart(item)}
+                      style={{ cursor: 'grab' }}
+                    >
                       {item.nameKo}
                     </div>
                   ))}
@@ -255,10 +248,10 @@ const OrderModal = (props: IOrderModalProps) => {
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={handleClose} tabIndex={1}>
-            <Translate contentKey="entity.action.cancel">Cancel</Translate>
+            <Translate contentKey="entity.action.cancel">취소</Translate>
           </Button>{' '}
           <Button color="primary" type="submit" data-cy="submit">
-            <Translate contentKey="order.form.button">Ordering</Translate>
+            <Translate contentKey="order.form.button">주문하기</Translate>
           </Button>
         </ModalFooter>
       </Form>

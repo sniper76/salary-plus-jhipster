@@ -42,6 +42,14 @@ export const AUTHORITY_LIST = [
   { key: 'ROLE_SUPERVISOR', name: 'SUPERVISOR' },
 ];
 
+export const penaltyTypes: any = [
+  { key: 'TIME', name: '시간' },
+  { key: 'MANDATORY', name: '필수근무일' },
+  { key: 'DAY', name: '요일' },
+  // { key: 'DRESS', name: '의상' },
+  // { key: 'MAKEUP', name: '메이크업' },
+];
+
 export const getBonusTypeName = (e: string) => bonusTypes.filter((id: any) => id.key === e).map((id: any) => id.name);
 
 export const getAuthorityName = (e: string) => AUTHORITY_LIST.filter((id: any) => id.key === e).map((id: any) => id.name);

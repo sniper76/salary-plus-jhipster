@@ -34,7 +34,10 @@
     },
     "label": {
       "discountApplicable": "Discounts applicable",
+      "selectedDiscounts": "Selected Discounts",
       "details": "Order details",
+      "items": "Items",
+      "totalPrice": "Total Price",
       "shopPrice": "Shop Refund Price",
       "modelPrice": "Model Refund Price",
       "mamaPrice": "Mama Refund Price"

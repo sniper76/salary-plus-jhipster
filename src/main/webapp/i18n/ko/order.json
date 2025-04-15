@@ -31,7 +31,10 @@
     },
     "label": {
       "discountApplicable": "적용 가능한 할인 항목",
+      "selectedDiscounts": "선택된 할인",
       "details": "주문 내역",
+      "items": "상세 내역",
+      "totalPrice": "총금액",
       "shopPrice": "상점 환불 금액",
       "modelPrice": "모델 환불 금액",
       "mamaPrice": "마마상 환불 금액"

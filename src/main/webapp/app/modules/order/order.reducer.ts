@@ -73,9 +73,8 @@ export const createOrder = createAsyncThunk(
     const shopId = user.shopId;
     const date = user.date;
     const requestUrl = `api/shops/${shopId}/dates/${date}`;
-    const result = await axios.post<IOrderCreate>(requestUrl, user);
-    thunkAPI.dispatch(getShopOrders({ shopId, date }));
-    return result;
+    return await axios.post<IOrderCreate>(requestUrl, user);
+    // thunkAPI.dispatch(getShopOrders({ shopId, date }));
   },
   { serializeError: serializeAxiosError },
 );

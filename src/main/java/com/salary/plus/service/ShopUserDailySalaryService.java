@@ -11,6 +11,8 @@ import com.salary.plus.repository.ShopUserDailySalaryRepository;
 import com.salary.plus.repository.ShopUserPenaltyMappingRepository;
 import com.salary.plus.service.dto.ShopDailySalaryDTO;
 import com.salary.plus.service.dto.ShopSalaryDTO;
+import com.salary.plus.service.dto.ShopSalaryDetailDTO;
+import com.salary.plus.service.dto.ShopSalesDTO;
 import com.salary.plus.service.handler.PenaltyHandlerResolver;
 import com.salary.plus.utils.DateUtils;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
@@ -20,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -201,5 +205,9 @@ public class ShopUserDailySalaryService {
                     .findByShopPenaltyIdAndUserIdAndDate(it.getId(), userId, date)
                     .ifPresent(shopUserPenaltyMappingRepository::delete);
             });
+    }
+
+    public List<ShopSalaryDetailDTO> getAllDailySalariesForPage(Long shopId, Long userId, String startDate, String endDate) {
+        return shopUserDailySalaryRepository.findAllByShopIdAndUserIdAndSearchDate(shopId, userId, startDate, endDate);
     }
 }
