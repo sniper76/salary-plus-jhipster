@@ -199,6 +199,7 @@
     "order": {
       "not.found.target": "Not found target.",
       "already.paid.order": "Already paid order.",
+      "empty.table": "Table cannot be empty.",
       "empty.price": "Price cannot be empty."
     },
     "work": {

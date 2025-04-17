@@ -76,6 +76,7 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
 
   useEffect(() => {
     reset(); // react-hook-form 의 상태도 초기화
+    setLeftItems([]); // 새로운 주문일 경우 leftItems 초기화
   }, [props.orderDetailWithDiscounts, props.orderId, reset]);
 
   // watch() 는 폼의 모든 값을 실시간으로 관찰합니다.

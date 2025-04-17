@@ -198,6 +198,7 @@
     "order": {
       "not.found.target": "대상을 찾을 수 없습니다.",
       "already.paid.order": "이미 결재 완료한 주문입니다.",
+      "empty.table": "테이블을 선택하세요.",
       "empty.price": "금액을 입력하세요."
     },
     "work": {

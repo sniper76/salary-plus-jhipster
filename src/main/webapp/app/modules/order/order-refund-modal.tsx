@@ -87,9 +87,9 @@ const OrderModalRefund = (props: IOrderModalRefundProps) => {
 
                 <div className="flex-grow-1 border rounded p-3 shadow-sm">
                   <h5 className="mb-3">
-                    <Translate contentKey="order.label.selectedDiscounts">선택된 할인</Translate>
+                    <Translate contentKey="global.label.refund">환불</Translate>
                   </h5>
-                  <div className="border rounded p-2 mb-2 shadow-sm text-center">
+                  <div className="border rounded p-2 mb-2 shadow-sm text-left">
                     <ValidatedField
                       type="number"
                       register={register}

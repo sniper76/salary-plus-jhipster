@@ -13,7 +13,7 @@
       "question": "Are you sure you want to delete sales item {{ name }}?"
     },
     "detail": {
-      "title": "Sales Item"
+      "selected": "Select Sales Item"
     },
     "login": "Login",
     "firstName": "First name",

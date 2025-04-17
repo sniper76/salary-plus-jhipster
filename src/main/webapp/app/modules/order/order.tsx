@@ -25,7 +25,6 @@ import OrderModalRefund from 'app/modules/order/order-refund-modal';
 
 export const Order = () => {
   const orders = useAppSelector(state => state.orders.orders);
-  const orderDetails = useAppSelector(state => state.orders.orderDetails);
   const orderDetailWithDiscounts = useAppSelector(state => state.orders.orderDetailWithDiscounts);
   const shops = useAppSelector(state => state.orders.shops);
   const salesItems = useAppSelector(state => state.orders.salesItems);
@@ -39,7 +38,7 @@ export const Order = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState(null);
   const [currentTableId, setCurrentTableId] = useState(null);
-  const [selectedShopId, setSelectedShopId] = useState(-1);
+  const [selectedShopId, setSelectedShopId] = useState(null);
   const [showPayModal, setShowPayModal] = useState(false);
   const [showRefundModal, setShowRefundModal] = useState(false);
 
@@ -56,29 +55,26 @@ export const Order = () => {
   };
 
   const handleOpen = () => {
+    setCurrentOrderId(null);
+    setCurrentTableId(null);
     setShowModal(true);
-    handleReset();
+    // handleReset();
   };
 
   const handleReset = () => {
-    setCurrentOrderId(null);
-    setCurrentTableId(null);
-    dispatch(clearOrderDetails());
+    // dispatch(clearOrderDetails());
   };
 
-  const handleOrder = obj => {
-    obj.shopId = selectedShopId;
-    obj.date = currentDate;
-    console.warn('handleOrder', obj);
-    if (obj.orderId == null) {
-      dispatch(createOrder(obj)).then(() => {
-        dispatch(getShopOrders({ shopId: selectedShopId, date: currentDate }));
-      });
-    } else {
-      dispatch(updateOrder(obj)).then(() => {
-        dispatch(getShopOrders({ shopId: selectedShopId, date: currentDate }));
-      });
-    }
+  const handleChangeClick = e => () => {
+    // console.warn('handleChangeClick', e, currentDate);
+    // handleOpen();
+    setCurrentOrderId(e.orderId);
+    setCurrentTableId(e.shopTableId);
+    setShowModal(true);
+  };
+
+  const handleSearchOrders = () => {
+    // dispatch(getShopOrders({ shopId: selectedShopId, date: currentDate }));
   };
 
   const handlePayOrder = e => {
@@ -114,17 +110,6 @@ export const Order = () => {
     });
   };
 
-  const handleChangeClick = e => () => {
-    // console.warn('handleChangeClick', e, currentDate);
-    // handleOpen();
-    setCurrentOrderId(e.orderId);
-    setCurrentTableId(e.shopTableId);
-    // dispatch(getShopOrderDetails({ shopId: selectedShopId, date: currentDate, orderId: e.orderId }));
-    dispatch(getShopOrderDetails({ shopId: selectedShopId, date: currentDate, orderId: e.orderId })).then(() => {
-      setShowModal(true); // 주문 정보를 가져온 후에 모달을 열도록 설정
-    });
-  };
-
   useEffect(() => {
     dispatch(getUserShops());
   }, []);
@@ -140,8 +125,10 @@ export const Order = () => {
   }, [shops]);
 
   useEffect(() => {
-    dispatch(getShopOrders({ shopId: selectedShopId, date: currentDate }));
-  }, [currentDate]);
+    if (selectedShopId && currentDate) {
+      dispatch(getShopOrders({ shopId: selectedShopId, date: currentDate }));
+    }
+  }, [selectedShopId, currentDate]);
 
   return (
     <div className="p-4">
@@ -178,30 +165,29 @@ export const Order = () => {
           models={models}
           tables={tables}
           orderId={currentOrderId}
+          shopId={selectedShopId}
           tableId={currentTableId}
-          orderDetails={orderDetails}
+          date={currentDate}
           showModal={showModal}
-          handleOrder={handleOrder}
           handleClose={handleClose}
           orderError={orderError}
+          handleSearchOrders={handleSearchOrders}
         />
-        <OrderModalDiscount
+        {/*<OrderModalDiscount
           orderId={currentOrderId}
-          orderDetails={orderDetails}
           orderDetailWithDiscounts={orderDetailWithDiscounts}
           showPayModal={showPayModal}
           handlePayOrder={handlePayOrder}
           handlePayClose={handlePayClose}
           orderError={orderError}
-        />
-        <OrderModalRefund
+        />*/}
+        {/*<OrderModalRefund
           orderId={currentOrderId}
-          orderDetails={orderDetails}
           showRefundModal={showRefundModal}
           handleRefundOrder={handleRefundOrder}
           handleRefundClose={handleRefundClose}
           orderError={orderError}
-        />
+        />*/}
       </Row>
 
       <Row className="g-4">
@@ -254,6 +240,11 @@ export const Order = () => {
                         </div>
                       </>
                     )}
+                    <div className="d-flex flex-column gap-2 mt-2">
+                      <Button color="success" disabled>
+                        <Translate contentKey="order.button.paid">계산완료</Translate>
+                      </Button>
+                    </div>
                   </>
                 ) : (
                   <div className="d-flex flex-column gap-2 mt-2">
@@ -265,11 +256,6 @@ export const Order = () => {
                     </Button>
                   </div>
                 )}
-                <div className="d-flex flex-column gap-2 mt-2">
-                  <Button color="success" disabled>
-                    <Translate contentKey="order.button.paid">계산완료</Translate>
-                  </Button>
-                </div>
               </div>
             </div>
           </Col>
