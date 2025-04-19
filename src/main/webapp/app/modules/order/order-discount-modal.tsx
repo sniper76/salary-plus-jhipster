@@ -69,8 +69,8 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
   const handlePayRemove = (index, item) => {
     setLeftItems(prev => prev.filter((_, i) => i !== index)); // 왼쪽에서 삭제
     // console.warn('handlePayRemove', item);
-    if (item.salesItemId) {
-      dispatch(deleteOrderDetail({ orderId: props.orderId, orderDetailId: item.id }));
+    if (item.orderDetailId) {
+      dispatch(deleteOrderDetail({ orderId: props.orderId, orderDetailId: item.orderDetailId }));
     }
   };
 
@@ -136,7 +136,7 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
                         register={register}
                         id={`salesItemIds[${index}]`}
                         name={`salesItemIds[${index}]`}
-                        value={item.shopSalesItemId}
+                        value={item.id}
                       />
                       <ValidatedField
                         type="hidden"

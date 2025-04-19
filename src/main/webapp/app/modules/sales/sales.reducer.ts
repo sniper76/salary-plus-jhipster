@@ -20,7 +20,7 @@ const apiUrl = 'api/shops';
 
 export const getShopSaleList = createAsyncThunk('management/sales_list', async ({ shopId, startDate, endDate }: any) => {
   const requestUrl = `${apiUrl}/${shopId}/sales/${startDate}/${endDate}`;
-  console.warn('requestUrl', requestUrl);
+  // console.warn('requestUrl', requestUrl);
   return axios.get<any[]>(requestUrl);
 });
 

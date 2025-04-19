@@ -37,7 +37,7 @@ export const Sales = () => {
 
   const calculatePrice = elem => {
     // console.warn('calculatePrice', elem);
-    return elem.shopRefundPrice + elem.mamaRefundPrice + elem.modeRefundPrice;
+    return elem.shopRefundPrice || 0 + elem.mamaRefundPrice || 0 + elem.modeRefundPrice || 0;
   };
   const [showDetailModal, setShowDetailModal] = useState(false);
 
@@ -46,7 +46,7 @@ export const Sales = () => {
   };
 
   const handleDetailClick = e => () => {
-    setSelectedShopId(shops[0].id);
+    setSelectedShopId(e.shopId);
     setSelectedDate(e.date);
     setShowDetailModal(true);
   };

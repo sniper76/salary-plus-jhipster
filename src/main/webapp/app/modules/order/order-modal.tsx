@@ -1,68 +1,68 @@
 import React, { useEffect, useState } from 'react';
 import { Translate, ValidatedField } from 'react-jhipster';
 import { Alert, Button, Col, Form, Modal, ModalBody, ModalFooter, ModalHeader, Row } from 'reactstrap';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import './order.scss';
 import { IShopSalesItem } from 'app/shared/model/shopSalesItem.model';
 import { IModelUser } from 'app/shared/model/modelUser.model';
 import { IShopTable } from 'app/shared/model/shopTable.model';
-import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { createOrder, deleteOrderDetail, getShopOrderDetails, getShopOrders, updateOrder } from 'app/modules/order/order.reducer';
+import { useAppDispatch } from 'app/config/store';
+import { deleteOrderDetail, getShopOrders } from 'app/modules/order/order.reducer';
+import { IOrderDetail } from 'app/shared/model/orderDetail.model';
 
 export interface IOrderModalProps {
   showModal: boolean;
   orderError: boolean;
+  handleOrder: (obj: any) => void;
   handleClose: () => void;
-  handleSearchOrders: () => void;
   salesItems: ReadonlyArray<IShopSalesItem>;
   models: ReadonlyArray<IModelUser>;
   tables: ReadonlyArray<IShopTable>;
+  orderDetails: IOrderDetail[];
   orderId: null;
   tableId: null;
-  shopId: null;
+  shopId: number;
   date: string;
 }
 
 const OrderModal = (props: IOrderModalProps) => {
+  const orderHandleProps = obj => {
+    props.handleOrder(obj);
+  };
+
   const {
     handleSubmit,
-    control,
     register,
     reset,
+    watch,
     getValues,
-    setValue,
-    formState: { errors },
-  } = useForm();
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'orderDetails',
-  });
+    formState: { errors, touchedFields },
+  } = useForm({ mode: 'onTouched' });
 
   const dispatch = useAppDispatch();
 
-  const { handleClose, handleSearchOrders, shopId, date, orderId, tableId } = props;
+  const { orderError, handleClose, shopId, date } = props;
 
   const [leftItems, setLeftItems] = useState([]); // 왼쪽 div 아이템들
   const [draggedItem, setDraggedItem] = useState(null); // 드래그 중인 아이템
 
+  // const handleOrderSubmit = e => {
+  //   console.warn('handleOrderSubmit', e, leftItems, errors);
+  //   if (Object.keys(errors).length > 0) {
+  //     return; // 에러가 있으면 제출을 막음
+  //   }
+  //   handleSubmit(orderHandleProps)(e);
+  //   handleClose();
+  // };
+
   const handleOrderSubmit = handleSubmit(data => {
     // handleSubmit 을 먼저 실행함
     // console.warn('handleOrderSubmit', data, leftItems, errors);
-    data.shopId = shopId;
-    data.date = date;
-    // console.warn('handleOrderSubmit', data);
-    if (data.orderId == null) {
-      dispatch(createOrder(data)).then(() => {
-        dispatch(getShopOrders({ shopId, date }));
-      });
-    } else {
-      dispatch(updateOrder(data)).then(() => {
-        dispatch(getShopOrders({ shopId, date }));
-      });
-    }
+    // if (Object.keys(errors).length > 0) {
+    //   return; // 에러가 있으면 제출을 막음
+    // }
+    orderHandleProps(data);
     handleClose();
-    handleSearchOrders();
   });
 
   const handleDragStart = item => {
@@ -77,17 +77,8 @@ const OrderModal = (props: IOrderModalProps) => {
   const handleDrop = () => {
     if (draggedItem) {
       // reset();
-      // handleResetExceptTableId();
-      // setLeftItems(prev => [...prev, draggedItem]); // 왼쪽에 복사 추가
-      append({
-        salesItemId: draggedItem.id,
-        modelId: draggedItem.modelId ?? '',
-        price: draggedItem.price ?? 0,
-        orderDetailId: draggedItem.orderDetailId ?? null,
-        nameKo: draggedItem.nameKo,
-        commissionTargetYn: draggedItem.commissionTargetYn,
-        snackYn: draggedItem.snackYn,
-      });
+      handleResetExceptTableId();
+      setLeftItems(prev => [...prev, draggedItem]); // 왼쪽에 복사 추가
     }
   };
 
@@ -108,40 +99,35 @@ const OrderModal = (props: IOrderModalProps) => {
   const handleRemove = (index, item) => {
     setLeftItems(prev => prev.filter((_, i) => i !== index)); // 왼쪽에서 삭제
     // console.warn('handleRemove', item);
-    if (item.salesItemId) {
-      dispatch(deleteOrderDetail({ orderId: props.orderId, orderDetailId: item.id }));
+    if (item.orderDetailId) {
+      dispatch(deleteOrderDetail({ orderId: props.orderId, orderDetailId: item.orderDetailId })).then(() => {
+        dispatch(getShopOrders({ shopId, date }));
+      });
     }
   };
 
   useEffect(() => {
-    // console.warn('orderId', shopId, date, orderId, orderDetails);
-    if (orderId) {
-      dispatch(getShopOrderDetails({ shopId, date, orderId }));
-    } else {
-      if (props.tables.length > 0) {
-        setValue('tableId', props.tables[0].id);
-      }
-      setLeftItems([]); // 기존 주문 정보로 leftItems 설정
+    reset(); // react-hook-form 의 상태도 초기화
+    if (props.orderId && props.orderDetails && props.orderDetails.length > 0) {
+      // console.warn('OrderModal: 기존 주문 불러오기', props.orderDetails);
+      setLeftItems([...props.orderDetails]); // 기존 주문 정보로 leftItems 설정
+    } else if (!props.orderId) {
+      // console.warn('OrderModal: 새로운 주문 초기화');
+      setLeftItems([]); // 새로운 주문일 경우 leftItems 초기화
     }
-  }, [shopId, orderId]);
+  }, [props.orderDetails, props.orderId, reset]);
+
+  // leftItems 값이 실제로 업데이트된 이후 확인
+  useEffect(() => {
+    // console.warn('OrderModal leftItems Updated', leftItems);
+  }, [props]);
+
+  // watch() 는 폼의 모든 값을 실시간으로 관찰합니다.
+  const allValues = watch();
 
   useEffect(() => {
-    if (tableId) {
-      setValue('tableId', tableId);
-    } else {
-      if (props.tables.length > 0) {
-        setValue('tableId', props.tables[0].id);
-      }
-    }
-  }, [tableId]);
-
-  const orderDetails = useAppSelector(state => state.orders.orderDetails);
-
-  useEffect(() => {
-    if (orderId && orderDetails.length > 0) {
-      setLeftItems([...orderDetails]);
-    }
-  }, [orderDetails]);
+    // console.warn('Current Form Values:', allValues); // 값이 변경될 때마다 출력
+  }, [allValues]);
 
   return (
     <Modal
@@ -170,9 +156,6 @@ const OrderModal = (props: IOrderModalProps) => {
                   id="tableId"
                   name="tableId"
                   data-cy="tableId"
-                  validate={{
-                    required: { value: true, message: 'Table is required.' },
-                  }}
                   defaultValue={props.tableId}
                 >
                   {props.tables.map((data, idx) => (
@@ -181,20 +164,13 @@ const OrderModal = (props: IOrderModalProps) => {
                     </option>
                   ))}
                 </ValidatedField>
-                {errors?.tableId && (
-                  <div>
-                    <Alert color="warning" fade={false}>
-                      <Translate contentKey="error.order.empty.table">Table cannot be empty.</Translate>
-                    </Alert>
-                  </div>
-                )}
               </div>
 
               <div className="d-flex gap-4">
                 {/* 왼쪽: 선택된 아이템들 */}
                 <div className="flex-grow-1 border rounded p-3 shadow-sm" onDragOver={handleDragOver} onDrop={handleDrop}>
                   <h5 className="mb-3">
-                    <Translate contentKey="salesItem.detail.selected">선택된 상품</Translate>
+                    <Translate contentKey="order.label.selectedDiscounts">선택된 할인</Translate>
                   </h5>
                   {leftItems.map((item, index) => (
                     <div key={index} className="mb-3 border rounded p-2 shadow-sm">
@@ -273,7 +249,7 @@ const OrderModal = (props: IOrderModalProps) => {
 
                 <div className="flex-grow-1 border rounded p-3 shadow-sm">
                   <h5 className="mb-3">
-                    <Translate contentKey="salesItem.home.title">상품</Translate>
+                    <Translate contentKey="order.label.discountApplicable">적용 가능한 할인 항목</Translate>
                   </h5>
                   {props.salesItems.map((item, index) => (
                     <div

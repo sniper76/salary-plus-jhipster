@@ -271,6 +271,12 @@ public class ShopOrderService {
     }
 
     public void deleteOrderDetail(ShopOrderDetail shopOrderDetail) {
+        shopOrderRepository
+            .findById(shopOrderDetail.getShopOrderId())
+            .ifPresent(existOrder -> {
+                existOrder.setTotalPrice(existOrder.getTotalPrice() - shopOrderDetail.getPrice());
+                shopOrderRepository.save(existOrder);
+            });
         shopOrderDetailRepository.save(shopOrderDetail);
     }
 }

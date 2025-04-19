@@ -50,11 +50,15 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
 
   useEffect(() => {
     console.warn('shopId, date', shopId, date);
-    getSalesFromProps();
+    if (date) {
+      getSalesFromProps();
+    }
   }, [shopId, date]);
 
   useEffect(() => {
-    getSalesFromProps();
+    if (date) {
+      getSalesFromProps();
+    }
   }, [pagination.activePage, pagination.order, pagination.sort]);
 
   useEffect(() => {
