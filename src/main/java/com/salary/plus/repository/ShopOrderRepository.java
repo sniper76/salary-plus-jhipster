@@ -35,14 +35,15 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrder, Long> {
         """
             select new com.salary.plus.service.dto.ShopOrderDetailResponse(so, sod, ssi, suss)
             from ShopOrder so
-            inner join ShopOrderDetail sod on so.id = sod.shopOrderId
-            left outer join ShopSalesItem ssi on sod.shopSalesItemId = ssi.id and ssi.activated = :activated
-            left outer join ShopUserSalesSalary suss on sod.id = suss.shopOrderDetailId and suss.activated = :activated
+            inner join ShopOrderDetail sod
+                on so.id = sod.shopOrderId and so.activated = :activated and sod.activated = :activated
+            left outer join ShopSalesItem ssi
+                on sod.shopSalesItemId = ssi.id and ssi.activated = :activated
+            left outer join ShopUserSalesSalary suss
+                on sod.id = suss.shopOrderDetailId and suss.activated = :activated
             where so.shopId = :shopId
             and so.date = :date
             and so.id = :orderId
-            and so.activated = :activated
-            and sod.activated = :activated
             order by sod.id
         """
     )

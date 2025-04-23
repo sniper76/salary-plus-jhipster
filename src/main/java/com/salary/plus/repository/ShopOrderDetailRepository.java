@@ -3,7 +3,6 @@ package com.salary.plus.repository;
 import com.salary.plus.domain.ShopOrderDetail;
 import com.salary.plus.domain.User;
 import com.salary.plus.service.dto.ShopOrderDetailDTO;
-import com.salary.plus.service.dto.ShopOrderDetailResponse;
 import com.salary.plus.service.dto.ShopOrderDetailWithDiscountResponse;
 import com.salary.plus.service.dto.ShopSalesDTO;
 import java.util.List;
@@ -110,4 +109,6 @@ public interface ShopOrderDetailRepository extends JpaRepository<ShopOrderDetail
         nativeQuery = true
     )
     List<ShopOrderDetailDTO> findAllByShopIdAndOrderId(Long shopId, Long orderId);
+
+    List<ShopOrderDetail> findAllByShopOrderId(Long orderId);
 }

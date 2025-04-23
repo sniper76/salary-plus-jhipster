@@ -1,6 +1,7 @@
 package com.salary.plus.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -11,23 +12,16 @@ import com.salary.plus.IntegrationTest;
 import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopOrder;
 import com.salary.plus.domain.ShopOrderDetail;
-import com.salary.plus.domain.ShopOrderDetailDiscount;
 import com.salary.plus.domain.ShopSalesItem;
-import com.salary.plus.domain.ShopSalesItemDiscount;
 import com.salary.plus.domain.ShopTable;
 import com.salary.plus.domain.ShopUserSalesSalary;
-import com.salary.plus.enums.DiscountType;
 import com.salary.plus.enums.ShopType;
-import com.salary.plus.repository.ShopOrderDetailDiscountRepository;
 import com.salary.plus.repository.ShopOrderDetailRepository;
 import com.salary.plus.repository.ShopOrderRepository;
 import com.salary.plus.repository.ShopRepository;
-import com.salary.plus.repository.ShopSalesItemDiscountRepository;
 import com.salary.plus.repository.ShopSalesItemRepository;
 import com.salary.plus.repository.ShopTableRepository;
-import com.salary.plus.repository.ShopUserMappingRepository;
 import com.salary.plus.repository.ShopUserSalesSalaryRepository;
-import com.salary.plus.repository.UserRepository;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.service.dto.ShopOrderCreateDTO;
 import com.salary.plus.service.dto.ShopOrderDetailResponse;
@@ -36,7 +30,6 @@ import com.salary.plus.utils.DateTimeFormatUtil;
 import com.salary.plus.utils.DateUtils;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -57,7 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
 class ShopOrderResourceIT {
 
     private static final String TARGET_URL = "/api/shops/{shopId}/dates/{date}";
-    private static final String TARGET_DISCOUNT_URL = "/api/shops/{shopId}/dates/{date}/discounts";
+    private static final String TARGET_DELETE_URL = "/api/shops/orders/{orderId}/details/{orderDetailId}";
 
     @Autowired
     private ObjectMapper om;
@@ -79,12 +72,6 @@ class ShopOrderResourceIT {
 
     @Autowired
     private ShopUserSalesSalaryRepository shopUserSalesSalaryRepository;
-
-    @Autowired
-    private ShopSalesItemDiscountRepository shopSalesItemDiscountRepository;
-
-    @Autowired
-    private ShopOrderDetailDiscountRepository shopOrderDetailDiscountRepository;
 
     @Autowired
     private MockMvc restUserMockMvc;
@@ -379,8 +366,14 @@ class ShopOrderResourceIT {
                         )
                         .andExpect(status().isCreated());
 
-                    final ShopOrder shopOrderResponse = shopOrderRepository.findByIdAndShopIdAndDate(orderId, shopId, date).orElseThrow();
-                    assertThat(shopOrderResponse.getTotalPrice()).isEqualTo(totalPrice + snackPrice);
+                    //                    final ShopOrder shopOrderResponse = shopOrderRepository.findByIdAndShopIdAndDate(orderId, shopId, date).orElseThrow();
+                    final List<ShopOrderResponse> allOrderResponse = shopOrderRepository.findAllByShopIdAndDateAndActivated(
+                        shopId,
+                        date,
+                        true
+                    );
+                    final ShopOrderResponse orderResponse = allOrderResponse.get(0);
+                    assertThat(orderResponse.getTotalPrice()).isEqualTo(totalPrice + snackPrice);
                     final List<ShopOrderDetailResponse> allOrderDetailResponse = shopOrderRepository.findAllByIdAndShopIdAndDate(
                         orderId,
                         shopId,
@@ -388,11 +381,94 @@ class ShopOrderResourceIT {
                         true
                     );
                     assertThat(allOrderDetailResponse.size()).isEqualTo(4);
+                    assertThat(orderResponse.getTotalPrice().intValue()).isEqualTo(
+                        allOrderDetailResponse.stream().mapToInt(ShopOrderDetailResponse::getPrice).sum()
+                    );
                     final ShopOrderDetailResponse shopOrderDetailResponse3 = allOrderDetailResponse.get(3);
                     assertThat(shopOrderDetailResponse3.isSnackYn()).isEqualTo(true);
                     assertThat(shopOrderDetailResponse3.getPrice()).isEqualTo(snackPrice);
                     final ShopOrderDetailResponse shopOrderDetailResponse0 = allOrderDetailResponse.get(0);
                     assertThat(shopOrderDetailResponse0.getModelId()).isEqualTo(userId3);
+                }
+            }
+
+            @DisplayName("안주 정보가 삭제되고 롱타임 바파인 모델이 변경된 경우")
+            @Nested
+            class WhenDeleteSnackDataAndChangeBarFineModel {
+
+                private Long userId3;
+                private Long shopOrderDetailId4;
+
+                @BeforeEach
+                void setUp() {
+                    mockData();
+                    mockOrderData();
+
+                    userId3 = somePositiveLong();
+                    modelIds.set(0, userId3);
+
+                    ShopSalesItem shopSalesItem4 = new ShopSalesItem();
+                    shopSalesItem4.setShopId(shopId);
+                    shopSalesItem4.setNameKo("item3 ko");
+                    shopSalesItem4.setNameEn("item3 en");
+                    shopSalesItem4.setPrice(snackPrice);
+                    shopSalesItem4.setCommissionTargetYn(false);
+                    shopSalesItem4.setShopCommissionPrice(0);
+                    shopSalesItem4.setMamaCommissionPrice(0);
+                    shopSalesItem4.setModelCommissionPrice(0);
+                    shopSalesItem4.setSnackYn(true);
+                    shopSalesItemRepository.saveAndFlush(shopSalesItem4);
+
+                    ShopOrderDetail shopOrderDetail4 = new ShopOrderDetail();
+                    shopOrderDetail4.setShopOrderId(orderId);
+                    shopOrderDetail4.setShopSalesItemId(shopSalesItem4.getId());
+                    shopOrderDetail4.setPrice(snackPrice);
+                    shopOrderDetail4.setActivated(false);
+                    shopOrderDetailRepository.saveAndFlush(shopOrderDetail4);
+
+                    shopOrderDetailId4 = shopOrderDetail4.getId();
+
+                    final ShopOrder thisShopOrder = shopOrderRepository.findById(orderId).orElseThrow();
+                    thisShopOrder.setTotalPrice(thisShopOrder.getTotalPrice() + snackPrice);
+                    shopOrderRepository.save(thisShopOrder);
+                }
+
+                @DisplayName("정상 등록된다.")
+                @Test
+                @Transactional
+                void create() throws Exception {
+                    // Create the User
+                    ShopOrderCreateDTO createDTO = new ShopOrderCreateDTO();
+                    createDTO.setOrderId(orderId);
+                    createDTO.setTableId(tableId);
+                    createDTO.setSalesItemIds(salesItemIds);
+                    createDTO.setPrices(prices);
+                    createDTO.setModelIds(modelIds);
+                    createDTO.setOrderDetailIds(orderDetailIds);
+
+                    restUserMockMvc
+                        .perform(
+                            patch(TARGET_URL, shopId, date).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(createDTO))
+                        )
+                        .andExpect(status().isCreated());
+
+                    final ShopOrder databaseShopOrder = shopOrderRepository.findById(orderId).orElseThrow();
+                    final List<ShopOrderDetailResponse> allOrderDetailResponse = shopOrderRepository.findAllByIdAndShopIdAndDate(
+                        orderId,
+                        shopId,
+                        date,
+                        true
+                    );
+                    assertThat(allOrderDetailResponse.size()).isEqualTo(3);
+                    assertThat(databaseShopOrder.getTotalPrice().intValue()).isEqualTo(
+                        allOrderDetailResponse.stream().mapToInt(ShopOrderDetailResponse::getPrice).sum()
+                    );
+
+                    final ShopOrderDetailResponse shopOrderDetailResponse0 = allOrderDetailResponse.get(0);
+                    assertThat(shopOrderDetailResponse0.getModelId()).isEqualTo(userId3);
+
+                    final ShopOrderDetail databaseShopOrderDetail4 = shopOrderDetailRepository.findById(shopOrderDetailId4).orElseThrow();
+                    assertThat(databaseShopOrderDetail4.isActivated()).isEqualTo(false);
                 }
             }
         }
@@ -432,69 +508,70 @@ class ShopOrderResourceIT {
                     date,
                     true
                 );
+                assertThat(orderResponse.getTotalPrice().intValue()).isEqualTo(
+                    allOrderDetailResponse.stream().mapToInt(ShopOrderDetailResponse::getPrice).sum()
+                );
                 assertThat(allOrderDetailResponse.size()).isEqualTo(3);
             }
         }
 
-        @DisplayName("할인이 적용된 경우")
+        @DisplayName("삭제인 경우")
         @Nested
-        class WhenUpdateWithDiscounts {
+        class WhenDelete {
 
-            @DisplayName("변경된 정보가 없는 경우")
-            @Nested
-            class WhenNotChangeData {
+            private Long shopOrderDetailId4;
 
-                private Long longTimeBarFineSalesItem;
-                private Long longTimeBarFineOrderDetail;
-                private Long longTimeBarFineSalesItemDiscount;
+            @BeforeEach
+            void setUp() {
+                mockData();
+                mockOrderData();
 
-                @BeforeEach
-                void setUp() {
-                    mockData();
-                    mockOrderData();
+                ShopSalesItem shopSalesItem4 = new ShopSalesItem();
+                shopSalesItem4.setShopId(shopId);
+                shopSalesItem4.setNameKo("item3 ko");
+                shopSalesItem4.setNameEn("item3 en");
+                shopSalesItem4.setPrice(snackPrice);
+                shopSalesItem4.setCommissionTargetYn(false);
+                shopSalesItem4.setShopCommissionPrice(0);
+                shopSalesItem4.setMamaCommissionPrice(0);
+                shopSalesItem4.setModelCommissionPrice(0);
+                shopSalesItem4.setSnackYn(true);
+                shopSalesItemRepository.saveAndFlush(shopSalesItem4);
 
-                    longTimeBarFineSalesItem = salesItemIds.get(0);
-                    longTimeBarFineOrderDetail = orderDetailIds.get(0);
+                ShopOrderDetail shopOrderDetail4 = new ShopOrderDetail();
+                shopOrderDetail4.setShopOrderId(orderId);
+                shopOrderDetail4.setShopSalesItemId(shopSalesItem4.getId());
+                shopOrderDetail4.setPrice(snackPrice);
+                shopOrderDetailRepository.saveAndFlush(shopOrderDetail4);
 
-                    ShopSalesItemDiscount shopSalesItemDiscount = new ShopSalesItemDiscount();
-                    shopSalesItemDiscount.setShopSalesItemId(longTimeBarFineSalesItem);
-                    shopSalesItemDiscount.setType(DiscountType.PRICE);
-                    shopSalesItemDiscount.setNameKo("바파인 500");
-                    shopSalesItemDiscount.setNameEn("bar fine discount 500");
-                    shopSalesItemDiscount.setPrice(500);
-                    shopSalesItemDiscount.setShopCommissionPrice(300);
-                    shopSalesItemDiscount.setModelCommissionPrice(200);
-                    shopSalesItemDiscount.setMamaCommissionPrice(0);
-                    shopSalesItemDiscountRepository.save(shopSalesItemDiscount);
+                shopOrderDetailId4 = shopOrderDetail4.getId();
 
-                    longTimeBarFineSalesItemDiscount = shopSalesItemDiscount.getId();
-                }
+                final ShopOrder thisShopOrder = shopOrderRepository.findById(orderId).orElseThrow();
+                thisShopOrder.setTotalPrice(thisShopOrder.getTotalPrice() + snackPrice);
+                shopOrderRepository.save(thisShopOrder);
+            }
 
-                @DisplayName("정상 등록된다.")
-                @Test
-                @Transactional
-                void create() throws Exception {
-                    // Create the User
-                    ShopOrderCreateDTO createDTO = new ShopOrderCreateDTO();
-                    createDTO.setOrderId(orderId);
-                    createDTO.setSalesItemIds(List.of(longTimeBarFineSalesItem));
-                    createDTO.setSalesItemDiscountIds(List.of(longTimeBarFineSalesItemDiscount));
+            @DisplayName("정상 등록된다.")
+            @Test
+            @Transactional
+            void create() throws Exception {
+                restUserMockMvc
+                    .perform(delete(TARGET_DELETE_URL, orderId, shopOrderDetailId4).contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isNoContent());
 
-                    restUserMockMvc
-                        .perform(
-                            post(TARGET_DISCOUNT_URL, shopId, date)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(om.writeValueAsBytes(createDTO))
-                        )
-                        .andExpect(status().isCreated());
-
-                    final Optional<ShopOrderDetailDiscount> databaseShopOrderDetailDiscount =
-                        shopOrderDetailDiscountRepository.findByShopOrderDetailIdAndShopSalesItemDiscountId(
-                            longTimeBarFineOrderDetail,
-                            longTimeBarFineSalesItemDiscount
-                        );
-                    assertThat(databaseShopOrderDetailDiscount.isPresent()).isEqualTo(true);
-                }
+                final ShopOrder databaseShopOrder = shopOrderRepository.findById(orderId).orElseThrow();
+                final List<ShopOrderDetailResponse> allOrderDetailResponse = shopOrderRepository.findAllByIdAndShopIdAndDate(
+                    orderId,
+                    shopId,
+                    date,
+                    true
+                );
+                final ShopOrderDetail databaseShopOrderDetail = shopOrderDetailRepository.findById(shopOrderDetailId4).orElseThrow();
+                assertThat(databaseShopOrderDetail.isActivated()).isEqualTo(false);
+                assertThat(databaseShopOrder.getTotalPrice().intValue()).isEqualTo(
+                    allOrderDetailResponse.stream().mapToInt(ShopOrderDetailResponse::getPrice).sum()
+                );
+                assertThat(allOrderDetailResponse.size()).isEqualTo(3);
             }
         }
     }

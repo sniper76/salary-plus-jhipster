@@ -200,7 +200,9 @@ public class ShopOrderService {
         final List<ShopOrderDetailResponse> orderDetails = getOrderDetails(shopId, date, orderId);
         updateDiscounts(shopOrderCreateDTO, salesItemIds, salesItemDiscountIds, orderDetails, prices);
 
-        updateOrderPaid(shopId, date, orderId);
+        final int totalPrice =
+            orderDetails.stream().mapToInt(ShopOrderDetailResponse::getPrice).sum() - prices.stream().mapToInt(Integer::intValue).sum();
+        updateOrderPaid(shopId, date, orderId, totalPrice);
     }
 
     private void updateDiscounts(
@@ -258,6 +260,16 @@ public class ShopOrderService {
             .findByIdAndShopIdAndDate(orderId, shopId, date)
             .ifPresent(it -> {
                 it.setPaid(true);
+                shopOrderRepository.save(it);
+            });
+    }
+
+    private void updateOrderPaid(Long shopId, String date, Long orderId, Integer price) {
+        shopOrderRepository
+            .findByIdAndShopIdAndDate(orderId, shopId, date)
+            .ifPresent(it -> {
+                it.setPaid(true);
+                it.setTotalPrice(price);
                 shopOrderRepository.save(it);
             });
     }
