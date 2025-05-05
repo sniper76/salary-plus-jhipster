@@ -60,7 +60,7 @@ public class ShopPenaltyService {
     }
 
     @Transactional(readOnly = true)
-    public List<ShopPenalty> getAllPenalties(Long shopId) {
+    public List<ShopPenalty> getAllActivatedPenalties(Long shopId) {
         return shopPenaltyRepository.findAllByShopIdAndActivated(shopId, true);
     }
 

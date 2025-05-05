@@ -4,16 +4,18 @@ import com.salary.plus.domain.ShopBaseSalary;
 import com.salary.plus.domain.ShopPenalty;
 import com.salary.plus.domain.ShopUserDailySalary;
 import com.salary.plus.domain.ShopUserPenaltyMapping;
+import com.salary.plus.domain.ShopUserSalesSalary;
 import com.salary.plus.domain.User;
 import com.salary.plus.enums.PenaltyType;
 import com.salary.plus.repository.ShopBaseSalaryRepository;
 import com.salary.plus.repository.ShopUserDailySalaryRepository;
 import com.salary.plus.repository.ShopUserPenaltyMappingRepository;
+import com.salary.plus.repository.ShopUserSalesSalaryRepository;
 import com.salary.plus.service.dto.ShopDailySalaryDTO;
 import com.salary.plus.service.dto.ShopSalaryDTO;
 import com.salary.plus.service.dto.ShopSalaryDetailDTO;
-import com.salary.plus.service.dto.ShopSalesDTO;
 import com.salary.plus.service.handler.PenaltyHandlerResolver;
+import com.salary.plus.service.provider.DateProvider;
 import com.salary.plus.utils.DateUtils;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import java.util.List;
@@ -22,8 +24,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,8 +42,10 @@ public class ShopUserDailySalaryService {
     private final ShopBaseSalaryRepository shopBaseSalaryRepository;
     private final ShopPenaltyService shopPenaltyService;
     private final ShopUserPenaltyMappingRepository shopUserPenaltyMappingRepository;
+    private final ShopUserSalesSalaryRepository shopUserSalesSalaryRepository;
 
     private final PenaltyHandlerResolver penaltyHandlerResolver;
+    private final DateProvider dateProvider;
 
     public List<ShopUserDailySalary> create(ShopDailySalaryDTO userDTO, String login) {
         final Integer salary = 0; //salary 조회
@@ -88,7 +90,7 @@ public class ShopUserDailySalaryService {
     }
 
     public void createCheckIn(Long shopId, String date, Long userId, String login) {
-        final List<ShopPenalty> penaltyList = shopPenaltyService.getAllPenalties(shopId);
+        final List<ShopPenalty> penaltyList = shopPenaltyService.getAllActivatedPenalties(shopId);
         deleteUserDailySalaryWithUserPenaltyMapping(shopId, date, userId, penaltyList);
 
         final ShopBaseSalary mapping = getShopBaseSalaryByUserId(shopId, userId);
@@ -169,27 +171,71 @@ public class ShopUserDailySalaryService {
     }
 
     public void createAbsence(Long shopId, String date, Long userId, String login) {
-        final List<ShopPenalty> penaltyList = shopPenaltyService.getAllPenalties(shopId);
+        final List<ShopPenalty> penaltyList = shopPenaltyService.getAllActivatedPenalties(shopId);
         deleteUserDailySalaryWithUserPenaltyMapping(shopId, date, userId, penaltyList);
 
-        final String weekday = DateUtils.getWeekdayFormat();
-        penaltyList
-            .stream()
-            .filter(it -> it.getTypeValue().contains(weekday))
-            .forEach(elem -> {
+        penaltyList.forEach(it -> {
+            if (it.getType() == PenaltyType.BAR_SHARE) {
+                //전날 커미션 대상 매출이 있는지 확인
+                final String yesterday = DateUtils.getMinusDay(date, 1);
+                final List<ShopUserSalesSalary> yesterdayCommissionList = shopUserSalesSalaryRepository.findAllByShopIdAndDateAndUserId(
+                    shopId,
+                    yesterday,
+                    userId
+                );
+
+                yesterdayCommissionList.forEach(elem -> {
+                    elem.setActivated(false);
+                    shopUserSalesSalaryRepository.save(elem);
+                });
+                final int sumPrice = yesterdayCommissionList.stream().mapToInt(ShopUserSalesSalary::getPrice).sum();
+                //BAR_SHARE
                 shopUserPenaltyMappingRepository
-                    .findByShopPenaltyIdAndUserIdAndDate(elem.getId(), userId, date)
+                    .findByShopPenaltyIdAndUserIdAndDate(it.getId(), userId, date)
                     .ifPresentOrElse(
-                        it -> {
-                            it.setPrice(elem.getPrice());
-                            it.updateLastModified(login);
-                            shopUserPenaltyMappingRepository.save(it);
+                        elem -> {
+                            elem.setPrice(sumPrice);
+                            elem.updateLastModified(login);
+                            shopUserPenaltyMappingRepository.save(elem);
                         },
                         () -> {
-                            saveAndGetShopUserPenaltyMapping(elem.getId(), date, userId, elem.getPrice(), login);
+                            saveAndGetShopUserPenaltyMapping(it.getId(), date, userId, sumPrice, login);
                         }
                     );
-            });
+            } else if (checkTypeValue(it)) {
+                //DAY
+                shopUserPenaltyMappingRepository
+                    .findByShopPenaltyIdAndUserIdAndDate(it.getId(), userId, date)
+                    .ifPresentOrElse(
+                        elem -> {
+                            elem.setPrice(it.getPrice());
+                            elem.updateLastModified(login);
+                            shopUserPenaltyMappingRepository.save(elem);
+                        },
+                        () -> {
+                            saveAndGetShopUserPenaltyMapping(it.getId(), date, userId, it.getPrice(), login);
+                        }
+                    );
+            } else {
+                //TIME
+                shopUserPenaltyMappingRepository
+                    .findByShopPenaltyIdAndUserIdAndDate(it.getId(), userId, date)
+                    .ifPresentOrElse(
+                        elem -> {
+                            elem.setPrice(it.getPrice());
+                            elem.updateLastModified(login);
+                            shopUserPenaltyMappingRepository.save(elem);
+                        },
+                        () -> {
+                            saveAndGetShopUserPenaltyMapping(it.getId(), date, userId, it.getPrice(), login);
+                        }
+                    );
+            }
+        });
+    }
+
+    private boolean checkTypeValue(ShopPenalty it) {
+        return it.getTypeValue().contains(dateProvider.getWeekday());
     }
 
     private void deleteUserDailySalaryWithUserPenaltyMapping(Long shopId, String date, Long userId, List<ShopPenalty> penaltyList) {

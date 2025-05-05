@@ -93,4 +93,10 @@
       <column name="type"/>
     </createIndex>
   </changeSet>
+
+  <changeSet id="add bar share jhi_shop_penalty" author="sniper">
+    <sql>
+      insert into jhi_shop_penalty (shop_id, name_ko, name_en, type, type_value, price, activated, created_by, created_date) values ((select id from jhi_shop where name_ko = '테스트 낮바'), '바쉐어', 'Bar Share', 'BAR_SHARE', 'COMMISSION', 0, true, 'admin', now());
+    </sql>
+  </changeSet>
 </databaseChangeLog>

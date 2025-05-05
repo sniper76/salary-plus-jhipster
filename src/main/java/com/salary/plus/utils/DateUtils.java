@@ -43,9 +43,17 @@ public class DateUtils {
         };
     }
 
-    public static String getWeekdayFormat() {
-        String day = LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH).toUpperCase(); // MON ~ SUN
+    public static String getMinusDay(String dateStr, long minusDay) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate targetDate = LocalDate.parse(dateStr, formatter);
+        return targetDate.minusDays(minusDay).format(formatter);
+    }
 
-        return day;
+    /**
+     *
+     * @return MON, TUE, WED, THU, FRI, SAT, SUN
+     */
+    public static String getWeekdayFormat() {
+        return LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH).toUpperCase();
     }
 }

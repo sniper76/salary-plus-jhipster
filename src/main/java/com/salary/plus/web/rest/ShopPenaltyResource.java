@@ -151,7 +151,7 @@ public class ShopPenaltyResource {
     @GetMapping("/{shopId}/penalties/all")
     public ResponseEntity<List<ShopPenalty>> getAllSalesItems(@PathVariable("shopId") Long shopId) {
         LOG.debug("REST request to get all sales item for an admin");
-        final List<ShopPenalty> items = shopPenaltyService.getAllPenalties(shopId);
+        final List<ShopPenalty> items = shopPenaltyService.getAllActivatedPenalties(shopId);
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 

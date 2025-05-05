@@ -6,6 +6,7 @@ import java.util.List;
 public enum PenaltyType {
     DAY,
     MANDATORY,
+    BAR_SHARE,
     DRESS,
     MAKEUP,
     TIME;
@@ -21,7 +22,7 @@ public enum PenaltyType {
 
     private static List<PenaltyType> DAY_PENALTY = List.of(DAY, MANDATORY);
 
-    private static List<PenaltyType> DAY_WITH_PENALTY = List.of(DAY, MANDATORY, TIME);
+    private static List<PenaltyType> DAY_WITH_PENALTY = List.of(DAY, MANDATORY, BAR_SHARE, TIME);
 
     public static List<String> getDayPenalty() {
         return DAY_PENALTY.stream().map(PenaltyType::name).toList();

@@ -37,5 +37,5 @@ public class ShopUserSalesSalary extends AbstractAuditingEntity<Long> implements
 
     @NotNull
     @Column(name = "activated", nullable = false)
-    private boolean activated = true;
+    private boolean activated = true; //여기서는 삭제 대신에 BAR_SHARE 커미션 제외 대상으로 보자...
 }
