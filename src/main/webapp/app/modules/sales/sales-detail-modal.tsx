@@ -22,6 +22,7 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
   const { handleDetailClose, shopId, date } = props;
 
   const handleOrderDetailClose = () => {
+    dispatch(resetSalesDetailList());
     handleDetailClose();
   };
 
@@ -49,7 +50,7 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
   };
 
   useEffect(() => {
-    console.warn('shopId, date', shopId, date);
+    // console.warn('shopId, date', shopId, date);
     if (date) {
       getSalesFromProps();
     }

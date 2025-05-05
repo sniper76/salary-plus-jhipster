@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { createAsyncThunk, createSlice, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
-
 import { IQueryParams, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
 
 const initialState = {
@@ -16,37 +15,30 @@ const initialState = {
 
 const apiUrl = 'api/shops';
 
-// Async Actions
-
 export const getShopSaleList = createAsyncThunk('management/sales_list', async ({ shopId, startDate, endDate }: any) => {
   const requestUrl = `${apiUrl}/${shopId}/sales/${startDate}/${endDate}`;
-  // console.warn('requestUrl', requestUrl);
   return axios.get<any[]>(requestUrl);
 });
 
 export const getShopSaleDetailList = createAsyncThunk('management/sales_detail_list', async ({ shopId, orderId }: any) => {
   const requestUrl = `${apiUrl}/${shopId}/sales/orders/${orderId}`;
-  console.warn('requestUrl', requestUrl);
   return axios.get<any[]>(requestUrl);
 });
 
 export const getShopSalesForPage = createAsyncThunk('management/sales_list_page', async ({ id, query, page, size, sort }: IQueryParams) => {
   const requestUrl = `${apiUrl}/${id}/sales/dates/${query}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
-  console.warn('requestUrl', requestUrl);
   return axios.get<any[]>(requestUrl);
 });
 
-export type SalesState = Readonly<typeof initialState>;
-
 export const SalesSlice = createSlice({
   name: 'sales',
-  initialState: initialState as SalesState,
+  initialState,
   reducers: {
-    reset() {
+    reset(state) {
       return initialState;
     },
     resetSalesDetailList(state) {
-      state.salesDetailList = []; // 상세 데이터 초기화
+      state.salesDetailList = []; // 주문 상세 리스트 초기화
     },
   },
   extraReducers(builder) {
@@ -58,6 +50,9 @@ export const SalesSlice = createSlice({
       .addCase(getShopSaleDetailList.fulfilled, (state, action) => {
         state.loading = false;
         state.salesDetailList = action.payload.data;
+      })
+      .addCase(resetSalesDetailList, state => {
+        state.salesDetailList = [];
       })
       .addMatcher(isFulfilled(getShopSalesForPage), (state, action) => {
         state.loading = false;
@@ -78,9 +73,5 @@ export const SalesSlice = createSlice({
   },
 });
 
-export const { reset } = SalesSlice.actions;
-
-export const { resetSalesDetailList } = SalesSlice.actions;
-
-// Reducer
+export const { reset, resetSalesDetailList } = SalesSlice.actions;
 export default SalesSlice.reducer;

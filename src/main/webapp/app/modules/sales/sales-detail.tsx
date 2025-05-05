@@ -68,22 +68,28 @@ export const SalesDetail = () => {
     dispatch(getShopSaleDetailList({ shopId, orderId: e.id }));
   };
 
+  const handleBack = () => {
+    console.warn('Resetting salesDetailList...');
+    dispatch(resetSalesDetailList());
+    setTimeout(() => {
+      console.warn('Navigating...');
+      navigate('/sales', { replace: true });
+    }, 0);
+  };
+
   const salesForPage = useAppSelector(state => state.sales.salesForPage);
   const salesDetailList = useAppSelector(state => state.sales.salesDetailList);
   const totalItems = useAppSelector(state => state.sales.totalItems);
 
   useEffect(() => {
-    dispatch(resetSalesDetailList()); // 상세 화면 진입 시 salesDetailList 초기화
+    return () => {
+      dispatch(resetSalesDetailList()); // 컴포넌트 언마운트 시에도 초기화
+    };
   }, []);
 
   useEffect(() => {
     // console.warn('Updated salesDetailList:', salesDetailList);
   }, [salesDetailList]);
-
-  const handleBack = () => {
-    navigate('/sales', { replace: true });
-    // resetSalesDetailList();
-  };
 
   return (
     <div>
