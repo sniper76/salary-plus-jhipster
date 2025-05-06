@@ -222,7 +222,7 @@ export const ModelManagement = () => {
                           >
                             <FontAwesomeIcon icon="trash" />{' '}
                             <span className="d-none d-md-inline">
-                              <Translate contentKey="entity.action.edit">Edit</Translate>
+                              <Translate contentKey="entity.action.mama">마마상연결</Translate>
                             </span>
                           </Button>
                         ) : null,
