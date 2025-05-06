@@ -238,7 +238,7 @@ To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`)
 ./gradlew test integrationTest --tests "com.salary.plus.web.rest.ShopResourceIT" -x webapp -x webapp_test
 ```
 
-## Installation
+## Installation abc
 
 ```
 ./gradlew -x webapp
