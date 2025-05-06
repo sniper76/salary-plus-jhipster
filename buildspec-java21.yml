@@ -5,21 +5,6 @@ phases: # 빌드 단계
     runtime-versions:
       # https://docs.aws.amazon.com/codebuild/latest/userguide/runtime-versions.html
       java: corretto21
-  pre_build:
-    commands:
-      - sudo yum install -y nodejs
-      - node -v # Verify installation
-      - npm -v # Verify npm installation
-      - npm install -g swagger-cli
-  #      - sudo yum update
-  #      - sudo yum search docker
-  #      - sudo yum info docker
-  #      - sudo yum install docker
-  #      - sudo usermod -a -G docker ec2-user
-  #      - docker --version
-  #      - wget https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)
-  #      - sudo mv docker-compose-$(uname -s)-$(uname -m) /usr/local/bin/docker-compose
-  #      - sudo chmod -v +x /usr/local/bin/docker-compose
   build:
     commands:
       - echo Build started on `date`
