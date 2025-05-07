@@ -62,7 +62,7 @@ export const ModelManagementUpdate = () => {
       <Row className="justify-content-center">
         <Col md="8">
           <h1>
-            <Translate contentKey="userManagement.home.createOrEditLabel">Create or edit a User</Translate>
+            <Translate contentKey="userManagement.home.createOrEditLabelModel">Create or edit a User</Translate>
           </h1>
         </Col>
       </Row>

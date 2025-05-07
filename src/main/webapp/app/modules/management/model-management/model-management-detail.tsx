@@ -23,7 +23,7 @@ export const ModelManagementDetail = () => {
   return (
     <div>
       <h2>
-        <Translate contentKey="userManagement.detail.title">User</Translate> [<strong>{user.login}</strong>]
+        <Translate contentKey="global.label.model">모델</Translate> [<strong>{user.login}</strong>]
       </h2>
       <Row size="md">
         <dl className="jh-entity-details">

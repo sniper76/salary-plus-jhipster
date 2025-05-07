@@ -29,7 +29,7 @@
         "bonusSalary": "Bonus",
         "userBaseSalaryMapping": "User Base Salary Mapping",
         "salesItemDiscount": "Sales Item Discount",
-        "model": "User"
+        "model": "Model"
       },
       "admin": {
         "main": "Administration",

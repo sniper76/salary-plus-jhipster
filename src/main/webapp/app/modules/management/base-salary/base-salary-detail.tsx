@@ -27,21 +27,6 @@ export const BaseSalaryDetail = () => {
       <Row size="md">
         <dl className="jh-entity-details">
           <dt>
-            <Translate contentKey="global.field.id">ID</Translate>
-          </dt>
-          <dd>
-            <span>{baseSalary.id}</span>&nbsp;
-            {baseSalary.activated ? (
-              <Badge color="success">
-                <Translate contentKey="userManagement.activated">Activated</Translate>
-              </Badge>
-            ) : (
-              <Badge color="danger">
-                <Translate contentKey="userManagement.deactivated">Deactivated</Translate>
-              </Badge>
-            )}
-          </dd>
-          <dt>
             <Translate contentKey="global.label.nameKo">한글명</Translate>
           </dt>
           <dd>{baseSalary.nameKo}</dd>

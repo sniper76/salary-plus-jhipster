@@ -106,7 +106,7 @@ export const ModelManagement = () => {
   return (
     <div>
       <h2 id="user-management-page-heading" data-cy="userManagementPageHeading">
-        <Translate contentKey="userManagement.home.title">사용자</Translate>
+        <Translate contentKey="global.label.model">모델</Translate>
         <div className="d-flex justify-content-end">
           <select onChange={handleSelect} value={selectedValue} className="custom-number-input">
             {shops.map(shop => (
@@ -127,9 +127,6 @@ export const ModelManagement = () => {
       <Table responsive striped>
         <thead>
           <tr>
-            <th className="hand" onClick={sort('id')}>
-              <Translate contentKey="global.field.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
-            </th>
             <th className="hand" onClick={sort('login')}>
               <Translate contentKey="userManagement.login">Login</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('login')} />
             </th>
@@ -161,18 +158,13 @@ export const ModelManagement = () => {
         <tbody>
           {users.length <= 0 && (
             <tr>
-              <td colSpan={9} className="no-data-text-align-center">
+              <td colSpan={8} className="no-data-text-align-center">
                 <Translate contentKey="global.messages.info.noDataList">조회된 데이터가 없습니다.</Translate>
               </td>
             </tr>
           )}
           {users.map((user, i) => (
             <tr id={user.login} key={`user-${i}`}>
-              <td>
-                <Button tag={Link} to={`${user.id}/${selectedValue}`} color="link" size="sm">
-                  {user.id}
-                </Button>
-              </td>
               <td>{user.login}</td>
               <td>{user.email}</td>
               <td>{user.langKey}</td>

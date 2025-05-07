@@ -4,7 +4,8 @@
       "title": "사용자",
       "refreshListLabel": "Refresh list",
       "createLabel": "사용자 생성",
-      "createOrEditLabel": "사용자 생성 또는 수정"
+      "createOrEditLabel": "사용자 생성 또는 수정",
+      "createOrEditLabelModel": "모델 생성 또는 수정"
     },
     "created": "A new user is created with identifier {{ param }}",
     "updated": "A user is updated with identifier {{ param }}",

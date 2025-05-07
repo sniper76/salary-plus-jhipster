@@ -130,9 +130,6 @@ export const SalesItemDiscount = () => {
       <Table responsive striped>
         <thead>
           <tr>
-            <th className="hand" onClick={sort('id')}>
-              <Translate contentKey="global.field.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
-            </th>
             <th className="hand" onClick={sort('nameKo')}>
               <Translate contentKey="global.label.nameKo">한글명</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('nameKo')} />
             </th>
@@ -175,18 +172,13 @@ export const SalesItemDiscount = () => {
         <tbody>
           {salesItemDiscountsForPage.length <= 0 && (
             <tr>
-              <td colSpan={12} className="no-data-text-align-center">
+              <td colSpan={11} className="no-data-text-align-center">
                 <Translate contentKey="global.messages.info.noDataList">조회된 데이터가 없습니다.</Translate>
               </td>
             </tr>
           )}
           {salesItemDiscountsForPage.map((user, i) => (
             <tr id={user.id} key={`user-${i}`}>
-              <td>
-                <Button tag={Link} to={`${selectedValue}/${user.id}`} color="link" size="sm">
-                  {user.id}
-                </Button>
-              </td>
               <td>{user.nameKo}</td>
               <td>{user.nameEn}</td>
               <td>{user.price}</td>

@@ -29,7 +29,7 @@
         "bonusSalary": "보너스관리",
         "userBaseSalaryMapping": "사용자기본일당연결",
         "salesItemDiscount": "할인관리",
-        "model": "사용자관리"
+        "model": "모델관리"
       },
       "admin": {
         "main": "어드민",

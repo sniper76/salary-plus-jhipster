@@ -4,7 +4,8 @@
       "title": "Users",
       "refreshListLabel": "Refresh list",
       "createLabel": "Create a new user",
-      "createOrEditLabel": "Create or edit a user"
+      "createOrEditLabel": "Create or edit a user",
+      "createOrEditLabelModel": "Create or edit a model"
     },
     "created": "A new user is created with identifier {{ param }}",
     "updated": "A user is updated with identifier {{ param }}",

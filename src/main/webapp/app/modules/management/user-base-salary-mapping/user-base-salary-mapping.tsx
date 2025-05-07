@@ -128,9 +128,6 @@ export const UserBaseSalaryMapping = () => {
       <Table responsive striped>
         <thead>
           <tr>
-            <th className="hand" onClick={sort('id')}>
-              <Translate contentKey="global.field.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
-            </th>
             <th className="hand" onClick={sort('login')}>
               <Translate contentKey="userBaseSalaryMapping.login">Login</Translate>
               <FontAwesomeIcon icon={getSortIconByFieldName('login')} />
@@ -168,18 +165,13 @@ export const UserBaseSalaryMapping = () => {
         <tbody>
           {users.length <= 0 && (
             <tr>
-              <td colSpan={10} className="no-data-text-align-center">
+              <td colSpan={9} className="no-data-text-align-center">
                 <Translate contentKey="global.messages.info.noDataList">조회된 데이터가 없습니다.</Translate>
               </td>
             </tr>
           )}
           {users.map((user, i) => (
             <tr id={user.login} key={`user-${i}`}>
-              <td>
-                <Button tag={Link} to={user.login} color="link" size="sm">
-                  {user.id}
-                </Button>
-              </td>
               <td>{user.login}</td>
               <td>{user.firstName}</td>
               <td>{user.lastName}</td>

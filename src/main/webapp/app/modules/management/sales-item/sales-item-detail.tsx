@@ -27,21 +27,6 @@ export const SalesItemDetail = () => {
       <Row size="md">
         <dl className="jh-entity-details">
           <dt>
-            <Translate contentKey="global.field.id">ID</Translate>
-          </dt>
-          <dd>
-            <span>{salesItem.id}</span>&nbsp;
-            {salesItem.activated ? (
-              <Badge color="success">
-                <Translate contentKey="userManagement.activated">Activated</Translate>
-              </Badge>
-            ) : (
-              <Badge color="danger">
-                <Translate contentKey="userManagement.deactivated">Deactivated</Translate>
-              </Badge>
-            )}
-          </dd>
-          <dt>
             <Translate contentKey="global.label.nameKo">한글명</Translate>
           </dt>
           <dd>{salesItem.nameKo}</dd>
