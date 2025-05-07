@@ -103,14 +103,6 @@ export const BaseSalaryUpdate = () => {
                 }}
               />
               <ValidatedField
-                type="checkbox"
-                name="activated"
-                check
-                value={true}
-                disabled={!baseSalary.id}
-                label={translate('userManagement.activated')}
-              />
-              <ValidatedField
                 type="number"
                 name="price"
                 label={translate('global.label.price')}

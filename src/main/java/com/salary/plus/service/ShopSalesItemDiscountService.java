@@ -64,6 +64,14 @@ public class ShopSalesItemDiscountService {
         get(shopId, salesItemId).ifPresent(shopSalesItemDiscountRepository::delete);
     }
 
+    public void updateActivated(Long shopId, long salesItemId, String login) {
+        get(shopId, salesItemId).ifPresent(it -> {
+            it.setActivated(false);
+            it.updateLastModified(login);
+            shopSalesItemDiscountRepository.save(it);
+        });
+    }
+
     /**
      * 주문별 할인 대상 정보 리스트 조회
      * @param shopId

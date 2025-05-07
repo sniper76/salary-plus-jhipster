@@ -220,14 +220,12 @@ export const BonusSalary = () => {
                       <Translate contentKey="entity.action.edit">수정</Translate>
                     </span>
                   </Button>
-                  {/*
                   <Button tag={Link} to={`${selectedValue}/${user.id}/delete`} color="danger" size="sm">
                     <FontAwesomeIcon icon="trash" />{' '}
                     <span className="d-none d-md-inline">
                       <Translate contentKey="entity.action.delete">삭제</Translate>
                     </span>
                   </Button>
-                  */}
                 </div>
               </td>
             </tr>

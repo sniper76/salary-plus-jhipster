@@ -458,4 +458,12 @@ public class UserService {
         objects.add(value);
         return objects;
     }
+
+    public void updateActivated(Long shopId, Long userId, String login) {
+        getUserWithAuthoritiesById(userId).ifPresent(it -> {
+            it.setActivated(false);
+            it.updateLastModified(login);
+            userRepository.save(it);
+        });
+    }
 }

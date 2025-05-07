@@ -59,6 +59,14 @@ public class ShopPenaltyService {
         get(shopId, salesItemId).ifPresent(shopPenaltyRepository::delete);
     }
 
+    public void updateActivated(Long shopId, long salesItemId, String login) {
+        get(shopId, salesItemId).ifPresent(it -> {
+            it.setActivated(false);
+            it.updateLastModified(login);
+            shopPenaltyRepository.save(it);
+        });
+    }
+
     @Transactional(readOnly = true)
     public List<ShopPenalty> getAllActivatedPenalties(Long shopId) {
         return shopPenaltyRepository.findAllByShopIdAndActivated(shopId, true);

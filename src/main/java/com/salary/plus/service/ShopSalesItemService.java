@@ -64,6 +64,14 @@ public class ShopSalesItemService {
         get(shopId, salesItemId).ifPresent(shopSalesItemRepository::delete);
     }
 
+    public void updateActivated(Long shopId, long salesItemId, String login) {
+        get(shopId, salesItemId).ifPresent(it -> {
+            it.setActivated(false);
+            it.updateLastModified(login);
+            shopSalesItemRepository.save(it);
+        });
+    }
+
     @Transactional(readOnly = true)
     public List<ShopSalesItem> getAllSalesItems(Long shopId) {
         return shopSalesItemRepository.findAllByShopIdAndActivated(shopId, true);

@@ -5,28 +5,28 @@ import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { deleteSalesItem, getShopSalesItem } from './sales-item.reducer';
+import { deleteBonusSalary, getShopBonusSalary } from './bonus-salary.reducer';
 
-export const SalesItemDeleteDialog = () => {
+export const BonusSalaryDeleteDialog = () => {
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
 
-  const { shopId, salesItemId } = useParams();
+  const { shopId, shopBonusSalaryId } = useParams();
 
   useEffect(() => {
-    dispatch(getShopSalesItem({ shopId, salesItemId }));
+    dispatch(getShopBonusSalary({ shopId, shopBonusSalaryId }));
   }, []);
 
-  const salesItem = useAppSelector(state => state.salesItems.salesItem);
+  const bonusSalary = useAppSelector(state => state.bonusSalaries.bonusSalary);
 
   const handleClose = event => {
     event.stopPropagation();
-    navigate('/shop/sales-item');
+    navigate('/shop/bonus-salary');
   };
 
   const confirmDelete = event => {
-    dispatch(deleteSalesItem({ shopId, salesItemId }));
+    dispatch(deleteBonusSalary({ shopId, shopBonusSalaryId }));
     handleClose(event);
   };
 
@@ -36,8 +36,8 @@ export const SalesItemDeleteDialog = () => {
         <Translate contentKey="entity.delete.title">Confirm delete operation</Translate>
       </ModalHeader>
       <ModalBody>
-        <Translate contentKey="salesItem.delete.question" interpolate={{ name: salesItem.nameKo }}>
-          정말로 상품를 삭제하시겠습니까?
+        <Translate contentKey="userManagement.delete.question" interpolate={{ name: bonusSalary.nameKo }}>
+          정말로 보너스를 삭제하시겠습니까?
         </Translate>
       </ModalBody>
       <ModalFooter>
@@ -56,4 +56,4 @@ export const SalesItemDeleteDialog = () => {
   );
 };
 
-export default SalesItemDeleteDialog;
+export default BonusSalaryDeleteDialog;

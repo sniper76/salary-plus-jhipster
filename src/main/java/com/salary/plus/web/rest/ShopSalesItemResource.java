@@ -122,7 +122,7 @@ public class ShopSalesItemResource {
     public ResponseEntity<Void> delete(@PathVariable("shopId") Long shopId, @PathVariable("salesItemId") long salesItemId) {
         LOG.debug("REST request to get ShopId : {}, ShopSalesItemId : {}", shopId, salesItemId);
         final String login = SecurityUtils.getLoginNoneNull();
-        shopSalesItemService.delete(shopId, salesItemId);
+        shopSalesItemService.updateActivated(shopId, salesItemId, login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "salesItem.deleted", login)).build();
     }
 

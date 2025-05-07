@@ -107,12 +107,13 @@ public class ShopSalesItemDiscountResource {
         return ResponseUtil.wrapOrNotFound(newUser, HeaderUtil.createAlert(applicationName, "salesItemDiscount.updated", login));
     }
 
-    @DeleteMapping("/{shopId}/sales-item-discounts/{salesItemId}")
+    @DeleteMapping("/{shopId}/sales-item-discounts/{salesItemDiscountId}")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<Void> delete(@PathVariable("shopId") Long shopId, @PathVariable("salesItemId") long salesItemId) {
-        LOG.debug("REST request to get ShopId : {}, ShopSalesItemDiscountId : {}", shopId, salesItemId);
+    public ResponseEntity<Void> delete(@PathVariable("shopId") Long shopId, @PathVariable("salesItemDiscountId") long salesItemDiscountId) {
+        LOG.debug("REST request to get ShopId : {}, ShopSalesItemDiscountId : {}", shopId, salesItemDiscountId);
         final String login = SecurityUtils.getLoginNoneNull();
-        shopSalesItemDiscountService.delete(shopId, salesItemId);
+        //        shopSalesItemDiscountService.delete(shopId, salesItemDiscountId);
+        shopSalesItemDiscountService.updateActivated(shopId, salesItemDiscountId, login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "salesItemDiscount.deleted", login)).build();
     }
 

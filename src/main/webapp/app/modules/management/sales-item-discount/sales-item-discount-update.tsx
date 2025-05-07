@@ -129,14 +129,6 @@ export const SalesItemDiscountUpdate = () => {
                 }}
               />
               <ValidatedField
-                type="checkbox"
-                name="activated"
-                check
-                value={true}
-                disabled={!salesItemDiscount.id}
-                label={translate('userManagement.activated')}
-              />
-              <ValidatedField
                 type="select"
                 name="type"
                 label={translate('salesItemDiscount.type')}

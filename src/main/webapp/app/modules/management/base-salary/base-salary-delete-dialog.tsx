@@ -37,19 +37,19 @@ export const BaseSalaryDeleteDialog = () => {
       </ModalHeader>
       <ModalBody>
         <Translate contentKey="baseSalary.delete.question" interpolate={{ name: baseSalary.nameKo }}>
-          정말로 상품를 삭제하시겠습니까?
+          정말로 일당를 삭제하시겠습니까?
         </Translate>
       </ModalBody>
       <ModalFooter>
         <Button color="secondary" onClick={handleClose}>
           <FontAwesomeIcon icon="ban" />
           &nbsp;
-          <Translate contentKey="entity.action.cancel">Cancel</Translate>
+          <Translate contentKey="entity.action.cancel">취소</Translate>
         </Button>
         <Button color="danger" onClick={confirmDelete}>
           <FontAwesomeIcon icon="trash" />
           &nbsp;
-          <Translate contentKey="entity.action.delete">Delete</Translate>
+          <Translate contentKey="entity.action.delete">삭제</Translate>
         </Button>
       </ModalFooter>
     </Modal>

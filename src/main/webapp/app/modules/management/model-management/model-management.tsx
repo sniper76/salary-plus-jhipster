@@ -210,6 +210,12 @@ export const ModelManagement = () => {
                       <Translate contentKey="entity.action.edit">Edit</Translate>
                     </span>
                   </Button>
+                  <Button tag={Link} to={`${selectedValue}/${user.id}/delete`} color="danger" size="sm">
+                    <FontAwesomeIcon icon="trash" />{' '}
+                    <span className="d-none d-md-inline">
+                      <Translate contentKey="entity.action.delete">삭제</Translate>
+                    </span>
+                  </Button>
                   {user.authorities
                     ? user.authorities.map((authority, j) =>
                         authority === 'ROLE_MAMA' ? (

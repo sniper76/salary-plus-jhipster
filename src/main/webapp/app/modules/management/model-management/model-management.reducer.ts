@@ -38,9 +38,9 @@ export const getShopRoles = createAsyncThunk('modelManagement/fetch_shop_roles',
   return response;
 });
 
-export const getUser = createAsyncThunk(
-  'modelManagement/fetch_user',
-  async ({ userId, shopId }: any) => {
+export const getModel = createAsyncThunk(
+  'modelManagement/fetch_model',
+  async ({ shopId, userId }: any) => {
     const requestUrl = `${apiUrl}/${shopId}/users/${userId}`;
     return axios.get<IUser>(requestUrl);
   },
@@ -87,6 +87,17 @@ export const updateUserMamaMappings = createAsyncThunk(
   { serializeError: serializeAxiosError },
 );
 
+export const deleteModel = createAsyncThunk(
+  'modelManagement/delete_user',
+  async ({ shopId, userId }: any, thunkAPI) => {
+    const requestUrl = `${apiUrl}/${shopId}/users/${userId}`;
+    const result = await axios.delete<IUser>(requestUrl);
+    thunkAPI.dispatch(getUsersAsAdmin({ id: shopId }));
+    return result;
+  },
+  { serializeError: serializeAxiosError },
+);
+
 export type ModelManagementState = Readonly<typeof initialState>;
 
 export const ModelManagementSlice = createSlice({
@@ -102,7 +113,7 @@ export const ModelManagementSlice = createSlice({
       .addCase(getShopRoles.fulfilled, (state, action) => {
         state.authorities = action.payload.data;
       })
-      .addCase(getUser.fulfilled, (state, action) => {
+      .addCase(getModel.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.data;
       })
@@ -115,24 +126,24 @@ export const ModelManagementSlice = createSlice({
         state.users = action.payload.data;
         state.totalItems = parseInt(action.payload.headers['x-total-count'], 10);
       })
-      .addMatcher(isFulfilled(createUser, updateUser), (state, action) => {
+      .addMatcher(isFulfilled(createUser, updateUser, deleteModel), (state, action) => {
         state.updating = false;
         state.loading = false;
         state.updateSuccess = true;
         state.user = action.payload.data;
       })
-      .addMatcher(isPending(getUsers, getUsersAsAdmin, getUser, getShopOnlyModels), state => {
+      .addMatcher(isPending(getUsers, getUsersAsAdmin, getModel, getShopOnlyModels), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
       })
-      .addMatcher(isPending(createUser, updateUser, updateUserMamaMappings), state => {
+      .addMatcher(isPending(createUser, updateUser, deleteModel, updateUserMamaMappings), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.updating = true;
       })
       .addMatcher(
-        isRejected(getUsers, getUsersAsAdmin, getUser, getShopRoles, getShopOnlyModels, createUser, updateUser, updateUserMamaMappings),
+        isRejected(getUsers, getUsersAsAdmin, getModel, getShopRoles, getShopOnlyModels, createUser, updateUser, updateUserMamaMappings),
         (state, action) => {
           state.loading = false;
           state.updating = false;

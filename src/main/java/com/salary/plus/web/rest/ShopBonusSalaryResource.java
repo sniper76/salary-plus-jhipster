@@ -112,7 +112,8 @@ public class ShopBonusSalaryResource {
     public ResponseEntity<Void> delete(@PathVariable("shopId") Long shopId, @PathVariable("shopBonusSalaryId") long shopBonusSalaryId) {
         LOG.debug("REST request to get ShopId : {}, shopBonusSalaryId : {}", shopId, shopBonusSalaryId);
         final String login = SecurityUtils.getLoginNoneNull();
-        shopBonusSalaryService.delete(shopId, shopBonusSalaryId);
+        //        shopBonusSalaryService.delete(shopId, shopBonusSalaryId);
+        shopBonusSalaryService.updateActivated(shopId, shopBonusSalaryId, login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "bonusSalary.deleted", login)).build();
     }
 

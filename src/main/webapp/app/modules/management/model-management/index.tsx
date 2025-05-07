@@ -6,6 +6,7 @@ import ModelManagement from './model-management';
 import ModelManagementDetail from './model-management-detail';
 import ModelManagementUpdate from './model-management-update';
 import ModelManagementMamaMapping from './model-management-mama-mapping';
+import ModelManagementDeleteDialog from './model-management-delete-dialog';
 
 const ModelManagementRoutes = () => (
   <ErrorBoundaryRoutes>
@@ -14,6 +15,7 @@ const ModelManagementRoutes = () => (
     <Route path=":shopId/:userId">
       <Route index element={<ModelManagementDetail />} />
       <Route path="edit" element={<ModelManagementUpdate />} />
+      <Route path="delete" element={<ModelManagementDeleteDialog />} />
       <Route path="mapping" element={<ModelManagementMamaMapping />} />
     </Route>
   </ErrorBoundaryRoutes>

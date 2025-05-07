@@ -4,6 +4,7 @@ import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
 import com.salary.plus.repository.UserRepository;
+import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.MailService;
 import com.salary.plus.service.ShopUserMappingService;
 import com.salary.plus.service.UserService;
@@ -29,6 +30,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -192,5 +194,13 @@ public class UserResource {
         LOG.debug("REST request to get User : {}", userId);
         final Optional<AdminUserDTO> adminUserDTO = userService.getUserWithAuthoritiesById(userId).map(AdminUserDTO::new);
         return ResponseUtil.wrapOrNotFound(adminUserDTO);
+    }
+
+    @DeleteMapping("/{shopId}/users/{userId}")
+    public ResponseEntity<Void> delete(@PathVariable("shopId") Long shopId, @PathVariable("userId") Long userId) {
+        LOG.debug("REST request to get User : {}", userId);
+        final String login = SecurityUtils.getLoginNoneNull();
+        userService.updateActivated(shopId, userId, login);
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "userManagement.deleted", login)).build();
     }
 }

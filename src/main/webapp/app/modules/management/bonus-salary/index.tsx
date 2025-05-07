@@ -5,6 +5,7 @@ import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import BonusSalary from './bonus-salary';
 import BonusSalaryUpdate from 'app/modules/management/bonus-salary/bonus-salary-update';
 import BonusSalaryDetail from 'app/modules/management/bonus-salary/bonus-salary-detail';
+import BonusSalaryDeleteDialog from 'app/modules/management/bonus-salary/bonus-salary-delete-dialog';
 
 const BonusSalaryRoutes = () => (
   <ErrorBoundaryRoutes>
@@ -13,6 +14,7 @@ const BonusSalaryRoutes = () => (
     <Route path=":shopId/:shopBonusSalaryId">
       <Route index element={<BonusSalaryDetail />} />
       <Route path="edit" element={<BonusSalaryUpdate />} />
+      <Route path="delete" element={<BonusSalaryDeleteDialog />} />
     </Route>
   </ErrorBoundaryRoutes>
 );

@@ -12,13 +12,13 @@ export const PenaltyDeleteDialog = () => {
 
   const navigate = useNavigate();
 
-  const { shopId, salesItemId } = useParams();
+  const { shopId, shopPenaltyId } = useParams();
 
   useEffect(() => {
-    dispatch(getShopPenalty({ shopId, salesItemId }));
+    dispatch(getShopPenalty({ shopId, shopPenaltyId }));
   }, []);
 
-  const salesItem = useAppSelector(state => state.salesItems.salesItem);
+  const penalty = useAppSelector(state => state.penalties.penalty);
 
   const handleClose = event => {
     event.stopPropagation();
@@ -26,7 +26,7 @@ export const PenaltyDeleteDialog = () => {
   };
 
   const confirmDelete = event => {
-    dispatch(deletePenalty({ shopId, salesItemId }));
+    dispatch(deletePenalty({ shopId, shopPenaltyId }));
     handleClose(event);
   };
 
@@ -36,20 +36,20 @@ export const PenaltyDeleteDialog = () => {
         <Translate contentKey="entity.delete.title">Confirm delete operation</Translate>
       </ModalHeader>
       <ModalBody>
-        <Translate contentKey="salesItem.delete.question" interpolate={{ name: salesItem.nameKo }}>
-          정말로 상품를 삭제하시겠습니까?
+        <Translate contentKey="penalty.delete.question" interpolate={{ name: penalty.nameKo }}>
+          정말로 벌금를 삭제하시겠습니까?
         </Translate>
       </ModalBody>
       <ModalFooter>
         <Button color="secondary" onClick={handleClose}>
           <FontAwesomeIcon icon="ban" />
           &nbsp;
-          <Translate contentKey="entity.action.cancel">Cancel</Translate>
+          <Translate contentKey="entity.action.cancel">취소</Translate>
         </Button>
         <Button color="danger" onClick={confirmDelete}>
           <FontAwesomeIcon icon="trash" />
           &nbsp;
-          <Translate contentKey="entity.action.delete">Delete</Translate>
+          <Translate contentKey="entity.action.delete">삭제</Translate>
         </Button>
       </ModalFooter>
     </Modal>

@@ -5,7 +5,7 @@ import { TextFormat, Translate, translate, ValidatedField } from 'react-jhipster
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getShopOnlyModels, getUser, updateUserMamaMappings } from './model-management.reducer';
+import { getShopOnlyModels, getModel, updateUserMamaMappings } from './model-management.reducer';
 
 export const ModelManagementMamaMapping = () => {
   const dispatch = useAppDispatch();
@@ -13,7 +13,7 @@ export const ModelManagementMamaMapping = () => {
   const { shopId, userId } = useParams();
 
   useEffect(() => {
-    dispatch(getUser({ shopId, userId }));
+    dispatch(getModel({ shopId, userId }));
     dispatch(getShopOnlyModels({ shopId, userId }));
   }, []);
 

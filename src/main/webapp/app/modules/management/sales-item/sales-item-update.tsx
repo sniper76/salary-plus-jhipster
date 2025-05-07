@@ -104,14 +104,6 @@ export const SalesItemUpdate = () => {
               />
               <ValidatedField
                 type="checkbox"
-                name="activated"
-                check
-                value={true}
-                disabled={!salesItem.id}
-                label={translate('userManagement.activated')}
-              />
-              <ValidatedField
-                type="checkbox"
                 name="commissionTargetYn"
                 check
                 value={salesItem.isCommissionTargetYn}

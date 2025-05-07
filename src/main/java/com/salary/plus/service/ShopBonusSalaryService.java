@@ -64,6 +64,14 @@ public class ShopBonusSalaryService {
         get(shopId, salesItemId).ifPresent(shopBonusSalaryRepository::delete);
     }
 
+    public void updateActivated(Long shopId, long salesItemId, String login) {
+        get(shopId, salesItemId).ifPresent(it -> {
+            it.setActivated(false);
+            it.updateLastModified(login);
+            shopBonusSalaryRepository.save(it);
+        });
+    }
+
     @Transactional(readOnly = true)
     public List<ShopBonusSalary> getAllBonusSalaries(Long shopId) {
         return shopBonusSalaryRepository.findAllByShopIdAndActivated(shopId, true);

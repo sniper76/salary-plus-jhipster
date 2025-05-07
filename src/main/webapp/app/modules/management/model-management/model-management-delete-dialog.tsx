@@ -5,28 +5,28 @@ import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { deleteSalesItem, getShopSalesItem } from './sales-item.reducer';
+import { deleteModel, getModel } from './model-management.reducer';
 
-export const SalesItemDeleteDialog = () => {
+export const ModelManagementDeleteDialog = () => {
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
 
-  const { shopId, salesItemId } = useParams();
+  const { shopId, userId } = useParams();
 
   useEffect(() => {
-    dispatch(getShopSalesItem({ shopId, salesItemId }));
+    dispatch(getModel({ shopId, userId }));
   }, []);
 
-  const salesItem = useAppSelector(state => state.salesItems.salesItem);
+  const model = useAppSelector(state => state.modelManagement.user);
 
   const handleClose = event => {
     event.stopPropagation();
-    navigate('/shop/sales-item');
+    navigate('/shop/model-management');
   };
 
   const confirmDelete = event => {
-    dispatch(deleteSalesItem({ shopId, salesItemId }));
+    dispatch(deleteModel({ shopId, userId }));
     handleClose(event);
   };
 
@@ -36,8 +36,8 @@ export const SalesItemDeleteDialog = () => {
         <Translate contentKey="entity.delete.title">Confirm delete operation</Translate>
       </ModalHeader>
       <ModalBody>
-        <Translate contentKey="salesItem.delete.question" interpolate={{ name: salesItem.nameKo }}>
-          정말로 상품를 삭제하시겠습니까?
+        <Translate contentKey="userManagement.delete.question" interpolate={{ name: model.nameKo }}>
+          정말로 모델를 삭제하시겠습니까?
         </Translate>
       </ModalBody>
       <ModalFooter>
@@ -56,4 +56,4 @@ export const SalesItemDeleteDialog = () => {
   );
 };
 
-export default SalesItemDeleteDialog;
+export default ModelManagementDeleteDialog;

@@ -130,7 +130,7 @@ public class ShopPenaltyResource {
     public ResponseEntity<Void> delete(@PathVariable("shopId") Long shopId, @PathVariable("shopPenaltyId") long shopPenaltyId) {
         LOG.debug("REST request to get ShopId : {}, ShopPenaltyId : {}", shopId, shopPenaltyId);
         final String login = SecurityUtils.getLoginNoneNull();
-        shopPenaltyService.delete(shopId, shopPenaltyId);
+        shopPenaltyService.updateActivated(shopId, shopPenaltyId, login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "penalty.deleted", login)).build();
     }
 

@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { languages, locales } from 'app/config/translation';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { createUser, getShopRoles, getUser, reset, updateUser } from './model-management.reducer';
+import { createUser, getShopRoles, getModel, reset, updateUser } from './model-management.reducer';
 
 export const ModelManagementUpdate = () => {
   const dispatch = useAppDispatch();
@@ -21,7 +21,7 @@ export const ModelManagementUpdate = () => {
     if (isNew) {
       dispatch(reset());
     } else {
-      dispatch(getUser({ shopId, userId }));
+      dispatch(getModel({ shopId, userId }));
     }
     dispatch(getShopRoles());
     return () => {
@@ -159,14 +159,6 @@ export const ModelManagementUpdate = () => {
                   },
                   validate: v => isEmail(v) || translate('global.messages.validate.email.invalid'),
                 }}
-              />
-              <ValidatedField
-                type="checkbox"
-                name="activated"
-                check
-                value={user.activated}
-                disabled={!user.id}
-                label={translate('userManagement.activated')}
               />
               <ValidatedField
                 type="checkbox"

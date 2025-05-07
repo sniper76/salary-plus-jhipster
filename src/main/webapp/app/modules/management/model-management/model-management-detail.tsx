@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { APP_DATE_FORMAT } from 'app/config/constants';
 import { languages } from 'app/config/translation';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getUser } from './model-management.reducer';
+import { getModel } from './model-management.reducer';
 
 export const ModelManagementDetail = () => {
   const dispatch = useAppDispatch();
@@ -15,7 +15,7 @@ export const ModelManagementDetail = () => {
   const { shopId, userId } = useParams();
 
   useEffect(() => {
-    dispatch(getUser({ shopId, userId }));
+    dispatch(getModel({ shopId, userId }));
   }, []);
 
   const user = useAppSelector(state => state.modelManagement.user);
