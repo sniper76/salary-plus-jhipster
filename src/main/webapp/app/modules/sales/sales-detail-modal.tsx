@@ -8,6 +8,7 @@ import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
 import { getShopSaleDetailList, getShopSalesForPage, resetSalesDetailList } from 'app/modules/sales/sales.reducer';
+import { getTextByLocale } from 'app/config/translation';
 
 export interface ISalesDetailModalProps {
   shopId: number;
@@ -171,26 +172,13 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
 
                 {salesDetailList.map((data, i) => (
                   <div key={i} className="border rounded p-3 mb-3">
-                    <div className="d-flex justify-content-between fw-bold text-muted">
-                      <span>
-                        <Translate contentKey="global.label.model">모델</Translate>
-                      </span>
-                      <span>{data.modelNo}</span>
-                    </div>
-                    <div className="d-flex justify-content-between fw-bold text-muted">
-                      <span>{data.nameKo}</span>
-                      <span>{data.orderDetailPrice?.toLocaleString()}</span>
-                    </div>
-                    <div className="d-flex justify-content-between fw-bold text-muted mb-2">
-                      <span>
-                        <Translate contentKey="global.label.discount">할인</Translate>
-                      </span>
-                      <span>{data.orderDetailDiscountPrice?.toLocaleString()}</span>
-                    </div>
-
-                    {data.commissionTargetYn && (
+                    {data.id === -999 ? (
                       <>
-                        {/* 수수료 */}
+                        <div className="d-flex justify-content-between fw-bold text-muted">
+                          <span>{getTextByLocale(data.nameKo, data.nameEn)}</span>
+                          <span>{data.orderDetailPrice?.toLocaleString()}</span>
+                        </div>
+                        {/* 환불 커미션 */}
                         <div className="d-flex justify-content-between fw-bold text-danger">
                           <span>
                             <Translate contentKey="global.label.commissionPrice">커미션 금액</Translate>
@@ -215,13 +203,32 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
                           </span>
                           <span>{data.mamaCommissionPrice?.toLocaleString()}</span>
                         </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="d-flex justify-content-between fw-bold text-muted">
+                          <span>
+                            <Translate contentKey="global.label.model">모델</Translate>
+                          </span>
+                          <span>{data.modelNo}</span>
+                        </div>
+                        <div className="d-flex justify-content-between fw-bold text-muted">
+                          <span>{getTextByLocale(data.nameKo, data.nameEn)}</span>
+                          <span>{data.orderDetailPrice?.toLocaleString()}</span>
+                        </div>
+                        <div className="d-flex justify-content-between fw-bold text-muted mb-2">
+                          <span>
+                            <Translate contentKey="global.label.discount">할인</Translate>
+                          </span>
+                          <span>{data.orderDetailDiscountPrice?.toLocaleString()}</span>
+                        </div>
 
-                        {/* 할인 수수료 */}
-                        {data.orderDetailDiscountPrice && (
+                        {data.commissionTargetYn && (
                           <>
+                            {/* 수수료 */}
                             <div className="d-flex justify-content-between fw-bold text-danger">
                               <span>
-                                <Translate contentKey="global.label.commissionDiscountPrice">커미션 할인 금액</Translate>
+                                <Translate contentKey="global.label.commissionPrice">커미션 금액</Translate>
                               </span>
                               <span></span>
                             </div>
@@ -229,20 +236,50 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
                               <span>
                                 <Translate contentKey="global.label.shop">상점</Translate>
                               </span>
-                              <span>{data.discountShopCommissionPrice?.toLocaleString()}</span>
+                              <span>{data.shopCommissionPrice?.toLocaleString()}</span>
                             </div>
                             <div className="d-flex justify-content-between">
                               <span>
                                 <Translate contentKey="global.label.model">모델</Translate>
                               </span>
-                              <span>{data.discountModelCommissionPrice?.toLocaleString()}</span>
+                              <span>{data.modelCommissionPrice?.toLocaleString()}</span>
                             </div>
-                            <div className="d-flex justify-content-between">
+                            <div className="d-flex justify-content-between mb-2">
                               <span>
                                 <Translate contentKey="global.label.mama">마마</Translate>
                               </span>
-                              <span>{data.discountMamaCommissionPrice?.toLocaleString()}</span>
+                              <span>{data.mamaCommissionPrice?.toLocaleString()}</span>
                             </div>
+
+                            {/* 할인 수수료 */}
+                            {data.orderDetailDiscountPrice && (
+                              <>
+                                <div className="d-flex justify-content-between fw-bold text-danger">
+                                  <span>
+                                    <Translate contentKey="global.label.commissionDiscountPrice">커미션 할인 금액</Translate>
+                                  </span>
+                                  <span></span>
+                                </div>
+                                <div className="d-flex justify-content-between">
+                                  <span>
+                                    <Translate contentKey="global.label.shop">상점</Translate>
+                                  </span>
+                                  <span>{data.discountShopCommissionPrice?.toLocaleString()}</span>
+                                </div>
+                                <div className="d-flex justify-content-between">
+                                  <span>
+                                    <Translate contentKey="global.label.model">모델</Translate>
+                                  </span>
+                                  <span>{data.discountModelCommissionPrice?.toLocaleString()}</span>
+                                </div>
+                                <div className="d-flex justify-content-between">
+                                  <span>
+                                    <Translate contentKey="global.label.mama">마마</Translate>
+                                  </span>
+                                  <span>{data.discountMamaCommissionPrice?.toLocaleString()}</span>
+                                </div>
+                              </>
+                            )}
                           </>
                         )}
                       </>

@@ -14,13 +14,13 @@ export const BrandIcon = props => (
 export const Brand = () => (
   <NavbarBrand tag={Link} to="/" className="brand-logo">
     <BrandIcon />
-    <span className="navbar-version">{VERSION.toLowerCase().startsWith('v') ? VERSION : `v${VERSION}`}</span>
+    <span className="navbar-version">{VERSION.toLowerCase().startsWith('v') ? `` : `v${VERSION}`}</span>
   </NavbarBrand>
 );
 
 export const Home = () => (
   <NavItem>
-    <NavLink tag={Link} to="/" className="d-flex align-items-center">
+    <NavLink tag={Link} to="/" className="d-flex align-items-center gap-1">
       <FontAwesomeIcon icon="home" />
       <span>
         <Translate contentKey="global.menu.home">Home</Translate>
@@ -31,7 +31,7 @@ export const Home = () => (
 
 export const Work = () => (
   <NavItem>
-    <NavLink tag={Link} to="/work" className="d-flex align-items-center">
+    <NavLink tag={Link} to="/work" className="d-flex align-items-center gap-1">
       <FontAwesomeIcon icon="book" />
       <span>
         <Translate contentKey="global.menu.work">Work</Translate>
@@ -42,8 +42,8 @@ export const Work = () => (
 
 export const Order = () => (
   <NavItem>
-    <NavLink tag={Link} to="/order" className="d-flex align-items-center">
-      <FontAwesomeIcon icon="bell" />
+    <NavLink tag={Link} to="/order" className="d-flex align-items-center gap-1">
+      <FontAwesomeIcon icon="cloud" />
       <span>
         <Translate contentKey="global.menu.order">Order</Translate>
       </span>
@@ -53,7 +53,7 @@ export const Order = () => (
 
 export const Sales = () => (
   <NavItem>
-    <NavLink tag={Link} to="/sales" className="d-flex align-items-center">
+    <NavLink tag={Link} to="/sales" className="d-flex align-items-center gap-1">
       <FontAwesomeIcon icon="bell" />
       <span>
         <Translate contentKey="global.menu.sales">매출</Translate>
@@ -64,8 +64,9 @@ export const Sales = () => (
 
 export const Salary = () => (
   <NavItem>
-    <NavLink tag={Link} to="/salary" className="d-flex align-items-center">
-      <FontAwesomeIcon icon="bell" />
+    <NavLink tag={Link} to="/salary" className="d-flex align-items-center gap-1">
+      {/* eye */}
+      <FontAwesomeIcon icon="lock" />
       <span>
         <Translate contentKey="global.menu.salary">주급</Translate>
       </span>

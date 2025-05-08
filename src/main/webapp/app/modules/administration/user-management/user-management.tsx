@@ -11,6 +11,7 @@ import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-u
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUsersAsAdmin, updateUser } from './user-management.reducer';
 import { getShopsAsAdmin } from 'app/modules/administration/shop-management/shop-management.reducer';
+import { getTextByLocale } from 'app/config/translation';
 
 export const UserManagement = () => {
   const dispatch = useAppDispatch();
@@ -125,7 +126,7 @@ export const UserManagement = () => {
           <select onChange={handleSelect} value={selectedValue} className="custom-number-input">
             {shops.map(shop => (
               <option value={shop.id} key={shop.id}>
-                {shop.nameKo}
+                {getTextByLocale(shop.nameKo, shop.nameEn)}
               </option>
             ))}
           </select>

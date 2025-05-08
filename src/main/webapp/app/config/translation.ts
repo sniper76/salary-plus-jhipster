@@ -16,3 +16,7 @@ export const locales = Object.keys(languages).sort();
 export const registerLocale = store => {
   store.dispatch(setLocale(Storage.session.get('locale', 'ko')));
 };
+
+export const getTextByLocale = (textKo, textEn) => {
+  return Storage.session.get('locale') === undefined ? textKo : Storage.session.get('locale') === 'ko' ? textKo : textEn;
+};

@@ -11,6 +11,7 @@ import {
   createAbsence,
 } from 'app/modules/work/work.reducer';
 import { getUserShops } from 'app/modules/order/order.reducer';
+import { getTextByLocale } from 'app/config/translation';
 
 export const Work = () => {
   const dispatch = useAppDispatch();
@@ -76,7 +77,7 @@ export const Work = () => {
           <Input type="select" id="shopSelect" value={selectedShopId} onChange={e => setSelectedShopId(Number(e.target.value))}>
             {shops.map(shop => (
               <option key={shop.id} value={shop.id}>
-                {shop.nameKo}
+                {getTextByLocale(shop.nameKo, shop.nameEn)}
               </option>
             ))}
           </Input>

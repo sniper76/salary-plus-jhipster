@@ -31,16 +31,16 @@ const EntitiesMenu = () => {
       <MenuItem icon={faAtlas} to="/shop/base-salary">
         <Translate contentKey="global.menu.management.baseSalary">일당관리</Translate>
       </MenuItem>
-      <MenuItem icon={faMoneyBill} to="/shop/bonus-salary">
+      {/* <MenuItem icon={faMoneyBill} to="/shop/bonus-salary">
         <Translate contentKey="global.menu.management.bonusSalary">보너스관리</Translate>
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem icon={faMoneyCheckDollar} to="/shop/sales-item-discount">
         <Translate contentKey="global.menu.management.salesItemDiscount">할인관리</Translate>
       </MenuItem>
       <MenuItem icon={faStamp} to="/shop/user-base-salary-mapping">
         <Translate contentKey="global.menu.management.userBaseSalaryMapping">사용자기본일당연결</Translate>
       </MenuItem>
-      <MenuItem icon="users" to="/shop/model-management">
+      <MenuItem icon="user" to="/shop/model-management">
         <Translate contentKey="global.menu.management.model">모델관리</Translate>
       </MenuItem>
     </>

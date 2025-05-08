@@ -3,90 +3,55 @@ import './home.scss';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Translate } from 'react-jhipster';
-import { Alert, Col, Row } from 'reactstrap';
+import { Row, Col, Card, CardBody, CardTitle, CardText } from 'reactstrap';
 
 import { useAppSelector } from 'app/config/store';
 
 export const Home = () => {
-  const account = useAppSelector(state => state.authentication.account);
-
   return (
     <Row>
       <Col md="12">
-        <h1 className="display-4">Hello, Home!</h1>
-        <p className="lead">
-          <Translate contentKey="home.subtitle">This is your homepage</Translate>
-        </p>
-        {account?.login ? (
-          <div>
-            <Alert color="success" fade={false}>
-              <Translate contentKey="home.logged.message" interpolate={{ username: account.login }}>
-                You are logged in as user {account.login}.
-              </Translate>
-            </Alert>
-          </div>
-        ) : (
-          <div>
-            <Alert color="warning" fade={false}>
-              <Translate contentKey="global.messages.info.authenticated.prefix">If you want to </Translate>
+        <h1 className="display-4 mb-4">Hello, Guest!</h1>
 
-              <Link to="/login" className="alert-link">
-                <Translate contentKey="global.messages.info.authenticated.link"> sign in</Translate>
-              </Link>
-              <Translate contentKey="global.messages.info.authenticated.suffix">
-                , you can try the default accounts:
-                <br />- Administrator (login=&quot;admin&quot; and password=&quot;admin&quot;)
-                <br />- User (login=&quot;user&quot; and password=&quot;user&quot;).
-              </Translate>
-            </Alert>
+        <Card className="mb-4 shadow-sm">
+          <CardBody>
+            <CardTitle tag="h5" className="mb-3">
+              <strong>📌 과금 기준</strong>
+            </CardTitle>
+            <CardText>
+              <ul style={{ listStyleType: 'none', paddingLeft: 0, lineHeight: '2' }}>
+                <li>
+                  👥 20인 이하 사업장: <strong>2K</strong>
+                </li>
+                <li>
+                  👥 30인 이하 사업장: <strong>3K</strong>
+                </li>
+                <li>
+                  👥 40인 이하 사업장: <strong>4K</strong>
+                </li>
+                <li>
+                  👥 50인 이하 사업장: <strong>5K</strong>
+                </li>
+                <li>
+                  👥 100인 이하 사업장: <strong>10K</strong>
+                </li>
+              </ul>
+            </CardText>
+          </CardBody>
+        </Card>
 
-            {/* <Alert color="warning" fade={false}>
-              <Translate contentKey="global.messages.info.register.noaccount">You do not have an account yet?</Translate>&nbsp;
-              <Link to="/account/register" className="alert-link">
-                <Translate contentKey="global.messages.info.register.link">Register a new account</Translate>
-              </Link>
-            </Alert> */}
-          </div>
-        )}
-        <p>
-          <Translate contentKey="home.question">If you have any question on JHipster:</Translate>
-        </p>
-
-        <ul>
-          <li>
-            <a href="https://www.jhipster.tech/" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.homepage">JHipster homepage</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.stackoverflow">JHipster on Stack Overflow</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.bugtracker">JHipster bug tracker</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.chat">JHipster public chat room</Translate>
-            </a>
-          </li>
-          <li>
-            <a href="https://twitter.com/jhipster" target="_blank" rel="noopener noreferrer">
-              <Translate contentKey="home.link.follow">follow @jhipster on Twitter</Translate>
-            </a>
-          </li>
-        </ul>
-
-        <p>
-          <Translate contentKey="home.like">If you like JHipster, do not forget to give us a star on</Translate>{' '}
-          <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-            GitHub
-          </a>
-          !
-        </p>
+        <Row>
+          <Col md="6">
+            <div className="ratio ratio-16x9">
+              <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video" allowFullScreen></iframe>
+            </div>
+          </Col>
+          <Col md="6">
+            <div className="ratio ratio-16x9">
+              <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video" allowFullScreen></iframe>
+            </div>
+          </Col>
+        </Row>
       </Col>
     </Row>
   );

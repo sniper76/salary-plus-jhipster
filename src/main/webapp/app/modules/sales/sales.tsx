@@ -5,6 +5,7 @@ import { getShopOrderDetails, getUserShops } from 'app/modules/order/order.reduc
 import { getShopSaleList } from './sales.reducer';
 import { Translate } from 'react-jhipster';
 import SalesDetailModal from 'app/modules/sales/sales-detail-modal';
+import { getTextByLocale } from 'app/config/translation';
 
 export const Sales = () => {
   const dispatch = useAppDispatch();
@@ -65,7 +66,7 @@ export const Sales = () => {
           <Input type="select" id="shopSelect" value={selectedShopId} onChange={e => setSelectedShopId(Number(e.target.value))}>
             {shops.map(shop => (
               <option key={shop.id} value={shop.id}>
-                {shop.nameKo}
+                {getTextByLocale(shop.nameKo, shop.nameEn)}
               </option>
             ))}
           </Input>

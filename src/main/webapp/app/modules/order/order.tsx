@@ -22,6 +22,7 @@ import {
 import OrderModal from 'app/modules/order/order-modal';
 import OrderModalDiscount from 'app/modules/order/order-discount-modal';
 import OrderModalRefund from 'app/modules/order/order-refund-modal';
+import { getTextByLocale } from 'app/config/translation';
 
 export const Order = () => {
   const orders = useAppSelector(state => state.orders.orders);
@@ -157,7 +158,7 @@ export const Order = () => {
           <Input type="select" id="shopSelect" value={selectedShopId} onChange={e => setSelectedShopId(Number(e.target.value))}>
             {shops.map(shop => (
               <option key={shop.id} value={shop.id}>
-                {shop.nameKo}
+                {getTextByLocale(shop.nameKo, shop.nameEn)}
               </option>
             ))}
           </Input>

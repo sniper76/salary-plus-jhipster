@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getUserShops } from 'app/modules/order/order.reducer';
 import { getShopDailySalaryList, getShopSalaryForUser } from './salary.reducer';
 import SalaryDetailModal from 'app/modules/salary/salary-detail-modal';
+import { getTextByLocale } from 'app/config/translation';
 
 export const Salary = () => {
   const dispatch = useAppDispatch();
@@ -80,7 +81,7 @@ export const Salary = () => {
           <Input type="select" id="shopSelect" value={selectedShopId} onChange={e => setSelectedShopId(Number(e.target.value))}>
             {shops.map(shop => (
               <option key={shop.id} value={shop.id}>
-                {shop.nameKo}
+                {getTextByLocale(shop.nameKo, shop.nameEn)}
               </option>
             ))}
           </Input>

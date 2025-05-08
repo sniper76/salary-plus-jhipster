@@ -75,6 +75,8 @@ public interface ShopOrderDetailRepository extends JpaRepository<ShopOrderDetail
 
     @Query(
         value = """
+        select *
+        from (
             select jssi.id,
                    jssi.name_ko, jssi.name_en,
                    jsod.price as order_detail_price,
@@ -97,14 +99,15 @@ public interface ShopOrderDetailRepository extends JpaRepository<ShopOrderDetail
             where jso.shop_id = :shopId
             and jso.id = :orderId
             union all
-            select null, '환불', 'refund', null, null, null,
+            select -999, '환불', 'refund', null, null, null,
                    jssr.shop_price, jssr.model_price, jssr.mama_price, null, null, null,
                    false, false
             from jhi_shop_order jso
             left outer join jhi_shop_sales_refund jssr on jso.id = jssr.order_id and jso.shop_id = jssr.shop_id and jso.date = jssr.date
             where jso.shop_id = :shopId
               and jso.id = :orderId
-            order by 1
+        )
+        ORDER BY CASE WHEN id = -999 THEN 1 ELSE 0 END, id
         """,
         nativeQuery = true
     )
