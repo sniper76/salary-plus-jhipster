@@ -174,67 +174,75 @@ public class ShopUserDailySalaryService {
         final List<ShopPenalty> penaltyList = shopPenaltyService.getAllActivatedPenalties(shopId);
         deleteUserDailySalaryWithUserPenaltyMapping(shopId, date, userId, penaltyList);
 
-        penaltyList.forEach(it -> {
-            if (it.getType() == PenaltyType.BAR_SHARE) {
-                //전날 커미션 대상 매출이 있는지 확인
-                final String yesterday = DateUtils.getMinusDay(date, 1);
-                final List<ShopUserSalesSalary> yesterdayCommissionList = shopUserSalesSalaryRepository.findAllByShopIdAndDateAndUserId(
-                    shopId,
-                    yesterday,
-                    userId
+        final List<ShopPenalty> barSharePenaltyList = penaltyList.stream().filter(it -> it.getType() == PenaltyType.BAR_SHARE).toList();
+        if (barSharePenaltyList.size() > 0) {
+            final ShopPenalty shopPenalty = barSharePenaltyList.get(0);
+            //전날 커미션 대상 매출이 있는지 확인
+            final String yesterday = DateUtils.getMinusDay(date, 1);
+            final List<ShopUserSalesSalary> yesterdayCommissionList = shopUserSalesSalaryRepository.findAllByShopIdAndDateAndUserId(
+                shopId,
+                yesterday,
+                userId
+            );
+            //BAR_SHARE 의 경우 커미션을 지워야 할까??? TODO
+            //            yesterdayCommissionList.forEach(elem -> {
+            //                elem.setActivated(false);
+            //                shopUserSalesSalaryRepository.save(elem);
+            //            });
+            final int sumPrice = yesterdayCommissionList.stream().mapToInt(ShopUserSalesSalary::getPrice).sum();
+            //BAR_SHARE 벌금 생성
+            shopUserPenaltyMappingRepository
+                .findByShopPenaltyIdAndUserIdAndDate(shopPenalty.getId(), userId, date)
+                .ifPresentOrElse(
+                    elem -> {
+                        elem.setPrice(sumPrice);
+                        elem.updateLastModified(login);
+                        shopUserPenaltyMappingRepository.save(elem);
+                    },
+                    () -> {
+                        saveAndGetShopUserPenaltyMapping(shopPenalty.getId(), date, userId, sumPrice, login);
+                    }
                 );
+            //penalty bar share 가 있으면 다음 처리 하지 않는다.
+            return;
+        }
 
-                yesterdayCommissionList.forEach(elem -> {
-                    elem.setActivated(false);
-                    shopUserSalesSalaryRepository.save(elem);
-                });
-                final int sumPrice = yesterdayCommissionList.stream().mapToInt(ShopUserSalesSalary::getPrice).sum();
-                //BAR_SHARE
-                shopUserPenaltyMappingRepository
-                    .findByShopPenaltyIdAndUserIdAndDate(it.getId(), userId, date)
-                    .ifPresentOrElse(
-                        elem -> {
-                            elem.setPrice(sumPrice);
-                            elem.updateLastModified(login);
-                            shopUserPenaltyMappingRepository.save(elem);
-                        },
-                        () -> {
-                            saveAndGetShopUserPenaltyMapping(it.getId(), date, userId, sumPrice, login);
-                        }
-                    );
-            } else if (checkTypeValue(it)) {
-                //DAY
-                shopUserPenaltyMappingRepository
-                    .findByShopPenaltyIdAndUserIdAndDate(it.getId(), userId, date)
-                    .ifPresentOrElse(
-                        elem -> {
-                            elem.setPrice(it.getPrice());
-                            elem.updateLastModified(login);
-                            shopUserPenaltyMappingRepository.save(elem);
-                        },
-                        () -> {
-                            saveAndGetShopUserPenaltyMapping(it.getId(), date, userId, it.getPrice(), login);
-                        }
-                    );
-            } else {
-                //TIME
-                shopUserPenaltyMappingRepository
-                    .findByShopPenaltyIdAndUserIdAndDate(it.getId(), userId, date)
-                    .ifPresentOrElse(
-                        elem -> {
-                            elem.setPrice(it.getPrice());
-                            elem.updateLastModified(login);
-                            shopUserPenaltyMappingRepository.save(elem);
-                        },
-                        () -> {
-                            saveAndGetShopUserPenaltyMapping(it.getId(), date, userId, it.getPrice(), login);
-                        }
-                    );
+        penaltyList.forEach(it -> {
+            if (it.getType() != PenaltyType.BAR_SHARE) {
+                if (checkTypeValueWithWeekday(it)) {
+                    //DAY
+                    shopUserPenaltyMappingRepository
+                        .findByShopPenaltyIdAndUserIdAndDate(it.getId(), userId, date)
+                        .ifPresentOrElse(
+                            elem -> {
+                                elem.setPrice(it.getPrice());
+                                elem.updateLastModified(login);
+                                shopUserPenaltyMappingRepository.save(elem);
+                            },
+                            () -> {
+                                saveAndGetShopUserPenaltyMapping(it.getId(), date, userId, it.getPrice(), login);
+                            }
+                        );
+                } else {
+                    //TIME
+                    shopUserPenaltyMappingRepository
+                        .findByShopPenaltyIdAndUserIdAndDate(it.getId(), userId, date)
+                        .ifPresentOrElse(
+                            elem -> {
+                                elem.setPrice(it.getPrice());
+                                elem.updateLastModified(login);
+                                shopUserPenaltyMappingRepository.save(elem);
+                            },
+                            () -> {
+                                saveAndGetShopUserPenaltyMapping(it.getId(), date, userId, it.getPrice(), login);
+                            }
+                        );
+                }
             }
         });
     }
 
-    private boolean checkTypeValue(ShopPenalty it) {
+    private boolean checkTypeValueWithWeekday(ShopPenalty it) {
         return it.getTypeValue().contains(dateProvider.getWeekday());
     }
 

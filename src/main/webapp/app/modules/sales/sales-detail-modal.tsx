@@ -120,9 +120,6 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
                   <thead>
                     <tr>
                       <th className="hand">
-                        <Translate contentKey="global.field.no">번호</Translate>
-                      </th>
-                      <th className="hand">
                         <Translate contentKey="global.label.price">금액</Translate>
                       </th>
                       <th />
@@ -131,7 +128,6 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
                   <tbody>
                     {salesForPage.map((user, i) => (
                       <tr id={user.login} key={`user-${i}`}>
-                        <td>{user.id}</td>
                         <td>{user.totalPrice}</td>
                         <td className="text-end">
                           <Button onClick={handleSearchRight(user)} color="info">
@@ -174,7 +170,7 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
                   <div key={i} className="border rounded p-3 mb-3">
                     {data.id === -999 ? (
                       <>
-                        <div className="d-flex justify-content-between fw-bold text-muted">
+                        <div className="d-flex justify-content-between fw-bold text-muted" style={{ fontSize: '1.2rem' }}>
                           <span>{getTextByLocale(data.nameKo, data.nameEn)}</span>
                           <span>{data.orderDetailPrice?.toLocaleString()}</span>
                         </div>
@@ -206,13 +202,13 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
                       </>
                     ) : (
                       <>
-                        <div className="d-flex justify-content-between fw-bold text-muted">
+                        <div className="d-flex justify-content-between fw-bold text-muted" style={{ fontSize: '1.2rem' }}>
                           <span>
                             <Translate contentKey="global.label.model">모델</Translate>
                           </span>
                           <span>{data.modelNo}</span>
                         </div>
-                        <div className="d-flex justify-content-between fw-bold text-muted">
+                        <div className="d-flex justify-content-between fw-bold text-muted" style={{ fontSize: '1.2rem' }}>
                           <span>{getTextByLocale(data.nameKo, data.nameEn)}</span>
                           <span>{data.orderDetailPrice?.toLocaleString()}</span>
                         </div>

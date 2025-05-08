@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Row, Label, Input, Button } from 'reactstrap';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-import { getShopOrderDetails, getUserShops } from 'app/modules/order/order.reducer';
+import { getShopModels, getShopOrderDetails, getUserShops } from 'app/modules/order/order.reducer';
 import { getShopSaleList } from './sales.reducer';
 import { Translate } from 'react-jhipster';
 import SalesDetailModal from 'app/modules/sales/sales-detail-modal';
@@ -18,6 +18,7 @@ export const Sales = () => {
   const sevenDaysAgo = dateNow.toISOString().slice(0, 10);
 
   const [selectedShopId, setSelectedShopId] = useState(-1);
+  const [selectedModelId, setSelectedModelId] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [startDate, setStartDate] = useState(sevenDaysAgo);
   const [endDate, setEndDate] = useState(today);
@@ -33,6 +34,7 @@ export const Sales = () => {
     if (shops.length > 0) {
       setSelectedShopId(shops[0].id);
       dispatch(getShopSaleList({ shopId: shops[0].id, startDate, endDate }));
+      dispatch(getShopModels({ shopId: shops[0].id }));
     }
   }, [shops, startDate, endDate]);
 
@@ -51,6 +53,7 @@ export const Sales = () => {
     setSelectedDate(e.date);
     setShowDetailModal(true);
   };
+  const models = useAppSelector(state => state.orders.models);
 
   return (
     <div className="p-4">
@@ -59,7 +62,7 @@ export const Sales = () => {
       </h2>
 
       <Row className="align-items-end mb-4">
-        <Col md="4">
+        <Col md="3">
           <Label for="shopSelect">
             <Translate contentKey="global.label.shopSelect">상점 선택</Translate>
           </Label>
@@ -83,7 +86,21 @@ export const Sales = () => {
           </Label>
           <Input id="endDateSelect" type="date" value={endDate} onChange={handleEndDateChange} />
         </Col>
-        <Col md="2"></Col>
+        <Col md="3">
+          <Label for="shopSelect">
+            <Translate contentKey="global.label.modelSelect">모델 선택</Translate>
+          </Label>
+          <Input type="select" id="modelSelect" value={selectedModelId} onChange={e => setSelectedModelId(Number(e.target.value))}>
+            <option key={0} value={''}>
+              <Translate contentKey="work.label.all">전체</Translate>
+            </option>
+            {models.map(shop => (
+              <option key={shop.id} value={shop.id}>
+                {shop.modelNo}
+              </option>
+            ))}
+          </Input>
+        </Col>
         <SalesDetailModal
           shopId={selectedShopId}
           date={selectedDate}
@@ -116,6 +133,12 @@ export const Sales = () => {
                     <Translate contentKey="global.label.refund">환불</Translate>
                   </span>
                   <span>{calculatePrice(item)}</span>
+                </div>
+                <div className="mb-3 d-flex justify-content-between">
+                  <span>
+                    <Translate contentKey="penalty.home.title">벌금</Translate>
+                  </span>
+                  <span>{item.penaltyPrice || 0}</span>
                 </div>
               </div>
               <div className="d-flex flex-column gap-2 mt-2">

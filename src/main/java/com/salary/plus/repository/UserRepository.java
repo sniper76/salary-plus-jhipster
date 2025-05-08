@@ -122,7 +122,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         left outer join jhi_shop_user_daily_salary suds on u.id = suds.user_id and suds.date = :date
         left outer join
         (
-            select supm.user_id
+            select distinct supm.user_id
                 from jhi_shop_penalty sp
             inner join jhi_shop_user_penalty_mapping supm on sp.id = supm.shop_penalty_id
             where sp.shop_id = :shopId

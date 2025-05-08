@@ -125,6 +125,7 @@
       "dateSelect": "날짜 선택",
       "startDateSelect": "시작일 선택",
       "endDateSelect": "종료일 선택",
+      "modelSelect": "모델 선택",
       "duration": "기간",
       "oneWeek": "1주",
       "twoWeeks": "2주",

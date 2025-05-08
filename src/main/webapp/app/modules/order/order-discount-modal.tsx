@@ -66,6 +66,10 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
     }
   };
 
+  const handleSalesItemClick = item => {
+    setLeftItems(prev => [...prev, item]); // 왼쪽에 복사 추가
+  };
+
   const handlePayRemove = (index, item) => {
     setLeftItems(prev => prev.filter((_, i) => i !== index)); // 왼쪽에서 삭제
     // console.warn('handlePayRemove', item);
@@ -119,7 +123,7 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
                   </div>
                 </div>
 
-                <div className="flex-grow-1 border rounded p-3 shadow-sm" onDragOver={handleDragOver} onDrop={handleDrop}>
+                <div className="flex-grow-1 border rounded p-3 shadow-sm">
                   <h5 className="mb-3">
                     <Translate contentKey="order.label.selectedDiscounts">선택된 할인</Translate>
                   </h5>
@@ -164,8 +168,7 @@ const OrderModalDiscount = (props: IOrderModalDiscountProps) => {
                     <div
                       key={index}
                       className="border rounded p-2 mb-2 shadow-sm text-center cursor-pointer"
-                      draggable
-                      onDragStart={() => handleDragStart(item)}
+                      onClick={() => handleSalesItemClick(item)}
                       style={{ cursor: 'grab' }}
                     >
                       {item.nameKo}

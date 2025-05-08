@@ -26,4 +26,5 @@ public class ShopSalesDTO implements Serializable {
     private Integer shopRefundPrice;
     private Integer mamaRefundPrice;
     private Integer modelRefundPrice;
+    private Long penaltyPrice;
 }

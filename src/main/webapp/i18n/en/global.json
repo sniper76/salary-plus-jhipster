@@ -125,6 +125,7 @@
       "dateSelect": "Date Select",
       "startDateSelect": "Start Date Select",
       "endDateSelect": "End Date Select",
+      "modelSelect": "Model Select",
       "duration": "Duration",
       "oneWeek": "1 Week",
       "twoWeeks": "2 Weeks",

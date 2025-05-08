@@ -1,8 +1,10 @@
 package com.salary.plus.service;
 
 import com.salary.plus.domain.ShopOrder;
+import com.salary.plus.domain.ShopUserPenaltyMapping;
 import com.salary.plus.repository.ShopOrderDetailRepository;
 import com.salary.plus.repository.ShopOrderRepository;
+import com.salary.plus.repository.ShopUserPenaltyMappingRepository;
 import com.salary.plus.service.dto.ShopOrderDetailDTO;
 import com.salary.plus.service.dto.ShopOrderDetailResponse;
 import com.salary.plus.service.dto.ShopSalesDTO;
@@ -31,7 +33,13 @@ public class ShopSalesService {
 
     @Transactional(readOnly = true)
     public List<ShopSalesDTO> getAllSales(Long shopId, String startDate, String endDate) {
-        return shopOrderDetailRepository.findAllByShopIdAndSearchDate(shopId, startDate, endDate);
+        return shopOrderDetailRepository.findAllByShopIdAndSearchDate(
+            shopId,
+            startDate,
+            endDate,
+            startDate + " 00:00:00",
+            endDate + " 23:59:59"
+        );
     }
 
     @Transactional(readOnly = true)

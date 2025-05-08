@@ -13,7 +13,6 @@ import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.dto.AdminModelDTO;
 import com.salary.plus.service.dto.AdminUserDTO;
-import com.salary.plus.service.dto.ModelMappingDTO;
 import com.salary.plus.service.dto.ShopModelResponse;
 import com.salary.plus.service.dto.ShopUserResponse;
 import com.salary.plus.service.dto.UserDTO;
@@ -415,7 +414,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<ShopUserResponse> getAllUsersByDate(Long shopId, String date) {
-        return userRepository.findAllByShopIdAndDate(shopId, date, true, true, PenaltyType.getDayPenalty());
+        return userRepository.findAllByShopIdAndDate(shopId, date, true, true, PenaltyType.getDayWithBarSharePenalty());
     }
 
     public void createModels(String login, AdminModelDTO modelDTO) {

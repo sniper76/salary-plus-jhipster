@@ -39,7 +39,8 @@ public interface ShopOrderDetailRepository extends JpaRepository<ShopOrderDetail
                     l.order_detail_discount_price,
                     jssr.shop_price as shop_refund_price,
                     jssr.model_price as model_refund_price,
-                    jssr.mama_price as mama_refund_price
+                    jssr.mama_price as mama_refund_price,
+                    spm.price as penalty_price
             from (
                 select jso.shop_id,
                          jso.date,
@@ -67,11 +68,43 @@ public interface ShopOrderDetailRepository extends JpaRepository<ShopOrderDetail
                 order by jso.date
             ) l
             left outer join jhi_shop_sales_refund jssr on l.shop_id = jssr.shop_id and l.date = jssr.date
+            left outer join (
+                select a.shop_id,
+                         a.date,
+                         sum(a.price) as price
+                  from (
+                    select sp.shop_id,
+                          to_char(supm.created_date - interval '1 day', 'yyyy-MM-dd') as date,
+                          supm.price
+                  from jhi_shop_penalty sp
+                           inner join jhi_shop_user_penalty_mapping supm on sp.id = supm.shop_penalty_id
+                  where sp.shop_id = :shopId
+                    and sp.type = 'BAR_SHARE'
+                    and supm.created_date between cast(:fullStartDate as timestamp) and cast(:fullEndDate as timestamp)
+                  union all
+                  select sp.shop_id,
+                         supm.date,
+                         supm.price
+                  from jhi_shop_penalty sp
+                           inner join jhi_shop_user_penalty_mapping supm on sp.id = supm.shop_penalty_id
+                  where sp.shop_id = :shopId
+                    and sp.type <> 'BAR_SHARE'
+                    and supm.date between :startDate and :endDate
+                ) a
+                group by a.shop_id, a.date
+                order by a.date
+            ) spm on l.shop_id = spm.shop_id and l.date = spm.date
             order by l.date desc
         """,
         nativeQuery = true
     )
-    List<ShopSalesDTO> findAllByShopIdAndSearchDate(Long shopId, String startDate, String endDate);
+    List<ShopSalesDTO> findAllByShopIdAndSearchDate(
+        Long shopId,
+        String startDate,
+        String endDate,
+        String fullStartDate,
+        String fullEndDate
+    );
 
     @Query(
         value = """
@@ -106,8 +139,34 @@ public interface ShopOrderDetailRepository extends JpaRepository<ShopOrderDetail
             left outer join jhi_shop_sales_refund jssr on jso.id = jssr.order_id and jso.shop_id = jssr.shop_id and jso.date = jssr.date
             where jso.shop_id = :shopId
               and jso.id = :orderId
+            union all
+            select -1000, '벌금', 'penalty', cast(sum(jssr.price) as integer), null, null,
+                   null, null, null, null, null, null,
+                   false, false
+            from jhi_shop_order jso
+            inner join jhi_shop_order_detail jsod on jso.id = jsod.shop_order_id
+            inner join jhi_shop_user_sales_salary jsuss on jsod.id = jsuss.shop_order_detail_id
+            left outer join (
+                select sp.shop_id,
+                   to_char(supm.created_date - interval '1 day', 'yyyy-MM-dd') as date,
+                   supm.price, supm.user_id
+                from jhi_shop_penalty sp
+                     inner join jhi_shop_user_penalty_mapping supm on sp.id = supm.shop_penalty_id
+                where sp.shop_id = :shopId
+                and sp.type = 'BAR_SHARE'
+                union all
+                select sp.shop_id,
+                   supm.date,
+                   supm.price, supm.user_id
+                from jhi_shop_penalty sp
+                     inner join jhi_shop_user_penalty_mapping supm on sp.id = supm.shop_penalty_id
+                where sp.shop_id = :shopId
+                and sp.type <> 'BAR_SHARE'
+            ) jssr on jso.shop_id = jssr.shop_id and jso.date = jssr.date and jsuss.user_id = jssr.user_id
+            where jso.shop_id = :shopId
+              and jso.id = :orderId
         )
-        ORDER BY CASE WHEN id = -999 THEN 1 ELSE 0 END, id
+        ORDER BY CASE WHEN id = -999 THEN 1 WHEN id = -1000 THEN 2 ELSE 0 END, id
         """,
         nativeQuery = true
     )

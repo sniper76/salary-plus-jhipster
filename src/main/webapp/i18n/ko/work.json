@@ -2,7 +2,8 @@
   "work": {
     "title": "근무",
     "label": {
-      "checkInOk": "출근완료"
+      "checkInOk": "출근완료",
+      "all": "전체"
     },
     "form": {
       "button": "주문하기"

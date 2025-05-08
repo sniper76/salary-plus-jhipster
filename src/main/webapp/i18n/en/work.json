@@ -2,7 +2,8 @@
   "work": {
     "title": "Work",
     "label": {
-      "checkInOk": "Check In OK"
+      "checkInOk": "Check In OK",
+      "all": "All"
     },
     "form": {
       "button": "Ordering"
