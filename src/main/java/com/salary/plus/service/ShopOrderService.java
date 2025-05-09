@@ -200,9 +200,9 @@ public class ShopOrderService {
         final List<ShopOrderDetailResponse> orderDetails = getOrderDetails(shopId, date, orderId);
         updateDiscounts(shopOrderCreateDTO, salesItemIds, salesItemDiscountIds, orderDetails, prices);
 
-        final int totalPrice =
-            orderDetails.stream().mapToInt(ShopOrderDetailResponse::getPrice).sum() - prices.stream().mapToInt(Integer::intValue).sum();
-        updateOrderPaid(shopId, date, orderId, totalPrice);
+        final int totalPrice = orderDetails.stream().mapToInt(ShopOrderDetailResponse::getPrice).sum();
+        final int discountPrice = prices.stream().mapToInt(Integer::intValue).sum();
+        updateOrderPaid(shopId, date, orderId, totalPrice, discountPrice);
     }
 
     private void updateDiscounts(
@@ -232,6 +232,17 @@ public class ShopOrderService {
     }
 
     public void createOrderRefund(ShopOrderRefundCreateDTO shopOrderRefundCreateDTO) {
+        shopOrderRepository
+            .findById(shopOrderRefundCreateDTO.getOrderId())
+            .ifPresent(it -> {
+                it.setRefundPrice(
+                    shopOrderRefundCreateDTO.getShopPrice() +
+                    shopOrderRefundCreateDTO.getModelPrice() +
+                    shopOrderRefundCreateDTO.getMamaPrice()
+                );
+                shopOrderRepository.save(it);
+            });
+
         ShopSalesRefund shopSalesRefund = new ShopSalesRefund();
         shopSalesRefund.setShopId(shopOrderRefundCreateDTO.getShopId());
         shopSalesRefund.setDate(shopOrderRefundCreateDTO.getDate());
@@ -264,12 +275,13 @@ public class ShopOrderService {
             });
     }
 
-    private void updateOrderPaid(Long shopId, String date, Long orderId, Integer price) {
+    private void updateOrderPaid(Long shopId, String date, Long orderId, Integer totalPrice, Integer discountPrice) {
         shopOrderRepository
             .findByIdAndShopIdAndDate(orderId, shopId, date)
             .ifPresent(it -> {
                 it.setPaid(true);
-                it.setTotalPrice(price);
+                it.setTotalPrice(totalPrice);
+                it.setDiscountPrice(discountPrice);
                 shopOrderRepository.save(it);
             });
     }

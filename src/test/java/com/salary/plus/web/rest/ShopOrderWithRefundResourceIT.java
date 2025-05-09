@@ -1,7 +1,6 @@
 package com.salary.plus.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static shiver.me.timbers.data.random.RandomLongs.somePositiveLong;
@@ -14,6 +13,7 @@ import com.salary.plus.domain.ShopOrderDetail;
 import com.salary.plus.domain.ShopOrderDetailDiscount;
 import com.salary.plus.domain.ShopSalesItem;
 import com.salary.plus.domain.ShopSalesItemDiscount;
+import com.salary.plus.domain.ShopSalesRefund;
 import com.salary.plus.domain.ShopTable;
 import com.salary.plus.domain.ShopUserSalesSalary;
 import com.salary.plus.enums.DiscountType;
@@ -24,15 +24,18 @@ import com.salary.plus.repository.ShopOrderRepository;
 import com.salary.plus.repository.ShopRepository;
 import com.salary.plus.repository.ShopSalesItemDiscountRepository;
 import com.salary.plus.repository.ShopSalesItemRepository;
+import com.salary.plus.repository.ShopSalesRefundRepository;
 import com.salary.plus.repository.ShopTableRepository;
 import com.salary.plus.repository.ShopUserSalesSalaryRepository;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.service.dto.ShopOrderCreateDTO;
 import com.salary.plus.service.dto.ShopOrderDetailResponse;
+import com.salary.plus.service.dto.ShopOrderRefundCreateDTO;
 import com.salary.plus.utils.DateTimeFormatUtil;
 import com.salary.plus.utils.DateUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -50,9 +53,9 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 @IntegrationTest
-class ShopOrderWithDiscountResourceIT {
+class ShopOrderWithRefundResourceIT {
 
-    private static final String TARGET_DISCOUNT_URL = "/api/shops/{shopId}/dates/{date}/discounts";
+    private static final String TARGET_REFUND_URL = "/api/shops/{shopId}/dates/{date}/orders/{orderId}/refunds";
 
     @Autowired
     private ObjectMapper om;
@@ -80,6 +83,9 @@ class ShopOrderWithDiscountResourceIT {
 
     @Autowired
     private ShopOrderDetailDiscountRepository shopOrderDetailDiscountRepository;
+
+    @Autowired
+    private ShopSalesRefundRepository shopSalesRefundRepository;
 
     @Autowired
     private MockMvc restUserMockMvc;
@@ -183,6 +189,8 @@ class ShopOrderWithDiscountResourceIT {
             shopOrder.setPaid(false);
             shopOrder.setDate(date);
             shopOrder.setTotalPrice(totalPrice);
+            shopOrder.setDiscountPrice(0);
+            shopOrder.setRefundPrice(0);
             shopOrderRepository.saveAndFlush(shopOrder);
 
             orderId = shopOrder.getId();
@@ -223,9 +231,9 @@ class ShopOrderWithDiscountResourceIT {
             shopUserSalesSalaryRepository.saveAndFlush(shopUserSalesSalary2);
         }
 
-        @DisplayName("할인이 적용된 경우")
+        @DisplayName("환불이 적용된 경우")
         @Nested
-        class WhenUpdateWithDiscounts {
+        class WhenUpdateWithRefunds {
 
             @DisplayName("변경된 정보가 없는 경우")
             @Nested
@@ -263,16 +271,19 @@ class ShopOrderWithDiscountResourceIT {
                 @Test
                 @Transactional
                 void create() throws Exception {
+                    final int shopPrice = 500;
+                    final int modelPrice = 300;
+                    final int mamaPrice = 200;
+
                     // Create the User
-                    ShopOrderCreateDTO createDTO = new ShopOrderCreateDTO();
-                    createDTO.setOrderId(orderId);
-                    createDTO.setSalesItemIds(List.of(longTimeBarFineSalesItemId));
-                    createDTO.setSalesItemDiscountIds(List.of(longTimeBarFineSalesItemDiscountId));
-                    createDTO.setPrices(List.of(longTimeBarFineSalesItemDiscountPrice));
+                    ShopOrderRefundCreateDTO createDTO = new ShopOrderRefundCreateDTO();
+                    createDTO.setShopPrice(shopPrice);
+                    createDTO.setModelPrice(modelPrice);
+                    createDTO.setMamaPrice(mamaPrice);
 
                     restUserMockMvc
                         .perform(
-                            post(TARGET_DISCOUNT_URL, shopId, date)
+                            post(TARGET_REFUND_URL, shopId, date, orderId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(om.writeValueAsBytes(createDTO))
                         )
@@ -286,16 +297,18 @@ class ShopOrderWithDiscountResourceIT {
                         true
                     );
 
-                    final ShopOrderDetailDiscount databaseShopOrderDetailDiscount = shopOrderDetailDiscountRepository
-                        .findByShopOrderDetailIdAndShopSalesItemDiscountId(longTimeBarFineOrderDetailId, longTimeBarFineSalesItemDiscountId)
-                        .orElseThrow();
-                    final ShopSalesItemDiscount databaseShopSalesItemDiscount = shopSalesItemDiscountRepository
-                        .findById(longTimeBarFineSalesItemDiscountId)
+                    final ShopSalesRefund databaseShopSalesRefund = shopSalesRefundRepository
+                        .findByShopIdAndDateAndOrderId(shopId, date, orderId)
                         .orElseThrow();
                     final int detailSumPrice = allOrderDetailResponse.stream().mapToInt(ShopOrderDetailResponse::getPrice).sum();
                     assertThat(databaseShopOrder.getTotalPrice()).isEqualTo(detailSumPrice);
-                    assertThat(databaseShopOrder.getDiscountPrice()).isEqualTo(databaseShopOrderDetailDiscount.getPrice());
-                    assertThat(databaseShopOrderDetailDiscount.getPrice()).isEqualTo(databaseShopSalesItemDiscount.getPrice());
+                    assertThat(databaseShopOrder.getDiscountPrice()).isEqualTo(0);
+                    assertThat(
+                        databaseShopSalesRefund.getShopPrice() +
+                        databaseShopSalesRefund.getModelPrice() +
+                        databaseShopSalesRefund.getMamaPrice()
+                    ).isEqualTo(databaseShopOrder.getRefundPrice());
+                    assertThat(shopPrice + modelPrice + mamaPrice).isEqualTo(databaseShopOrder.getRefundPrice());
                 }
             }
         }

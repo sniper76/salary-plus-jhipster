@@ -38,6 +38,12 @@ public class ShopOrder extends AbstractAuditingEntity<Long> implements Serializa
     @Column(name = "total_price", nullable = false)
     private Integer totalPrice;
 
+    @Column(name = "discount_price", nullable = false)
+    private Integer discountPrice;
+
+    @Column(name = "refund_price", nullable = false)
+    private Integer refundPrice;
+
     @NotNull
     @Column(name = "paid", nullable = false)
     private boolean paid = false; //손님이 계산완료 한 상태

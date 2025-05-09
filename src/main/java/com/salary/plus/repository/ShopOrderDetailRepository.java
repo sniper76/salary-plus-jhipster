@@ -113,14 +113,14 @@ public interface ShopOrderDetailRepository extends JpaRepository<ShopOrderDetail
             select jssi.id,
                    jssi.name_ko, jssi.name_en,
                    jsod.price as order_detail_price,
-                   jsodd.price as order_detail_discount_price,
+                   coalesce(jsodd.price, 0) as order_detail_discount_price,
                    ju.model_no,
-                   jssi.shop_commission_price,
-                   jssi.model_commission_price,
-                   jssi.mama_commission_price,
-                   jssid.shop_commission_price as discount_shop_commission_price,
-                   jssid.model_commission_price as discount_model_commission_price,
-                   jssid.mama_commission_price as discount_mama_commission_price,
+                   coalesce(jssi.shop_commission_price, 0) as shop_commission_price,
+                   coalesce(jssi.model_commission_price, 0) as model_commission_price,
+                   coalesce(jssi.mama_commission_price, 0) as mama_commission_price,
+                   coalesce(jssid.shop_commission_price, 0) as discount_shop_commission_price,
+                   coalesce(jssid.model_commission_price, 0) as discount_model_commission_price,
+                   coalesce(jssid.mama_commission_price, 0) as discount_mama_commission_price,
                    jssi.commission_target_yn, jssi.snack_yn
             from jhi_shop_order jso
             inner join jhi_shop_order_detail jsod on jso.id = jsod.shop_order_id and jsod.activated = true
@@ -132,41 +132,17 @@ public interface ShopOrderDetailRepository extends JpaRepository<ShopOrderDetail
             where jso.shop_id = :shopId
             and jso.id = :orderId
             union all
-            select -999, '환불', 'refund', null, null, null,
-                   jssr.shop_price, jssr.model_price, jssr.mama_price, null, null, null,
+            select -999, '환불', 'refund', 0, 0, null,
+                   coalesce(jssr.shop_price, 0) as shop_price,
+                   coalesce(jssr.model_price, 0) as model_price,
+                   coalesce(jssr.mama_price, 0) as mama_price, 0, 0, 0,
                    false, false
             from jhi_shop_order jso
             left outer join jhi_shop_sales_refund jssr on jso.id = jssr.order_id and jso.shop_id = jssr.shop_id and jso.date = jssr.date
             where jso.shop_id = :shopId
               and jso.id = :orderId
-            union all
-            select -1000, '벌금', 'penalty', cast(sum(jssr.price) as integer), null, null,
-                   null, null, null, null, null, null,
-                   false, false
-            from jhi_shop_order jso
-            inner join jhi_shop_order_detail jsod on jso.id = jsod.shop_order_id
-            inner join jhi_shop_user_sales_salary jsuss on jsod.id = jsuss.shop_order_detail_id
-            left outer join (
-                select sp.shop_id,
-                   to_char(supm.created_date - interval '1 day', 'yyyy-MM-dd') as date,
-                   supm.price, supm.user_id
-                from jhi_shop_penalty sp
-                     inner join jhi_shop_user_penalty_mapping supm on sp.id = supm.shop_penalty_id
-                where sp.shop_id = :shopId
-                and sp.type = 'BAR_SHARE'
-                union all
-                select sp.shop_id,
-                   supm.date,
-                   supm.price, supm.user_id
-                from jhi_shop_penalty sp
-                     inner join jhi_shop_user_penalty_mapping supm on sp.id = supm.shop_penalty_id
-                where sp.shop_id = :shopId
-                and sp.type <> 'BAR_SHARE'
-            ) jssr on jso.shop_id = jssr.shop_id and jso.date = jssr.date and jsuss.user_id = jssr.user_id
-            where jso.shop_id = :shopId
-              and jso.id = :orderId
         )
-        ORDER BY CASE WHEN id = -999 THEN 1 WHEN id = -1000 THEN 2 ELSE 0 END, id
+        ORDER BY CASE WHEN id = -999 THEN 1 ELSE 0 END, id
         """,
         nativeQuery = true
     )

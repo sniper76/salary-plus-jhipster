@@ -2,9 +2,11 @@ package com.salary.plus.web.rest;
 
 import com.salary.plus.domain.ShopOrder;
 import com.salary.plus.domain.ShopSalesItem;
+import com.salary.plus.domain.ShopUserPenaltyMapping;
 import com.salary.plus.domain.User;
 import com.salary.plus.guard.ShopGuard;
 import com.salary.plus.guard.UseGuards;
+import com.salary.plus.repository.ShopUserPenaltyMappingRepository;
 import com.salary.plus.service.ShopSalesService;
 import com.salary.plus.service.dto.ShopOrderDetailDTO;
 import com.salary.plus.service.dto.ShopOrderDetailResponse;

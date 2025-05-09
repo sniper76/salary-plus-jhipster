@@ -7,6 +7,7 @@ import com.salary.plus.guard.UseGuards;
 import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.security.SecurityUtils;
 import com.salary.plus.service.ShopPenaltyService;
+import com.salary.plus.service.dto.ShopOrderDetailDTO;
 import com.salary.plus.service.dto.ShopPenaltyDTO;
 import com.salary.plus.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
@@ -172,5 +173,16 @@ public class ShopPenaltyResource {
 
     private boolean onlyContainsAllowedProperties(Pageable pageable) {
         return pageable.getSort().stream().map(Sort.Order::getProperty).allMatch(ALLOWED_ORDERED_PROPERTIES::contains);
+    }
+
+    @GetMapping("/{shopId}/dates/{date}/orders/{orderId}/penalties")
+    public ResponseEntity<List<ShopOrderDetailDTO>> getAllPenaltyListByDate(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("date") String date,
+        @PathVariable("orderId") Long orderId
+    ) {
+        LOG.debug("REST request to get all sales item for an admin");
+        final List<ShopOrderDetailDTO> items = shopPenaltyService.getAllPenaltyListByDate(shopId, date, orderId);
+        return new ResponseEntity<>(items, HttpStatus.OK);
     }
 }

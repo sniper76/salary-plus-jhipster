@@ -23,4 +23,15 @@
       update jhi_user set model_no = 'TEST02', commission_target_yn = true, discount_accept_yn = true where login = 'user';
     </sql>
   </changeSet>
+
+  <changeSet id="add column jhi_shop_order to sales refund price" author="sniper">
+    <addColumn tableName="jhi_shop_order">
+      <column name="discount_price" type="int" valueNumeric="0" remarks="할인 금액"/>
+      <column name="refund_price" type="int" valueNumeric="0" remarks="환불 금액"/>
+    </addColumn>
+    <rollback>
+      <dropColumn tableName="jhi_shop_order" columnName="discount_price"/>
+      <dropColumn tableName="jhi_shop_order" columnName="refund_price"/>
+    </rollback>
+  </changeSet>
 </databaseChangeLog>

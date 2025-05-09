@@ -1,33 +1,41 @@
 package com.salary.plus.web.rest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static shiver.me.timbers.data.random.RandomLongs.somePositiveLong;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salary.plus.IntegrationTest;
 import com.salary.plus.domain.Shop;
 import com.salary.plus.domain.ShopBaseSalary;
 import com.salary.plus.domain.ShopOrder;
 import com.salary.plus.domain.ShopOrderDetail;
+import com.salary.plus.domain.ShopOrderDetailDiscount;
 import com.salary.plus.domain.ShopPenalty;
 import com.salary.plus.domain.ShopSalesItem;
+import com.salary.plus.domain.ShopSalesItemDiscount;
+import com.salary.plus.domain.ShopSalesRefund;
 import com.salary.plus.domain.ShopUserBaseSalaryMapping;
 import com.salary.plus.domain.ShopUserDailySalary;
 import com.salary.plus.domain.ShopUserMapping;
 import com.salary.plus.domain.ShopUserPenaltyMapping;
 import com.salary.plus.domain.ShopUserSalesSalary;
 import com.salary.plus.domain.User;
+import com.salary.plus.enums.DiscountType;
 import com.salary.plus.enums.PenaltyType;
 import com.salary.plus.enums.ShopType;
 import com.salary.plus.repository.ShopBaseSalaryRepository;
+import com.salary.plus.repository.ShopOrderDetailDiscountRepository;
 import com.salary.plus.repository.ShopOrderDetailRepository;
 import com.salary.plus.repository.ShopOrderRepository;
 import com.salary.plus.repository.ShopPenaltyRepository;
 import com.salary.plus.repository.ShopRepository;
+import com.salary.plus.repository.ShopSalesItemDiscountRepository;
 import com.salary.plus.repository.ShopSalesItemRepository;
+import com.salary.plus.repository.ShopSalesRefundRepository;
 import com.salary.plus.repository.ShopUserBaseSalaryMappingRepository;
 import com.salary.plus.repository.ShopUserDailySalaryRepository;
 import com.salary.plus.repository.ShopUserMappingRepository;
@@ -38,7 +46,11 @@ import com.salary.plus.security.AuthoritiesConstants;
 import com.salary.plus.service.provider.DateProvider;
 import com.salary.plus.utils.DateTimeFormatUtil;
 import com.salary.plus.utils.DateUtils;
+import com.salary.plus.utils.ObjectMapperUtil;
+import java.io.UnsupportedEncodingException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -46,10 +58,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 /**
  * Integration tests for the {@link UserResource} REST controller.
@@ -57,9 +72,12 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @WithMockUser(authorities = AuthoritiesConstants.ADMIN)
 @IntegrationTest
-class ShopUserBonusResourceIT {
+class ShopSalesDetailListResourceIT {
 
-    private static final String TARGET_URL = "/api/shops/{shopId}/dates/{date}/users/{userId}/absence";
+    private static final String TARGET_URL = "/api/shops/{shopId}/sales/dates/{date}";
+
+    @Autowired
+    protected ObjectMapperUtil objectMapperUtil;
 
     @Autowired
     private ObjectMapper om;
@@ -100,11 +118,52 @@ class ShopUserBonusResourceIT {
     @Autowired
     private ShopSalesItemRepository shopSalesItemRepository;
 
+    @Autowired
+    private ShopSalesRefundRepository shopSalesRefundRepository;
+
+    @Autowired
+    private ShopOrderDetailDiscountRepository shopOrderDetailDiscountRepository;
+
+    @Autowired
+    private ShopSalesItemDiscountRepository shopSalesItemDiscountRepository;
+
     @Mock
     private DateProvider dateProvider;
 
     @Autowired
     private MockMvc restUserMockMvc;
+
+    private Map<String, Object> params;
+
+    private MvcResult callApi(ResultMatcher resultMatcher, Long shopId, String date) throws Exception {
+        return restUserMockMvc
+            .perform(
+                get(TARGET_URL, shopId, date)
+                    .params(toMultiValueMap(params))
+                    .contentType(APPLICATION_JSON_VALUE)
+                    .accept(APPLICATION_JSON_VALUE)
+            )
+            .andExpect(resultMatcher)
+            .andReturn();
+    }
+
+    public MultiValueMap<String, String> toMultiValueMap(Map<String, Object> map) {
+        final MultiValueMap<String, String> linkedMultiValueMap = new LinkedMultiValueMap<>();
+
+        map.forEach((key, value) -> {
+            if (value instanceof List) {
+                linkedMultiValueMap.put(key, (List) value);
+            } else {
+                linkedMultiValueMap.add(key, value.toString());
+            }
+        });
+
+        return linkedMultiValueMap;
+    }
+
+    public <T> T getResult(MvcResult response, Class<T> responseType) throws JsonProcessingException, UnsupportedEncodingException {
+        return objectMapperUtil.toResponse(response.getResponse().getContentAsString(), responseType);
+    }
 
     @Nested
     class WhenSuccess {
@@ -116,6 +175,16 @@ class ShopUserBonusResourceIT {
         private Long userId;
         private Long shopPenaltyId;
         private Long orderId;
+
+        private final Integer penaltyPrice = 500;
+        private final Integer longTimeBarFinePrice = 5000;
+        private final Integer ladyDrinkPrice = 350;
+        private final Integer guestDrinkPrice = 150;
+        private final Integer longTimeBarFinePriceYesterday = 4000;
+        private final Integer ladyDrinkPriceYesterday = 350;
+        private final Integer guestDrinkPriceYesterday = 150;
+        private final Integer discountPrice = 0;
+        private final Integer refundPrice = 0;
 
         private void mockData() {
             Shop shop = new Shop();
@@ -156,7 +225,44 @@ class ShopUserBonusResourceIT {
             shopUserDailySalaryRepository.saveAndFlush(shopUserDailySalary);
         }
 
-        private void mockOrderData(String orderDate, Integer longTimeBarFinePrice, Integer ladyDrinkPrice, Integer guestDrinkPrice) {
+        private void mockRefundData(Long orderId, String orderDate, Integer shopPrice, Integer modelPrice, Integer mamaPrice) {
+            ShopSalesRefund shopSalesRefund = new ShopSalesRefund();
+            shopSalesRefund.setShopId(shopId);
+            shopSalesRefund.setOrderId(orderId);
+            shopSalesRefund.setDate(orderDate);
+            shopSalesRefund.setShopPrice(shopPrice);
+            shopSalesRefund.setModelPrice(modelPrice);
+            shopSalesRefund.setMamaPrice(mamaPrice);
+            shopSalesRefundRepository.save(shopSalesRefund);
+        }
+
+        private void mockDiscountData(Long salesItemId, Long orderDetailId, Integer shopPrice, Integer modelPrice, Integer mamaPrice) {
+            ShopSalesItemDiscount shopSalesItemDiscount = new ShopSalesItemDiscount();
+            shopSalesItemDiscount.setShopSalesItemId(salesItemId);
+            shopSalesItemDiscount.setNameKo("test discount ko");
+            shopSalesItemDiscount.setNameEn("test discount en");
+            shopSalesItemDiscount.setType(DiscountType.PRICE);
+            shopSalesItemDiscount.setPrice(shopPrice + modelPrice + mamaPrice);
+            shopSalesItemDiscount.setShopCommissionPrice(shopPrice);
+            shopSalesItemDiscount.setModelCommissionPrice(modelPrice);
+            shopSalesItemDiscount.setMamaCommissionPrice(mamaPrice);
+            shopSalesItemDiscountRepository.saveAndFlush(shopSalesItemDiscount);
+
+            ShopOrderDetailDiscount shopOrderDetailDiscount = new ShopOrderDetailDiscount();
+            shopOrderDetailDiscount.setShopOrderDetailId(orderDetailId);
+            shopOrderDetailDiscount.setShopSalesItemDiscountId(shopSalesItemDiscount.getId());
+            shopOrderDetailDiscount.setPrice(shopPrice + modelPrice + mamaPrice);
+            shopOrderDetailDiscountRepository.save(shopOrderDetailDiscount);
+        }
+
+        private ShopOrderDetail mockOrderData(
+            String orderDate,
+            Integer longTimeBarFinePrice,
+            Integer ladyDrinkPrice,
+            Integer guestDrinkPrice,
+            int discountPrice,
+            int refundPrice
+        ) {
             final Integer totalPrice = longTimeBarFinePrice + ladyDrinkPrice + guestDrinkPrice;
 
             ShopOrder shopOrder = new ShopOrder();
@@ -165,6 +271,8 @@ class ShopUserBonusResourceIT {
             shopOrder.setPaid(false);
             shopOrder.setDate(orderDate);
             shopOrder.setTotalPrice(totalPrice);
+            shopOrder.setDiscountPrice(discountPrice);
+            shopOrder.setRefundPrice(refundPrice);
             shopOrderRepository.saveAndFlush(shopOrder);
 
             orderId = shopOrder.getId();
@@ -234,157 +342,93 @@ class ShopUserBonusResourceIT {
             shopUserSalesSalary2.setUserId(userId);
             shopUserSalesSalary2.setPrice(ladyDrinkPrice);
             shopUserSalesSalaryRepository.saveAndFlush(shopUserSalesSalary2);
+
+            return shopOrderDetail1;
         }
 
-        private ShopPenalty mockPenaltyData(PenaltyType penaltyType, String penaltyTypeValue, int price) {
-            ShopPenalty shopPenalty = new ShopPenalty();
-            shopPenalty.setShopId(shopId);
-            shopPenalty.setType(penaltyType);
-            shopPenalty.setTypeValue(penaltyTypeValue);
-            shopPenalty.setPrice(price);
-            shopPenalty.setNameKo("test ko");
-            shopPenalty.setNameEn("test en");
-
-            return shopPenaltyRepository.saveAndFlush(shopPenalty);
-        }
-
-        private void mockLateData(Long shopPenaltyId, Integer price) {
-            ShopUserPenaltyMapping shopUserPenaltyMapping = new ShopUserPenaltyMapping();
-            shopUserPenaltyMapping.setShopPenaltyId(shopPenaltyId);
-            shopUserPenaltyMapping.setUserId(userId);
-            shopUserPenaltyMapping.setDate(date);
-            shopUserPenaltyMapping.setPrice(price);
-            shopUserPenaltyMappingRepository.saveAndFlush(shopUserPenaltyMapping);
-        }
-
-        @DisplayName("무단결근의 경우")
+        @DisplayName("할인 환불 둘다 있는 경우 첫번째는 환불 두번째는 할인")
         @Nested
-        class WhenAbsence {
+        class WhenAlreadyCheckInAndHasLatePenalty {
 
-            @DisplayName("이전일에 바파인이 없는 경우")
-            @Nested
-            class WhenYesterdayHaveNotBarFine {
-
-                private final Integer penaltyPrice = 500;
-
-                @BeforeEach
-                void setUp() {
-                    mockData();
-                    mockPenaltyData(PenaltyType.MANDATORY, "FRI,SAT,SUN", 1000);
-                    final ShopPenalty shopPenalty = mockPenaltyData(PenaltyType.DAY, "MON,TUE,WED,THU", penaltyPrice);
-                    mockPenaltyData(PenaltyType.TIME, "1H", 100);
-
-                    shopPenaltyId = shopPenalty.getId();
-
-                    given(dateProvider.getWeekday()).willReturn("MON");
-                }
-
-                @DisplayName("사용자에 당일 셀러리는 삭제되고 벌금 정보만 정상 등록된다.")
-                @Test
-                @Transactional
-                void create() throws Exception {
-                    restUserMockMvc
-                        .perform(post(TARGET_URL, shopId, date, userId).contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isCreated());
-
-                    //결근 정보는 존재한다
-                    final ShopUserPenaltyMapping databaseShopUserPenaltyMapping = shopUserPenaltyMappingRepository
-                        .findByShopPenaltyIdAndUserIdAndDate(shopPenaltyId, userId, date)
-                        .orElseThrow();
-                    assertThat(databaseShopUserPenaltyMapping.getPrice()).isEqualTo(penaltyPrice);
-                    //사용자 셀러리는 없다
-                    final List<ShopUserDailySalary> databaseUserDailySalaries =
-                        shopUserDailySalaryRepository.findAllByShopIdAndDateAndUserId(shopId, date, userId);
-                    assertThat(databaseUserDailySalaries.size()).isEqualTo(0);
-                }
+            @BeforeEach
+            void setUp() {
+                mockData();
+                final ShopOrderDetail shopOrderDetail0 = mockOrderData(
+                    date,
+                    longTimeBarFinePrice,
+                    ladyDrinkPrice,
+                    guestDrinkPrice,
+                    discountPrice,
+                    1500
+                );
+                mockRefundData(shopOrderDetail0.getShopOrderId(), date, 1000, 300, 200);
+                final ShopOrderDetail shopOrderDetail1 = mockOrderData(
+                    date,
+                    longTimeBarFinePriceYesterday,
+                    ladyDrinkPriceYesterday,
+                    guestDrinkPriceYesterday,
+                    1000,
+                    refundPrice
+                );
+                mockDiscountData(shopOrderDetail1.getShopSalesItemId(), shopOrderDetail1.getId(), 500, 300, 200);
+                params = Map.of("page", 0, "size", 10, "sort", "id,asc");
             }
 
-            @DisplayName("이전일에 바파인과 LD 커미션이 있는 경우")
-            @Nested
-            class WhenYesterdayHasBarFine {
+            @DisplayName("정상 조회된다.")
+            @Test
+            @Transactional
+            void create() throws Exception {
+                final MvcResult mvcResult = callApi(status().isOk(), shopId, date);
 
-                private final Integer penaltyPrice = 500;
-                private final Integer longTimeBarFinePrice = 5000;
-                private final Integer ladyDrinkPrice = 350;
-                private final Integer guestDrinkPrice = 150;
-                private String yesterday;
+                final List response = getResult(mvcResult, List.class);
 
-                @BeforeEach
-                void setUp() {
-                    mockData();
-                    final String yyyyMMdd = DateUtils.getFormatted(DateTimeFormatUtil.yyyy_MM_dd());
-                    yesterday = DateUtils.getMinusDay(yyyyMMdd, 1);
-                    mockOrderData(yesterday, longTimeBarFinePrice, ladyDrinkPrice, guestDrinkPrice);
-                    final ShopPenalty shopPenalty = mockPenaltyData(PenaltyType.BAR_SHARE, "COMMISSION", penaltyPrice);
+                final LinkedHashMap data0 = (LinkedHashMap) response.get(0);
+                final LinkedHashMap data1 = (LinkedHashMap) response.get(1);
+                assertThat(data0.get("totalPrice")).isEqualTo(5500);
+                assertThat(data0.get("discountPrice")).isEqualTo(0);
+                assertThat(data0.get("refundPrice")).isEqualTo(1500);
+                assertThat(data1.get("totalPrice")).isEqualTo(4500);
+                assertThat(data1.get("discountPrice")).isEqualTo(1000);
+                assertThat(data1.get("refundPrice")).isEqualTo(0);
+            }
+        }
 
-                    shopPenaltyId = shopPenalty.getId();
-                }
+        @DisplayName("할인 환불 아무것도 없는 경우")
+        @Nested
+        class WhenNormal {
 
-                @DisplayName("사용자에 벌금 정보에 커미션 금액이 합산되고 셀러리는 activated false 로 등록된다.")
-                @Test
-                @Transactional
-                void create() throws Exception {
-                    restUserMockMvc
-                        .perform(post(TARGET_URL, shopId, date, userId).contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isCreated());
+            @BeforeEach
+            void setUp() {
+                mockData();
+                mockOrderData(date, longTimeBarFinePrice, ladyDrinkPrice, guestDrinkPrice, discountPrice, refundPrice);
+                mockOrderData(
+                    date,
+                    longTimeBarFinePriceYesterday,
+                    ladyDrinkPriceYesterday,
+                    guestDrinkPriceYesterday,
+                    discountPrice,
+                    refundPrice
+                );
 
-                    //결근 정보는 존재한다
-                    final ShopUserPenaltyMapping databaseShopUserPenaltyMapping = shopUserPenaltyMappingRepository
-                        .findByShopPenaltyIdAndUserIdAndDate(shopPenaltyId, userId, date)
-                        .orElseThrow();
-                    assertThat(databaseShopUserPenaltyMapping.getPrice()).isEqualTo(longTimeBarFinePrice + ladyDrinkPrice);
-                    //사용자 셀러리는 없다
-                    final List<ShopUserDailySalary> databaseUserDailySalaries =
-                        shopUserDailySalaryRepository.findAllByShopIdAndDateAndUserId(shopId, date, userId);
-                    assertThat(databaseUserDailySalaries.size()).isEqualTo(0);
-
-                    //어제 날자의 커미션 데이터 확인
-                    final List<ShopUserSalesSalary> databaseUserSalesSalaries =
-                        shopUserSalesSalaryRepository.findAllByShopIdAndDateAndUserId(shopId, yesterday, userId);
-                    assertThat(databaseUserSalesSalaries.size()).isEqualTo(2);
-                    assertThat(databaseUserSalesSalaries.get(0).isActivated()).isEqualTo(false);
-                    assertThat(databaseUserSalesSalaries.get(1).isActivated()).isEqualTo(false);
-                }
+                params = Map.of("page", 0, "size", 10, "sort", "id,asc");
             }
 
-            @DisplayName("이미 출근 정보가 있는 경우")
-            @Nested
-            class WhenAlreadyCheckInAndHasLatePenalty {
+            @DisplayName("정상 조회된다.")
+            @Test
+            @Transactional
+            void create() throws Exception {
+                final MvcResult mvcResult = callApi(status().isOk(), shopId, date);
 
-                private final Integer penaltyPrice = 500;
+                final List response = getResult(mvcResult, List.class);
 
-                @BeforeEach
-                void setUp() {
-                    mockData();
-                    final ShopPenalty shopPenalty = mockPenaltyData(PenaltyType.TIME, "1H", penaltyPrice);
-
-                    shopPenaltyId = shopPenalty.getId();
-                    mockLateData(shopPenaltyId, 123);
-                }
-
-                @DisplayName("사용자에 출근 정보는 삭제되고 결근 벌금 정보만 등록된다.")
-                @Test
-                @Transactional
-                void create() throws Exception {
-                    restUserMockMvc
-                        .perform(post(TARGET_URL, shopId, date, userId).contentType(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isCreated());
-
-                    //결근 정보는 존재한다
-                    final ShopUserPenaltyMapping databaseShopUserPenaltyMapping = shopUserPenaltyMappingRepository
-                        .findByShopPenaltyIdAndUserIdAndDate(shopPenaltyId, userId, date)
-                        .orElseThrow();
-                    assertThat(databaseShopUserPenaltyMapping.getPrice()).isEqualTo(penaltyPrice);
-                    //사용자 셀러리는 없다
-                    final List<ShopUserDailySalary> databaseUserDailySalaries =
-                        shopUserDailySalaryRepository.findAllByShopIdAndDateAndUserId(shopId, date, userId);
-                    assertThat(databaseUserDailySalaries.size()).isEqualTo(0);
-
-                    //커미션 데이터 확인
-                    final List<ShopUserSalesSalary> databaseUserSalesSalaries =
-                        shopUserSalesSalaryRepository.findAllByShopIdAndDateAndUserId(shopId, date, userId);
-                    assertThat(databaseUserSalesSalaries.size()).isEqualTo(0);
-                }
+                final LinkedHashMap data0 = (LinkedHashMap) response.get(0);
+                final LinkedHashMap data1 = (LinkedHashMap) response.get(1);
+                assertThat(data0.get("totalPrice")).isEqualTo(5500);
+                assertThat(data0.get("discountPrice")).isEqualTo(0);
+                assertThat(data0.get("refundPrice")).isEqualTo(0);
+                assertThat(data1.get("totalPrice")).isEqualTo(4500);
+                assertThat(data1.get("discountPrice")).isEqualTo(0);
+                assertThat(data1.get("refundPrice")).isEqualTo(0);
             }
         }
     }

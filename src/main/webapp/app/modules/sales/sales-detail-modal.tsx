@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
-import { getShopSaleDetailList, getShopSalesForPage, resetSalesDetailList } from 'app/modules/sales/sales.reducer';
+import { getShopSaleDetailList, getShopSalePenaltyList, getShopSalesForPage, resetSalesDetailList } from 'app/modules/sales/sales.reducer';
 import { getTextByLocale } from 'app/config/translation';
 
 export interface ISalesDetailModalProps {
@@ -87,8 +87,10 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
   const handleSearchRight = e => () => {
     // console.warn('handleSearchRight', e);
     dispatch(getShopSaleDetailList({ shopId, orderId: e.id }));
+    dispatch(getShopSalePenaltyList({ shopId, date, orderId: e.id }));
   };
 
+  const salesPenaltyList = useAppSelector(state => state.sales.salesPenaltyList);
   const salesDetailList = useAppSelector(state => state.sales.salesDetailList);
   const salesForPage = useAppSelector(state => state.sales.salesForPage);
   const totalItems = useAppSelector(state => state.sales.totalItems);
@@ -122,6 +124,12 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
                       <th className="hand">
                         <Translate contentKey="global.label.price">금액</Translate>
                       </th>
+                      <th className="hand">
+                        <Translate contentKey="global.label.discount">할인</Translate>
+                      </th>
+                      <th className="hand">
+                        <Translate contentKey="global.label.refund">환불</Translate>
+                      </th>
                       <th />
                     </tr>
                   </thead>
@@ -129,6 +137,8 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
                     {salesForPage.map((user, i) => (
                       <tr id={user.login} key={`user-${i}`}>
                         <td>{user.totalPrice}</td>
+                        <td>{user.discountPrice}</td>
+                        <td>{user.refundPrice}</td>
                         <td className="text-end">
                           <Button onClick={handleSearchRight(user)} color="info">
                             <span className="d-none d-md-inline">
@@ -165,6 +175,14 @@ const SalesDetailModal = (props: ISalesDetailModalProps) => {
                 <h5 className="mb-3">
                   <Translate contentKey="order.label.items">내역</Translate>
                 </h5>
+                {salesPenaltyList.map((data, i) => (
+                  <div key={i} className="border rounded p-3 mb-3">
+                    <div className="d-flex justify-content-between fw-bold text-muted" style={{ fontSize: '1.2rem' }}>
+                      <span>{getTextByLocale(data.nameKo, data.nameEn)}</span>
+                      <span>{data.orderDetailPrice?.toLocaleString()}</span>
+                    </div>
+                  </div>
+                ))}
 
                 {salesDetailList.map((data, i) => (
                   <div key={i} className="border rounded p-3 mb-3">

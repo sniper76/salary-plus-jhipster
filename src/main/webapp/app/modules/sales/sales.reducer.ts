@@ -8,6 +8,7 @@ const initialState = {
   salesList: [],
   salesForPage: [],
   salesDetailList: [],
+  salesPenaltyList: [],
   updating: false,
   updateSuccess: false,
   totalItems: 0,
@@ -25,6 +26,11 @@ export const getShopSaleDetailList = createAsyncThunk('management/sales_detail_l
   return axios.get<any[]>(requestUrl);
 });
 
+export const getShopSalePenaltyList = createAsyncThunk('management/sales_penalty_list', async ({ shopId, date, orderId }: any) => {
+  const requestUrl = `${apiUrl}/${shopId}/dates/${date}/orders/${orderId}/penalties`;
+  return axios.get<any[]>(requestUrl);
+});
+
 export const getShopSalesForPage = createAsyncThunk('management/sales_list_page', async ({ id, query, page, size, sort }: IQueryParams) => {
   const requestUrl = `${apiUrl}/${id}/sales/dates/${query}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
   return axios.get<any[]>(requestUrl);
@@ -39,6 +45,7 @@ export const SalesSlice = createSlice({
     },
     resetSalesDetailList(state) {
       state.salesDetailList = []; // 주문 상세 리스트 초기화
+      state.salesPenaltyList = [];
     },
   },
   extraReducers(builder) {
@@ -51,6 +58,10 @@ export const SalesSlice = createSlice({
         state.loading = false;
         state.salesDetailList = action.payload.data;
       })
+      .addCase(getShopSalePenaltyList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.salesPenaltyList = action.payload.data;
+      })
       .addCase(resetSalesDetailList, state => {
         state.salesDetailList = [];
       })
@@ -59,12 +70,12 @@ export const SalesSlice = createSlice({
         state.salesForPage = action.payload.data;
         state.totalItems = parseInt(action.payload.headers['x-total-count'], 10);
       })
-      .addMatcher(isPending(getShopSaleList, getShopSalesForPage, getShopSaleDetailList), state => {
+      .addMatcher(isPending(getShopSaleList, getShopSalesForPage, getShopSaleDetailList, getShopSalePenaltyList), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
       })
-      .addMatcher(isRejected(getShopSaleList, getShopSalesForPage, getShopSaleDetailList), (state, action) => {
+      .addMatcher(isRejected(getShopSaleList, getShopSalesForPage, getShopSaleDetailList, getShopSalePenaltyList), (state, action) => {
         state.loading = false;
         state.updating = false;
         state.updateSuccess = false;
