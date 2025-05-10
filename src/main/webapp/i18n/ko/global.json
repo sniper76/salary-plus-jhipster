@@ -8,6 +8,7 @@
       "order": "주문",
       "sales": "매출",
       "salary": "주급",
+      "statistics": "통계",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "관리",

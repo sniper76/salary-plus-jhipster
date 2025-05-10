@@ -24,7 +24,7 @@ export const PrivateRoute = ({ children, hasAnyAuthorities = [], ...rest }: IOwn
   if (!sessionHasBeenFetched) {
     return <div></div>;
   }
-  // console.error('PrivateRoute', rest);
+  console.error('PrivateRoute', rest, isAuthenticated, isAuthorized, account.authorities);
   if (isAuthenticated) {
     if (isAuthorized) {
       return <ErrorBoundary>{children}</ErrorBoundary>;

@@ -8,11 +8,13 @@ import LoadingBar from 'react-redux-loading-bar';
 import { useAppDispatch } from 'app/config/store';
 import { setLocale } from 'app/shared/reducers/locale';
 import { AccountMenu, AdminMenu, EntitiesMenu, LocaleMenu } from '../menus';
-import { Brand, Home, Order, Work, Sales, Salary } from './header-components';
+import { Brand, Home, Order, Work, Sales, Salary, Statistics } from './header-components';
 
 export interface IHeaderProps {
   isAuthenticated: boolean;
   isManager: boolean;
+  isInvestor: boolean;
+  isCeo: boolean;
   isAdmin: boolean;
   ribbonEnv: string;
   isInProduction: boolean;
@@ -54,11 +56,12 @@ const Header = (props: IHeaderProps) => {
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ms-auto" navbar>
             <Home />
-            {props.isAuthenticated && <Work />}
-            {props.isAuthenticated && <Order />}
-            {props.isAuthenticated && props.isManager && <Sales />}
-            {props.isAuthenticated && props.isManager && <Salary />}
-            {props.isAuthenticated && props.isManager && <EntitiesMenu />}
+            {props.isAuthenticated && !props.isInvestor && <Work />}
+            {props.isAuthenticated && !props.isInvestor && <Order />}
+            {props.isAuthenticated && (props.isManager || props.isCeo || props.isInvestor) && <Sales />}
+            {props.isAuthenticated && (props.isManager || props.isCeo || props.isInvestor) && <Salary />}
+            {props.isAuthenticated && (props.isCeo || props.isInvestor) && <Statistics />}
+            {props.isAuthenticated && (props.isManager || props.isCeo) && <EntitiesMenu />}
             {props.isAuthenticated && props.isAdmin && <AdminMenu showOpenAPI={props.isOpenAPIEnabled} />}
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
             <AccountMenu isAuthenticated={props.isAuthenticated} />

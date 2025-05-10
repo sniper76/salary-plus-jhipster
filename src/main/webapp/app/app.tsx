@@ -33,6 +33,10 @@ export const App = () => {
   const isManager = useAppSelector(state =>
     hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN, AUTHORITIES.MANAGER]),
   );
+  const isInvestor = useAppSelector(state =>
+    hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN, AUTHORITIES.INVESTOR]),
+  );
+  const isCeo = useAppSelector(state => hasAnyAuthority(state.authentication.account.authorities, [AUTHORITIES.ADMIN, AUTHORITIES.CEO]));
   const ribbonEnv = useAppSelector(state => state.applicationProfile.ribbonEnv);
   const isInProduction = useAppSelector(state => state.applicationProfile.inProduction);
   const isOpenAPIEnabled = useAppSelector(state => state.applicationProfile.isOpenAPIEnabled);
@@ -47,6 +51,8 @@ export const App = () => {
             isAuthenticated={isAuthenticated}
             isAdmin={isAdmin}
             isManager={isManager}
+            isInvestor={isInvestor}
+            isCeo={isCeo}
             currentLocale={currentLocale}
             ribbonEnv={ribbonEnv}
             isInProduction={isInProduction}
@@ -54,7 +60,7 @@ export const App = () => {
           />
         </ErrorBoundary>
         <div className="container-fluid view-container" id="app-view-container">
-          <Card className="jh-card" style={{ height: '85vh' }}>
+          <Card className="jh-card" style={{ minHeight: '85vh' }}>
             <ErrorBoundary>
               <AppRoutes />
             </ErrorBoundary>

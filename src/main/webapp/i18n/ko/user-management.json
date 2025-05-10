@@ -7,9 +7,9 @@
       "createOrEditLabel": "사용자 생성 또는 수정",
       "createOrEditLabelModel": "모델 생성 또는 수정"
     },
-    "created": "A new user is created with identifier {{ param }}",
-    "updated": "A user is updated with identifier {{ param }}",
-    "deleted": "A user is deleted with identifier {{ param }}",
+    "created": "사용자가 신규로 등록되었습니다 {{ param }}",
+    "updated": "사용자가 수정되었습니다 {{ param }}",
+    "deleted": "사용자가 삭제되었습니다. {{ param }}",
     "delete": {
       "question": "정말로 {{ login }} 사용자를 삭제하시겠습니까?"
     },

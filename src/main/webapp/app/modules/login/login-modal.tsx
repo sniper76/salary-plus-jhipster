@@ -70,30 +70,30 @@ const LoginModal = (props: ILoginModalProps) => {
                 error={errors.password as FieldError}
                 isTouched={touchedFields.password}
               />
-              <ValidatedField
+              {/* <ValidatedField
                 name="rememberMe"
                 type="checkbox"
                 check
                 label={translate('login.form.rememberme')}
                 value={true}
                 register={register}
-              />
+              /> */}
             </Col>
           </Row>
           <div className="mt-1">&nbsp;</div>
-          <Alert color="warning" fade={false}>
+          {/* <Alert color="warning" fade={false}>
             <Link to="/account/reset/request" data-cy="forgetYourPasswordSelector">
               <Translate contentKey="login.password.forgot">Did you forget your password?</Translate>
             </Link>
-          </Alert>
-          <Alert color="warning" fade={false}>
+          </Alert> */}
+          {/* <Alert color="warning" fade={false}>
             <span>
               <Translate contentKey="global.messages.info.register.noaccount">You don&apos;t have an account yet?</Translate>
             </span>{' '}
-            {/* <Link to="/account/register">
+            <Link to="/account/register">
               <Translate contentKey="global.messages.info.register.link">Register a new account</Translate>
-            </Link> */}
-          </Alert>
+            </Link>
+          </Alert> */}
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={handleClose} tabIndex={1}>

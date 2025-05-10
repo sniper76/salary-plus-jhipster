@@ -65,10 +65,21 @@ export const Sales = () => (
 export const Salary = () => (
   <NavItem>
     <NavLink tag={Link} to="/salary" className="d-flex align-items-center gap-1">
-      {/* eye */}
       <FontAwesomeIcon icon="lock" />
       <span>
         <Translate contentKey="global.menu.salary">주급</Translate>
+      </span>
+    </NavLink>
+  </NavItem>
+);
+
+export const Statistics = () => (
+  <NavItem>
+    <NavLink tag={Link} to="/statistics" className="d-flex align-items-center gap-1">
+      {/* eye */}
+      <FontAwesomeIcon icon="eye" />
+      <span>
+        <Translate contentKey="global.menu.statistics">통계</Translate>
       </span>
     </NavLink>
   </NavItem>
