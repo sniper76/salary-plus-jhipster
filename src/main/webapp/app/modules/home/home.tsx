@@ -14,7 +14,8 @@ export const Home = () => {
         <h1 className="display-4 mb-4">Hello, Guest!</h1>
         <p className="title">
           바 마사지 레스토랑 등의 사업장 근무자의 셀러리를 관리하기 위한 프로토 타입 사이트입니다. 2025년 6월까지 시범 운영 후 수요가 없을시
-          서비스를 종료합니다.
+          서비스를 종료합니다. 사이트 컨셉에 관심이 있으신 분들은 아래 메일로 문의 주시면 친절히 안내해 드리겠습니다.
+          salaryplus2025@gmail.com
         </p>
         <br />
         <p className="title">테스트 계정</p>
@@ -46,27 +47,24 @@ export const Home = () => {
                   👥 100인 이하 사업장: <strong>10K</strong>
                 </li>
               </ul>
+              <strong className="title">
+                <a style={{ color: 'white' }} href="https://www.youtube.com/watch?v=80tm6dL4xNo" target="_blank" rel="noopener noreferrer">
+                  근무 주문 관리 설명 유튜브 보기
+                </a>
+              </strong>
+              <strong className="title">
+                <a style={{ color: 'white' }} href="https://www.youtube.com/watch?v=gML4kGI1vTU" target="_blank" rel="noopener noreferrer">
+                  매니저 관리자 설명 유튜브 보기
+                </a>
+              </strong>
+              <strong className="title">
+                <a style={{ color: 'white' }} href="https://www.youtube.com/watch?v=f3aZdWEElfk" target="_blank" rel="noopener noreferrer">
+                  대표 투자자 설명 유튜브 보기
+                </a>
+              </strong>
             </CardText>
           </CardBody>
         </Card>
-
-        <Row>
-          <Col md="4">
-            <div className="ratio ratio-16x9">
-              <iframe src="https://www.youtube.com/embed/80tm6dL4xNo" title="YouTube video" allowFullScreen></iframe>
-            </div>
-          </Col>
-          <Col md="4">
-            <div className="ratio ratio-16x9">
-              <iframe src="https://www.youtube.com/embed/gML4kGI1vTU" title="YouTube video" allowFullScreen></iframe>
-            </div>
-          </Col>
-          <Col md="4">
-            <div className="ratio ratio-16x9">
-              <iframe src="https://www.youtube.com/embed/f3aZdWEElfk" title="YouTube video" allowFullScreen></iframe>
-            </div>
-          </Col>
-        </Row>
       </Col>
     </Row>
   );
