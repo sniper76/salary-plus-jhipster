@@ -85,6 +85,18 @@ public class ShopSalesResource {
         return new ResponseEntity<>(items, HttpStatus.OK);
     }
 
+    @GetMapping("/{shopId}/sales/{startDate}/{endDate}/users/{userId}")
+    public ResponseEntity<List<ShopSalesDTO>> getAllSalesByUserId(
+        @PathVariable("shopId") Long shopId,
+        @PathVariable("startDate") String startDate,
+        @PathVariable("endDate") String endDate,
+        @PathVariable("userId") Long userId
+    ) {
+        LOG.debug("REST request to get all sales item for an admin");
+        final List<ShopSalesDTO> items = shopSalesService.getAllSalesByUserId(shopId, startDate, endDate, userId);
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
     @GetMapping("/{shopId}/sales/dates/{date}")
     public ResponseEntity<List<ShopOrder>> getSalesForPage(
         @PathVariable("shopId") Long shopId,

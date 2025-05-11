@@ -164,12 +164,6 @@ public class ShopUserDailySalaryService {
         updateHalfSalaryByList(shopId, date, dailySalaries);
     }
 
-    @Deprecated
-    @Transactional(readOnly = true)
-    public List<ShopSalaryDTO> getAllDailySalaries(Long shopId, String startDate, String endDate) {
-        return shopUserDailySalaryRepository.findAllByShopIdAndSearchDate(shopId, startDate, endDate);
-    }
-
     public void createAbsence(Long shopId, String date, Long userId, String login) {
         final List<ShopPenalty> penaltyList = shopPenaltyService.getAllActivatedPenalties(shopId);
         deleteUserDailySalaryWithUserPenaltyMapping(shopId, date, userId, penaltyList);

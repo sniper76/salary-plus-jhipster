@@ -43,6 +43,18 @@ public class ShopSalesService {
     }
 
     @Transactional(readOnly = true)
+    public List<ShopSalesDTO> getAllSalesByUserId(Long shopId, String startDate, String endDate, Long userId) {
+        return shopOrderDetailRepository.findAllByShopIdAndSearchDateByUserId(
+            shopId,
+            startDate,
+            endDate,
+            startDate + " 00:00:00",
+            endDate + " 23:59:59",
+            userId
+        );
+    }
+
+    @Transactional(readOnly = true)
     public Page<ShopOrder> getSalesForPage(Long shopId, String date, Pageable pageable) {
         return shopOrderRepository.findAllByShopIdAndDate(shopId, date, pageable);
     }

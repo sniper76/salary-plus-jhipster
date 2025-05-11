@@ -33,10 +33,10 @@ export const Sales = () => {
   useEffect(() => {
     if (shops.length > 0) {
       setSelectedShopId(shops[0].id);
-      dispatch(getShopSaleList({ shopId: shops[0].id, startDate, endDate }));
+      dispatch(getShopSaleList({ shopId: shops[0].id, startDate, endDate, modelId: selectedModelId }));
       dispatch(getShopModels({ shopId: shops[0].id }));
     }
-  }, [shops, startDate, endDate]);
+  }, [shops, startDate, endDate, selectedModelId]);
 
   const calculatePrice = elem => {
     // console.warn('calculatePrice', elem);
@@ -134,12 +134,12 @@ export const Sales = () => {
                   </span>
                   <span>{calculatePrice(item)}</span>
                 </div>
-                <div className="mb-3 d-flex justify-content-between">
+                {/* <div className="mb-3 d-flex justify-content-between">
                   <span>
                     <Translate contentKey="penalty.home.title">벌금</Translate>
                   </span>
                   <span>{item.penaltyPrice || 0}</span>
-                </div>
+                </div> */}
               </div>
               <div className="d-flex flex-column gap-2 mt-2">
                 <Button color="secondary" onClick={handleDetailClick(item)}>

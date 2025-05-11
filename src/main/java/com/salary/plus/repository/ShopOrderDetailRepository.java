@@ -108,6 +108,84 @@ public interface ShopOrderDetailRepository extends JpaRepository<ShopOrderDetail
 
     @Query(
         value = """
+            select l.shop_id, l.date,
+                    l.order_detail_price,
+                    l.order_detail_discount_price,
+                    jssr.shop_price as shop_refund_price,
+                    jssr.model_price as model_refund_price,
+                    jssr.mama_price as mama_refund_price,
+                    spm.price as penalty_price
+            from (
+                select jso.shop_id,
+                         jso.date,
+                         sum(jsod.price)                   as order_detail_price,
+                         sum(jssid.price)                  as discount_price,
+                         sum(jsodd.price)                  as order_detail_discount_price,
+                         sum(jsuss.price)                  as user_sales_price,
+                         sum(jssi.shop_commission_price)   as shop_commission_price,
+                         sum(jssi.model_commission_price)  as model_commission_price,
+                         sum(jssi.mama_commission_price)   as mama_commission_price,
+                         sum(jssid.shop_commission_price)  as discount_shop_commission_price,
+                         sum(jssid.model_commission_price) as discount_model_commission_price,
+                         sum(jssid.mama_commission_price)  as discount_mama_commission_price
+                from jhi_shop_order jso
+                       inner join jhi_shop_order_detail jsod on jso.id = jsod.shop_order_id and jsod.activated = true
+                       inner join jhi_shop_sales_item jssi on jso.shop_id = jssi.shop_id and jsod.shop_sales_item_id = jssi.id
+                       left outer join jhi_shop_sales_item_discount jssid on jssi.id = jssid.shop_sales_item_id
+                       left outer join jhi_shop_order_detail_discount jsodd
+                                       on jsod.id = jsodd.shop_order_detail_id and jssid.id = jsodd.shop_sales_item_discount_id
+                       left outer join jhi_shop_user_sales_salary jsuss on jsod.id = jsuss.shop_order_detail_id and jsuss.activated = true
+                       left outer join jhi_user ju on jsuss.user_id = ju.id
+                where jso.date between :startDate and :endDate
+                and jso.shop_id = :shopId
+                and jsuss.user_id = :userId
+                group by jso.shop_id, jso.date
+                order by jso.date
+            ) l
+            left outer join jhi_shop_sales_refund jssr on l.shop_id = jssr.shop_id and l.date = jssr.date
+            left outer join (
+                select a.shop_id,
+                         a.date,
+                         sum(a.price) as price
+                  from (
+                    select sp.shop_id,
+                          to_char(supm.created_date - interval '1 day', 'yyyy-MM-dd') as date,
+                          supm.price
+                  from jhi_shop_penalty sp
+                           inner join jhi_shop_user_penalty_mapping supm on sp.id = supm.shop_penalty_id
+                  where sp.shop_id = :shopId
+                    and supm.user_id = :userId
+                    and sp.type = 'BAR_SHARE'
+                    and supm.created_date between cast(:fullStartDate as timestamp) and cast(:fullEndDate as timestamp)
+                  union all
+                  select sp.shop_id,
+                         supm.date,
+                         supm.price
+                  from jhi_shop_penalty sp
+                           inner join jhi_shop_user_penalty_mapping supm on sp.id = supm.shop_penalty_id
+                  where sp.shop_id = :shopId
+                    and supm.user_id = :userId
+                    and sp.type <> 'BAR_SHARE'
+                    and supm.date between :startDate and :endDate
+                ) a
+                group by a.shop_id, a.date
+                order by a.date
+            ) spm on l.shop_id = spm.shop_id and l.date = spm.date
+            order by l.date desc
+        """,
+        nativeQuery = true
+    )
+    List<ShopSalesDTO> findAllByShopIdAndSearchDateByUserId(
+        Long shopId,
+        String startDate,
+        String endDate,
+        String fullStartDate,
+        String fullEndDate,
+        Long userId
+    );
+
+    @Query(
+        value = """
         select *
         from (
             select jssi.id,
